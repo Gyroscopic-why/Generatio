@@ -1,0 +1,363 @@
+using System;
+using static System.Console;
+
+using static Generatio.CustomProcedures;
+using static Generatio.GlobalSettings;
+
+namespace Generatio
+{
+    internal class PatternSource
+    {
+        static public void Pattern1(int X, int Y, ConsoleColor[] _colors, bool _useMargin, bool _savePattern, bool _showInfo)
+        {
+            int _curColor, _colAmount = _colors.Length, _edgeMargin = WindowWidth / 2 - X;
+
+            if (_savePattern || _showInfo) EncodePattern(1, X, Y, _colAmount, _colors, _savePattern, gGalleryPath, _showInfo);
+
+            for (int i = 0; i < (Y + 1) / 2; i++)
+            {
+                if (_useMargin) for (int j = 0; j < _edgeMargin; j++) Write(" ");
+                for (int j = i; j < (X + 1) / 2 + i; j++)
+                {
+                    _curColor = j % (_colAmount * 2);
+                    if (_curColor > _colAmount - 1) _curColor = _colAmount - _curColor % _colAmount - 1;
+                    BackgroundColor = _colors[_curColor];
+                    Write("  ");
+                }
+                for (int j = X / 2 + i; j > i; j--)
+                {
+                    _curColor = (j - 1) % (_colAmount * 2);
+                    if (_curColor > _colAmount - 1) _curColor = _colAmount - _curColor % _colAmount - 1;
+                    BackgroundColor = _colors[_curColor];
+                    Write("  ");
+                }
+                BackgroundColor = ConsoleColor.Black;
+                WriteLine();
+            }
+            for (int i = Y / 2; i > 0; i--)
+            {
+                if (_useMargin) for (int j = 0; j < _edgeMargin; j++) Write(" ");
+                for (int j = i; j < (X + 1) / 2 + i; j++)
+                {
+                    _curColor = (j - 1) % (_colAmount * 2);
+                    if (_curColor > _colAmount - 1) _curColor = _colAmount - _curColor % _colAmount - 1;
+                    BackgroundColor = _colors[_curColor];
+                    Write("  ");
+                }
+                for (int j = X / 2 + i; j > i; j--)
+                {
+                    _curColor = (j - 2) % (_colAmount * 2);
+                    if (_curColor > _colAmount - 1) _curColor = _colAmount - _curColor % _colAmount - 1;
+                    BackgroundColor = _colors[_curColor];
+                    Write("  ");
+                }
+                BackgroundColor = ConsoleColor.Black;
+                WriteLine();
+            }
+            BackgroundColor = ConsoleColor.Black;
+        }
+
+        static public void Pattern2(int X, int Y, ConsoleColor[] _colors, bool _useMargin)
+        {
+            int _curColor, _colAmount = _colors.Length, _edgeMargin = WindowWidth / 2 - X;
+
+            if (gDevMode || gAutoSave) EncodePattern(X, Y, _colAmount, _colors, 2, gDevMode);
+
+            for (int i = 0; i < Y; i++)
+            {
+                if (_useMargin) for (int j = 0; j < _edgeMargin; j++) Write(" ");
+                for (int j = i; j < X + i; j++)
+                {
+                    _curColor = j % (_colAmount * 2 - 2);
+                    if (_curColor >= _colAmount) _curColor = _colAmount - _curColor % _colAmount - 2;
+                    BackgroundColor = _colors[_curColor];
+                    Write("  ");
+                }
+                BackgroundColor = ConsoleColor.Black;
+                WriteLine();
+            }
+        }
+
+        static public void Pattern3(int X, int Y, ConsoleColor[] _colors, bool _useMargin)
+        {
+            int _curColor, _colAmount = _colors.Length, _edgeMargin = WindowWidth / 2 - X;
+
+            if (gDevMode || gAutoSave) EncodePattern(X, Y, _colAmount, _colors, 3, gDevMode);
+
+            for (int i = 0; i < Y / 2; i++)
+            {
+                if (_useMargin) for (int j = 0; j < _edgeMargin; j++) Write(" ");
+                for (int j = 0; j < i && j < X / 2; j++)
+                {
+                    _curColor = j % (_colAmount * 2 - 2);
+                    if (_curColor > _colAmount - 1) _curColor = _colAmount - _curColor % _colAmount - 2;
+                    BackgroundColor = _colors[_curColor];
+                    Write("  ");
+                }
+                for (int j = i; j < X - i; j++)
+                {
+                    _curColor = i % (_colAmount * 2 - 2);
+                    if (_curColor > _colAmount - 1) _curColor = _colAmount - _curColor % _colAmount - 2;
+                    BackgroundColor = _colors[_curColor];
+                    Write("  ");
+                }
+                for (int j = Math.Max(X - i, X / 2); j < X; j++)
+                {
+                    _curColor = (X - j - 1) % (_colAmount * 2 - 2);
+                    if (_curColor > _colAmount - 1) _curColor = _colAmount - _curColor % _colAmount - 2;
+                    BackgroundColor = _colors[_curColor];
+                    Write("  ");
+                }
+                BackgroundColor = ConsoleColor.Black;
+                WriteLine();
+            }
+            for (int i = Y / 2; i < Y; i++)
+            {
+                if (_useMargin) for (int j = 0; j < _edgeMargin; j++) Write(" ");
+                for (int j = 0; j < Y - i && j < (X + 1) / 2; j++)
+                {
+                    _curColor = j % (_colAmount * 2 - 2);
+                    if (_curColor > _colAmount - 1) _curColor = _colAmount - _curColor % _colAmount - 2;
+                    BackgroundColor = _colors[_curColor];
+                    Write("  ");
+                }
+                for (int j = Y - i; j <= X + i - Y && j < X; j++)
+                {
+                    _curColor = (Y - i - 1) % (_colAmount * 2 - 2);
+                    if (_curColor > _colAmount - 1) _curColor = _colAmount - _curColor % _colAmount - 2;
+                    BackgroundColor = _colors[_curColor];
+                    Write("  ");
+                }
+                for (int j = Math.Max(X + i - Y, X / 2 - 1) + 1; j < X; j++)
+                {
+                    _curColor = (X - j - 1) % (_colAmount * 2 - 2);
+                    if (_curColor > _colAmount - 1) _curColor = _colAmount - _curColor % _colAmount - 2;
+                    BackgroundColor = _colors[_curColor];
+                    Write("  ");
+                }
+                BackgroundColor = ConsoleColor.Black;
+                WriteLine();
+            }
+            BackgroundColor = ConsoleColor.Black;
+        }
+
+        static public void Pattern4(int X, int Y, ConsoleColor[] _colors, bool _useMargin)
+        {
+            int _curColor, _colAmount = _colors.Length, _edgeMargin = WindowWidth / 2 - X;
+
+            if (gDevMode || gAutoSave) EncodePattern(X, Y, _colAmount, _colors, 4, gDevMode);
+
+            for (int i = 0; i < Y; i++)
+            {
+                if (_useMargin) for (int j = 0; j < _edgeMargin; j++) Write(" ");
+                for (int j = 0; j < X; j++)
+                {
+                    _curColor = j % (_colAmount * 2 - 2);
+                    if (_curColor >= _colAmount) _curColor = _colAmount - 2 - _curColor % _colAmount;
+                    BackgroundColor = _colors[_curColor];
+                    Write("  ");
+                }
+                BackgroundColor = ConsoleColor.Black;
+                WriteLine();
+            }
+            BackgroundColor = ConsoleColor.Black;
+        }
+
+        static public void Pattern5(int X, int Y, ConsoleColor[] _colors, bool _useMargin)
+        {
+            int _curColor, _colAmount = _colors.Length, _edgeMargin = WindowWidth / 2 - X;
+
+            if (gDevMode || gAutoSave) EncodePattern(X, Y, _colAmount, _colors, 5, gDevMode);
+
+            for (int i = 0; i < Y; i++)
+            {
+                if (_useMargin) for (int j = 0; j < _edgeMargin; j++) Write(" ");
+                for (int j = 0; j < X; j++)
+                {
+                    _curColor = i % (_colAmount * 2 - 2);
+                    if (_curColor >= _colAmount) _curColor = _colAmount - 2 - _curColor % _colAmount;
+                    BackgroundColor = _colors[_curColor];
+                    Write("  ");
+                }
+                BackgroundColor = ConsoleColor.Black;
+                WriteLine();
+            }
+            BackgroundColor = ConsoleColor.Black;
+        }
+
+        static public void Pattern6(int X, int Y, ConsoleColor[] _colors, bool _useMargin)
+        {
+            int _curColor, _colAmount = _colors.Length, _edgeMargin = WindowWidth / 2 - X;
+
+            if (gDevMode || gAutoSave) EncodePattern(X, Y, _colAmount, _colors, 6, gDevMode);
+
+            for (int i = 0; i < (Y + 1) / 2; i++)
+            {
+                if (_useMargin) for (int j = 0; j < _edgeMargin; j++) Write(" ");
+                for (int j = (X + 1) / 2 + i; j > i; j--)
+                {
+                    _curColor = (j - 1) % (_colAmount * 2);
+                    if (_curColor > _colAmount - 1) _curColor = _colAmount - _curColor % _colAmount - 1;
+                    BackgroundColor = _colors[_curColor];
+                    Write("  ");
+                }
+                for (int j = i + X % 2; j < (X + 1) / 2 + i; j++)
+                {
+                    _curColor = j % (_colAmount * 2);
+                    if (_curColor > _colAmount - 1) _curColor = _colAmount - _curColor % _colAmount - 1;
+                    BackgroundColor = _colors[_curColor];
+                    Write("  ");
+                }
+                BackgroundColor = ConsoleColor.Black;
+                WriteLine();
+            }
+            for (int i = Y / 2; i > 0; i--)
+            {
+                if (_useMargin) for (int j = 0; j < _edgeMargin; j++) Write(" ");
+                for (int j = (X + 1) / 2 + i; j > i; j--)
+                {
+                    _curColor = (j - 2) % (_colAmount * 2);
+                    if (_curColor > _colAmount - 1) _curColor = _colAmount - _curColor % _colAmount - 1;
+                    BackgroundColor = _colors[_curColor];
+                    Write("  ");
+                }
+                for (int j = i + X % 2; j < (X + 1) / 2 + i; j++)
+                {
+                    _curColor = (j - 1) % (_colAmount * 2);
+                    if (_curColor > _colAmount - 1) _curColor = _colAmount - _curColor % _colAmount - 1;
+                    BackgroundColor = _colors[_curColor];
+                    Write("  ");
+                }
+                BackgroundColor = ConsoleColor.Black;
+                WriteLine();
+            }
+            BackgroundColor = ConsoleColor.Black;
+        }
+
+        static public void Pattern7(int X, int Y, ConsoleColor[] _colors, bool _useMargin)
+        {
+            int _curColor, _colAmount = _colors.Length, _edgeMargin = WindowWidth / 2 - X;
+
+            if (gDevMode || gAutoSave) EncodePattern(X, Y, _colAmount, _colors, 7, gDevMode);
+
+            for (int i = 0; i < Y / 2; i++)
+            {
+                if (_useMargin) for (int j = 0; j < _edgeMargin; j++) Write(" ");
+                for (int j = 0; j < i && j < X / 2; j++)
+                {
+                    _curColor = _colAmount - (j % (_colAmount * 2 - 2)) - 1;
+                    _curColor = Math.Abs(_curColor);
+                    if (_curColor > _colAmount - 1) _curColor = _colAmount - _curColor % _colAmount - 1;
+                    BackgroundColor = _colors[_curColor];
+                    Write("  ");
+                }
+                for (int j = i; j < X - i; j++)
+                {
+                    _curColor = i % (_colAmount * 2 - 2);
+                    if (_curColor > _colAmount - 1) _curColor = _colAmount - _curColor % _colAmount - 2;
+                    BackgroundColor = _colors[_curColor];
+                    Write("  ");
+                }
+                for (int j = Math.Max(X - i, X / 2); j < X; j++)
+                {
+                    _curColor = _colAmount - ((X - j - 1) % (_colAmount * 2 - 2)) - 1;
+                    _curColor = Math.Abs(_curColor);
+                    if (_curColor > _colAmount - 1) _curColor = _colAmount - _curColor % _colAmount - 1;
+                    BackgroundColor = _colors[_curColor];
+                    Write("  ");
+                }
+                BackgroundColor = ConsoleColor.Black;
+                WriteLine();
+            }
+            for (int i = Y / 2; i < Y; i++)
+            {
+                if (_useMargin) for (int j = 0; j < _edgeMargin; j++) Write(" ");
+                for (int j = 0; j < Y - i - 1 && j < (X + 1) / 2; j++)
+                {
+                    _curColor = _colAmount - (j % (_colAmount * 2 - 2)) - 1;
+                    _curColor = Math.Abs(_curColor);
+                    if (_curColor > _colAmount - 1) _curColor = _colAmount - _curColor % _colAmount - 1;
+                    BackgroundColor = _colors[_curColor];
+                    Write("  ");
+                }
+                for (int j = Y - i - 1; j <= X + i - Y && j < X; j++)
+                {
+                    _curColor = (Y - i - 1) % (_colAmount * 2 - 2);
+                    if (_curColor > _colAmount - 1) _curColor = _colAmount - _curColor % _colAmount - 2;
+                    BackgroundColor = _colors[_curColor];
+                    Write("  ");
+                }
+                for (int j = Math.Max(X + i - Y, (X - 1) / 2) + 1; j < X; j++)
+                {
+                    _curColor = _colAmount - ((X - j - 1) % (_colAmount * 2 - 2)) - 1;
+                    _curColor = Math.Abs(_curColor);
+                    if (_curColor > _colAmount - 1) _curColor = _colAmount - _curColor % _colAmount - 1;
+                    BackgroundColor = _colors[_curColor];
+                    Write("  ");
+                }
+                BackgroundColor = ConsoleColor.Black;
+                WriteLine();
+            }
+            BackgroundColor = ConsoleColor.Black;
+        }
+
+        static public void Pattern8(int X, int Y, ConsoleColor[] _colors, bool _useMargin)
+        {
+            int _curColor, _colAmount = _colors.Length, _edgeMargin = WindowWidth / 2 - X;
+
+            if (gDevMode || gAutoSave) EncodePattern(X, Y, _colAmount, _colors, 8, gDevMode);
+
+            for (int i = 0; i < (Y + 1) / 2; i++)
+            {
+                if (_useMargin) for (int j = 0; j < _edgeMargin; j++) Write(" ");
+                for (int j = i; j < X + i; j++)
+                {
+                    _curColor = j % (_colAmount * 2 - 2);
+                    if (_curColor >= _colAmount) _curColor = _colAmount - _curColor % _colAmount - 2;
+                    BackgroundColor = _colors[_curColor];
+                    Write("  ");
+                }
+                BackgroundColor = ConsoleColor.Black;
+                WriteLine();
+            }
+            for (int i = Y / 2; i > 0; i--)
+            {
+                if (_useMargin) for (int j = 0; j < _edgeMargin; j++) Write(" ");
+                for (int j = 2 * _colAmount - 1 - i; j > 2 * _colAmount - 1 - i - X; j--)
+                {
+                    _curColor = j % (_colAmount * 2 - 2);
+                    if (_curColor < 0) _curColor = Math.Abs(_curColor) % (_colAmount * 2 - 2);
+                    if (_curColor >= _colAmount) _curColor = _colAmount - _curColor % _colAmount - 2;
+                    BackgroundColor = _colors[_curColor];
+                    Write("  ");
+                }
+                BackgroundColor = ConsoleColor.Black;
+                WriteLine();
+            }
+            BackgroundColor = ConsoleColor.Black;
+        }
+
+        static public void Pattern9(int X, int Y, ConsoleColor[] _colors, bool _useMargin)
+        {
+            int _curColor, _colAmount = _colors.Length, _edgeMargin = WindowWidth / 2 - X;
+
+            if (gDevMode || gAutoSave) EncodePattern(X, Y, _colAmount, _colors, 9, gDevMode);
+
+            for (int i = 0; i < Y; i++)
+            {
+                if (_useMargin) for (int j = 0; j < _edgeMargin; j++) Write(" ");
+                for (int j = 2 * i; j > 2 * i - X; j--)
+                {
+                    _curColor = j % (_colAmount * 2 - 2);
+                    if (_curColor < 0) _curColor = Math.Abs(_curColor) % (_colAmount * 2 - 2);
+                    if (_curColor >= _colAmount) _curColor = _colAmount - _curColor % _colAmount - 2;
+                    BackgroundColor = _colors[_curColor];
+                    Write("  ");
+                }
+                BackgroundColor = ConsoleColor.Black;
+                WriteLine();
+            }
+            BackgroundColor = ConsoleColor.Black;
+        }
+    }
+}

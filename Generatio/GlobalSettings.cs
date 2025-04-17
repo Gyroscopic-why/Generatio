@@ -1,0 +1,292 @@
+﻿using System;
+
+using static Generatio.DataManipulation;
+
+namespace Generatio
+{
+    internal class GlobalSettings
+    {
+
+            //  Global random class object to not initialize it more than once
+        static public Random gRandom = new Random();
+
+
+            //  Get the path to the \users\user_name_here\documents folder
+            //  And then create/navigate to: Gyroscopic\Generatio\
+        static public string gGalleryPath = GetPath() + "\\Gallery";
+
+
+            //  Get the path to the \users\user_name_here\documents folder
+            //  And then create/navigate to: Gyroscopic\Generatio\
+        static public string gSettingsPath = GetPath() + "\\Settings";
+
+        //------------------------- Stored settings variables -------------------------------------------------//
+
+
+
+        // Enable by entering ActivateNoLimitMode in the start menu
+        //
+        // Makes the size function ignore the upper limit (Max = from MaxWindowSize to int.MaxValue)
+        static public bool gNoLimitMode = false;
+
+
+             // Enable by entering ActivateDevMode in the start menu
+             //
+             // Writes dev info (helpful for gallery uzor functionality)
+        static public bool gDevMode = false;
+
+
+             // Enable by entering IgnoreFullScreenMode in the start menu
+             //
+             // Makes the program ignore your window size 
+        static public bool gIgnoreFullScreenMode = false;
+
+
+             // Enable by entering AlwaysGenerate in the start menu
+             //
+             // Always generates all patterns without asking for it over and over again in the final generation stage
+        static public bool gAlwaysGenerate = false;
+
+
+             // Enable by entering AutoSave in the start menu
+             //
+             // Automatically saves the generated patterns to the file
+             // (if you want to save them, but not to generate them again)
+        static public bool gAutoSave = true;
+
+
+        //-----------------------  Basic track of generated or not patterns  ----------------------------------//
+
+
+
+             // If already generated GALLERY PATTERS
+        static public bool gGeneratedGpatterns = false;
+
+             // If already generated patterns through the standart system
+        static public bool gGeneratedPatterns = false;
+
+
+
+        //------------------------  Color variables  ----------------------------------------------------------//
+        
+
+
+             // Color names (for GetColors function) to write them compactly
+        static public string[] ColorNames = {
+                "Красный",
+                "Зелёный",
+                "Синий",
+                "Жёлтый",
+                "Фиолетовый",
+                "Голубой",
+
+                "Тёмно-Красный",
+                "Тёмно-Зелёный",
+                "Тёмно-Синий",
+                "Тёмно-Жёлтый",
+                "Тёмно-Фиолетовый",
+                "Тёмно-Голубой",
+
+                "Белый",
+                "Серый",
+                "Тёмно-серый",
+                "Чёрный",
+        };
+
+             // Color codes for compact and easy parsing of the user input
+        static public string[] ColorKeySign = {
+                "красный",
+                "к",
+
+                "зеленый",
+                "з",
+
+                "синий",
+                "с",
+
+                "желтый",
+                "ж",
+
+                "фиолетовый",
+                "ф",
+
+                "голубой",
+                "г",
+
+                ////////////////
+
+                "темнокрасный",
+                "ткрасный",
+                "тк",
+
+                "темнозеленый",
+                "тзеленый",
+                "тз",
+
+                "темносиний",
+                "тсиний",
+                "тс",
+
+                "темножелтый",
+                "тжелтый",
+                "тж",
+
+                "темнофиолетовый",
+                "тфиолетовый",
+                "тф",
+
+                "темноголубой",
+                "тголубой",
+                "тг",
+
+                ///////////////
+                
+                "белый",
+                "бел",
+                "б",
+
+                "серый",
+                "сер",
+                "чб",
+
+                "темносерый",
+                "тсерый",
+                "тсер",
+
+                "черный",
+                "чер",
+                "ч"
+        };
+
+
+
+             // Storing all the possible console colors for an easy access through this array
+             // (instead of a large switch-case statement everywhere)
+        readonly static public ConsoleColor[] gAllColors = {
+                ConsoleColor.Red,
+                ConsoleColor.Green,
+                ConsoleColor.Blue,
+                ConsoleColor.Yellow,
+                ConsoleColor.Magenta,
+                ConsoleColor.Cyan,
+
+                ConsoleColor.DarkRed,
+                ConsoleColor.DarkGreen,
+                ConsoleColor.DarkBlue,
+                ConsoleColor.DarkYellow,
+                ConsoleColor.DarkMagenta,
+                ConsoleColor.DarkCyan,
+
+                ConsoleColor.White,
+                ConsoleColor.Gray,
+                ConsoleColor.DarkGray,
+                ConsoleColor.Black
+        };
+
+
+
+        //------------------  Stored color assets for a fast generation  --------------------------------------//
+
+        //  sc  -  stored colors
+        //  2, 4, 7, 8, 12 - amount of colors in the array
+
+
+        readonly static public ConsoleColor[] scBlackWhite2 = {
+                ConsoleColor.White,
+                ConsoleColor.Black
+        };
+
+        readonly static public ConsoleColor[] scWhiteBlack4 = {
+                ConsoleColor.White,
+                ConsoleColor.Gray,
+                ConsoleColor.DarkGray,
+                ConsoleColor.Black
+        };
+
+        readonly static public ConsoleColor[] scBlue4 = {
+                ConsoleColor.Cyan,
+                ConsoleColor.DarkCyan,
+                ConsoleColor.Blue,
+                ConsoleColor.DarkBlue,
+        };
+
+        readonly static public ConsoleColor[] scRedBlue4 = {
+                ConsoleColor.Red,
+                ConsoleColor.DarkRed,
+                ConsoleColor.DarkBlue,
+                ConsoleColor.Blue
+        };
+
+        readonly static public ConsoleColor[] scMagentaRed4 = {
+
+                ConsoleColor.Magenta,
+                ConsoleColor.DarkMagenta,
+                ConsoleColor.DarkRed,
+                ConsoleColor.Red
+        };
+
+        readonly static public ConsoleColor[] scBlueMagentaGreen7 = {
+                ConsoleColor.DarkCyan,
+                ConsoleColor.Blue,
+                ConsoleColor.Magenta,
+                ConsoleColor.Green,
+                ConsoleColor.DarkGreen,
+                ConsoleColor.DarkMagenta,
+                ConsoleColor.DarkBlue,
+
+        };
+
+        readonly static public ConsoleColor[] scRedBlueGreenMagenta8 = {
+                ConsoleColor.DarkRed,
+                ConsoleColor.Red,
+                ConsoleColor.DarkBlue,
+                ConsoleColor.Blue,
+                ConsoleColor.Green,
+                ConsoleColor.DarkGreen,
+                ConsoleColor.DarkMagenta,
+                ConsoleColor.Magenta
+
+        };
+
+        readonly static public ConsoleColor[] scRedBlue8 = {
+                ConsoleColor.DarkMagenta,
+                ConsoleColor.Magenta,
+                ConsoleColor.Red,
+                ConsoleColor.DarkRed,
+
+                ConsoleColor.DarkBlue,
+                ConsoleColor.Blue,
+                ConsoleColor.DarkCyan,
+                ConsoleColor.Cyan
+        };
+
+        readonly static public ConsoleColor[] scMix12 = {
+                ConsoleColor.Cyan,
+                ConsoleColor.DarkCyan,
+                ConsoleColor.Blue,
+                ConsoleColor.DarkBlue,
+
+                ConsoleColor.DarkMagenta,
+                ConsoleColor.Magenta,
+                ConsoleColor.DarkRed,
+                ConsoleColor.Red,
+
+                ConsoleColor.DarkYellow,
+                ConsoleColor.Yellow,
+                ConsoleColor.Green,
+                ConsoleColor.DarkGreen,
+        };
+
+        readonly static public ConsoleColor[][] StoredColors = {
+            scBlackWhite2,
+            scWhiteBlack4,
+            scBlue4,
+            scRedBlue4,
+            scMagentaRed4,
+            scBlueMagentaGreen7,
+            scRedBlueGreenMagenta8,
+            scRedBlue8,
+            scMix12,
+        };
+    }
+}
