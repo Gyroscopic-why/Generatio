@@ -60,31 +60,31 @@ namespace Generatio
                 switch (patternType)
                 {
                     case 1:
-                        Pattern1(width, height, ConvertColorsToConsole(colors), true);
+                        Pattern1(width, height, ConvertColorsToConsole(colors), true, false, gDevMode);
                         break;
                     case 2:
-                        Pattern2(width, height, ConvertColorsToConsole(colors), true);
+                        Pattern2(width, height, ConvertColorsToConsole(colors), true, false, gDevMode);
                         break;
                     case 3:
-                        Pattern3(width, height, ConvertColorsToConsole(colors), true);
+                        Pattern3(width, height, ConvertColorsToConsole(colors), true, false, gDevMode);
                         break;
                     case 4:
-                        Pattern4(width, height, ConvertColorsToConsole(colors), true);
+                        Pattern4(width, height, ConvertColorsToConsole(colors), true, false, gDevMode);
                         break;
                     case 5:
-                        Pattern5(width, height, ConvertColorsToConsole(colors), true);
+                        Pattern5(width, height, ConvertColorsToConsole(colors), true, false, gDevMode);
                         break;
                     case 6:
-                        Pattern6(width, height, ConvertColorsToConsole(colors), true);
+                        Pattern6(width, height, ConvertColorsToConsole(colors), true, false, gDevMode);
                         break;
                     case 7:
-                        Pattern7(width, height, ConvertColorsToConsole(colors), true);
+                        Pattern7(width, height, ConvertColorsToConsole(colors), true, false, gDevMode);
                         break;
                     case 8:
-                        Pattern8(width, height, ConvertColorsToConsole(colors), true);
+                        Pattern8(width, height, ConvertColorsToConsole(colors), true, false, gDevMode);
                         break;
                     case 9:
-                        Pattern9(width, height, ConvertColorsToConsole(colors), true);
+                        Pattern9(width, height, ConvertColorsToConsole(colors), true, false, gDevMode);
                         break;
                     default:
                         break;
@@ -316,18 +316,20 @@ namespace Generatio
         {
             //  Read the stock data for the gallery
             List<string> _parsedData = ReadData(gGalleryPath, "Stock_pack1.db", true);
-
+            
             //  Parse the data into more easily usable
             _parsedData = ParseData(_parsedData, true, true, "*", "", "*", true);
 
             //  Convert the data into patterns
             GalleryBuffer = ConvertToGalleryPattern(_parsedData, true);
 
-            //  Update the gallery
-            if (GalleryBuffer.Count > GalleryStock.Count)
+            if (GalleryBuffer != null)
             {
-                //Gallery.Clear();
-                GalleryStock = GalleryBuffer;
+                //  Update the gallery
+                if (GalleryBuffer.Count > GalleryStock.Count)
+                {
+                    GalleryStock = GalleryBuffer;
+                }
             }
         }
 

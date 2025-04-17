@@ -12,7 +12,8 @@ namespace Generatio
         {
             int _curColor, _colAmount = _colors.Length, _edgeMargin = WindowWidth / 2 - X;
 
-            if (_savePattern || _showInfo) EncodePattern(1, X, Y, _colAmount, _colors, _savePattern, gGalleryPath, _showInfo);
+            if (_savePattern || _showInfo) 
+                EncodePattern(1, X, Y, _colAmount, _colors, "", _savePattern, "Test pack1.db", gGalleryPath, _showInfo);
 
             for (int i = 0; i < (Y + 1) / 2; i++)
             {
@@ -57,11 +58,12 @@ namespace Generatio
             BackgroundColor = ConsoleColor.Black;
         }
 
-        static public void Pattern2(int X, int Y, ConsoleColor[] _colors, bool _useMargin)
+        static public void Pattern2(int X, int Y, ConsoleColor[] _colors, bool _useMargin, bool _savePattern, bool _showInfo)
         {
             int _curColor, _colAmount = _colors.Length, _edgeMargin = WindowWidth / 2 - X;
 
-            if (gDevMode || gAutoSave) EncodePattern(X, Y, _colAmount, _colors, 2, gDevMode);
+            if (_savePattern || _showInfo) 
+                EncodePattern(2, X, Y, _colAmount, _colors, "", _savePattern, "Test pack1.db", gGalleryPath, _showInfo);
 
             for (int i = 0; i < Y; i++)
             {
@@ -78,11 +80,12 @@ namespace Generatio
             }
         }
 
-        static public void Pattern3(int X, int Y, ConsoleColor[] _colors, bool _useMargin)
+        static public void Pattern3(int X, int Y, ConsoleColor[] _colors, bool _useMargin, bool _savePattern, bool _showInfo)
         {
             int _curColor, _colAmount = _colors.Length, _edgeMargin = WindowWidth / 2 - X;
 
-            if (gDevMode || gAutoSave) EncodePattern(X, Y, _colAmount, _colors, 3, gDevMode);
+            if (_savePattern || _showInfo) 
+                EncodePattern(3, X, Y, _colAmount, _colors, "", _savePattern, "Test pack1.db", gGalleryPath, _showInfo);
 
             for (int i = 0; i < Y / 2; i++)
             {
@@ -128,7 +131,7 @@ namespace Generatio
                     BackgroundColor = _colors[_curColor];
                     Write("  ");
                 }
-                for (int j = Math.Max(X + i - Y, X / 2 - 1) + 1; j < X; j++)
+                for (int j = Math.Max(X + i - Y, (X + 1) / 2 - 1) + 1; j < X; j++)
                 {
                     _curColor = (X - j - 1) % (_colAmount * 2 - 2);
                     if (_curColor > _colAmount - 1) _curColor = _colAmount - _curColor % _colAmount - 2;
@@ -141,11 +144,12 @@ namespace Generatio
             BackgroundColor = ConsoleColor.Black;
         }
 
-        static public void Pattern4(int X, int Y, ConsoleColor[] _colors, bool _useMargin)
+        static public void Pattern4(int X, int Y, ConsoleColor[] _colors, bool _useMargin, bool _savePattern, bool _showInfo)
         {
             int _curColor, _colAmount = _colors.Length, _edgeMargin = WindowWidth / 2 - X;
 
-            if (gDevMode || gAutoSave) EncodePattern(X, Y, _colAmount, _colors, 4, gDevMode);
+            if (_savePattern || _showInfo) 
+                EncodePattern(4, X, Y, _colAmount, _colors, "", _savePattern, "Test pack1.db", gGalleryPath, _showInfo);
 
             for (int i = 0; i < Y; i++)
             {
@@ -163,11 +167,12 @@ namespace Generatio
             BackgroundColor = ConsoleColor.Black;
         }
 
-        static public void Pattern5(int X, int Y, ConsoleColor[] _colors, bool _useMargin)
+        static public void Pattern5(int X, int Y, ConsoleColor[] _colors, bool _useMargin, bool _savePattern, bool _showInfo)
         {
             int _curColor, _colAmount = _colors.Length, _edgeMargin = WindowWidth / 2 - X;
 
-            if (gDevMode || gAutoSave) EncodePattern(X, Y, _colAmount, _colors, 5, gDevMode);
+            if (_savePattern || _showInfo) 
+                EncodePattern(5, X, Y, _colAmount, _colors, "", _savePattern, "Test pack1.db", gGalleryPath, _showInfo);
 
             for (int i = 0; i < Y; i++)
             {
@@ -185,11 +190,12 @@ namespace Generatio
             BackgroundColor = ConsoleColor.Black;
         }
 
-        static public void Pattern6(int X, int Y, ConsoleColor[] _colors, bool _useMargin)
+        static public void Pattern6(int X, int Y, ConsoleColor[] _colors, bool _useMargin, bool _savePattern, bool _showInfo)
         {
             int _curColor, _colAmount = _colors.Length, _edgeMargin = WindowWidth / 2 - X;
 
-            if (gDevMode || gAutoSave) EncodePattern(X, Y, _colAmount, _colors, 6, gDevMode);
+            if (_savePattern || _showInfo) 
+                EncodePattern(6, X, Y, _colAmount, _colors, "", _savePattern, "Test pack1.db", gGalleryPath, _showInfo);
 
             for (int i = 0; i < (Y + 1) / 2; i++)
             {
@@ -234,11 +240,12 @@ namespace Generatio
             BackgroundColor = ConsoleColor.Black;
         }
 
-        static public void Pattern7(int X, int Y, ConsoleColor[] _colors, bool _useMargin)
+        static public void Pattern7(int X, int Y, ConsoleColor[] _colors, bool _useMargin, bool _savePattern, bool _showInfo)
         {
             int _curColor, _colAmount = _colors.Length, _edgeMargin = WindowWidth / 2 - X;
 
-            if (gDevMode || gAutoSave) EncodePattern(X, Y, _colAmount, _colors, 7, gDevMode);
+            if (_savePattern || _showInfo) 
+                EncodePattern(7, X, Y, _colAmount, _colors, "", _savePattern, "Test pack1.db", gGalleryPath, _showInfo);
 
             for (int i = 0; i < Y / 2; i++)
             {
@@ -301,11 +308,12 @@ namespace Generatio
             BackgroundColor = ConsoleColor.Black;
         }
 
-        static public void Pattern8(int X, int Y, ConsoleColor[] _colors, bool _useMargin)
+        static public void Pattern8(int X, int Y, ConsoleColor[] _colors, bool _useMargin, bool _savePattern, bool _showInfo)
         {
             int _curColor, _colAmount = _colors.Length, _edgeMargin = WindowWidth / 2 - X;
 
-            if (gDevMode || gAutoSave) EncodePattern(X, Y, _colAmount, _colors, 8, gDevMode);
+            if (_savePattern || _showInfo)
+                EncodePattern(8, X, Y, _colAmount, _colors, "", _savePattern, "Test pack1.db", gGalleryPath, _showInfo);
 
             for (int i = 0; i < (Y + 1) / 2; i++)
             {
@@ -337,11 +345,12 @@ namespace Generatio
             BackgroundColor = ConsoleColor.Black;
         }
 
-        static public void Pattern9(int X, int Y, ConsoleColor[] _colors, bool _useMargin)
+        static public void Pattern9(int X, int Y, ConsoleColor[] _colors, bool _useMargin, bool _savePattern, bool _showInfo)
         {
             int _curColor, _colAmount = _colors.Length, _edgeMargin = WindowWidth / 2 - X;
 
-            if (gDevMode || gAutoSave) EncodePattern(X, Y, _colAmount, _colors, 9, gDevMode);
+            if (_savePattern || _showInfo)
+                EncodePattern(9, X, Y, _colAmount, _colors, "", _savePattern, "Test pack1.db", gGalleryPath, _showInfo);
 
             for (int i = 0; i < Y; i++)
             {

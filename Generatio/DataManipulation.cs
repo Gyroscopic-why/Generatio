@@ -31,8 +31,9 @@ namespace Generatio
                     //  Enter the \Users\user_name_here\Documents folder
                     _path += "\\Documents";
 
-                    //  Create a new folder for the custom data
-                    Directory.CreateDirectory(_path + "\\Gyroscopic\\Generatio\\TestData");
+                    //  Create folders for the custom data
+                    Directory.CreateDirectory(_path + "\\Gyroscopic\\Generatio\\TestData\\Gallery");
+                    Directory.CreateDirectory(_path + "\\Gyroscopic\\Generatio\\TestData\\Settings");
 
                     //  Change the path to the newly created folder
                     _path += "\\Gyroscopic\\Generatio\\TestData";

@@ -91,11 +91,6 @@ namespace Generatio
             //  Get a name for an unnamed pattern
             if (_patternName == "")
             {
-                //  Add a special character for the ParseData function
-                //  So it doesn't remove spaces from the name string
-                _patternName = "*";
-
-
                 //  Get current date and time
                 //
                 //  Save the date and time to the pattern name
@@ -103,15 +98,12 @@ namespace Generatio
 
 
                 //  Save the computer name, and the user name (currently logged in) to the pattern name
-                _patternName += " " + Environment.MachineName + "" + Environment.UserName;
+                _patternName += " " + Environment.MachineName + " " + Environment.UserName;
 
 
                 //  Replace banned character with a similar non-banned version
                 //  ( the , symbol is used in the parsing of the file data )
                 _patternName = _patternName.Replace(",", ".");
-
-
-                Write(_patternName);
             }
 
 
@@ -122,12 +114,12 @@ namespace Generatio
             //  Convert the colors to string codes
             for (int i = 0; i < _colAmount - 1; i++)
             {
-                _patternCode += _colorBytes + "-";
-                _formatedCode2 += _colorBytes + ", ";
+                _patternCode += _colorBytes[i] + "-";
+                _formatedCode2 += _colorBytes[i] + ", ";
             }
 
             //  Add the last color without a dash
-            _patternCode += _colorBytes[_colAmount - 1];
+            _patternCode   += _colorBytes[_colAmount - 1];
             _formatedCode2 += _colorBytes[_colAmount - 1];
 
 
@@ -149,9 +141,21 @@ namespace Generatio
 
             List<string> _patternData = new List<string>
             {
-                _patternName,
+                //  Add a special character for the ParseData function
+                //  So it doesn't remove spaces from the name string
+                "*" + _patternName,
+
+
+                //  Add base parameters
                 _formatedCode1,
+
+
+                //  Add colors
                 _formatedCode2,
+
+
+                //  Add new line for better visual separation
+                //  (will be skipped by the parser anyway)
                 "\n"
             };
 
@@ -611,14 +615,14 @@ namespace Generatio
             //  Pattern are stored in the dictionary for easy access
             var Patterns = new Dictionary<byte, Action>()  {
                 { 1, () => Pattern1(X, Y, Colors, true, gAutoSave, gDevMode) },
-                { 2, () => Pattern2(X, Y, Colors, true) },
-                { 3, () => Pattern3(X, Y, Colors, true) },
-                { 4, () => Pattern4(X, Y, Colors, true) },
-                { 5, () => Pattern5(X, Y, Colors, true) },
-                { 6, () => Pattern6(X, Y, Colors, true) },
-                { 7, () => Pattern7(X, Y, Colors, true) },
-                { 8, () => Pattern8(X, Y, Colors, true) },
-                { 9, () => Pattern9(X, Y, Colors, true) }
+                { 2, () => Pattern2(X, Y, Colors, true, gAutoSave, gDevMode) },
+                { 3, () => Pattern3(X, Y, Colors, true, gAutoSave, gDevMode) },
+                { 4, () => Pattern4(X, Y, Colors, true, gAutoSave, gDevMode) },
+                { 5, () => Pattern5(X, Y, Colors, true, gAutoSave, gDevMode) },
+                { 6, () => Pattern6(X, Y, Colors, true, gAutoSave, gDevMode) },
+                { 7, () => Pattern7(X, Y, Colors, true, gAutoSave, gDevMode) },
+                { 8, () => Pattern8(X, Y, Colors, true, gAutoSave, gDevMode) },
+                { 9, () => Pattern9(X, Y, Colors, true, gAutoSave, gDevMode) }
             };
 
             byte _randomId = 255;
