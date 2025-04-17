@@ -7,6 +7,7 @@ using static Generatio.PatternSource;
 using static Generatio.GlobalSettings;
 using static Generatio.CustomFunctions;
 using static Generatio.DataManipulation;
+using System.Linq;
 
 
 namespace Generatio
@@ -74,10 +75,10 @@ namespace Generatio
 
             Write("\n\n\t\tНадеюсь вам поможет моя программа, удачи!\n\n\n\n");
         }
-             //  Write the info about the program
+        //  Write the info about the program
 
 
-        static public void EncodePattern(short _type, int X, int Y, int _colAmount, 
+        static public void EncodePattern(short _type, int X, int Y, int _colAmount,
             ConsoleColor[] _colors, string _patternName = "",
             bool _savePattern = false, string _fileName = "", string _path = "",
             bool _showInfo = false)
@@ -85,7 +86,7 @@ namespace Generatio
             //  Convert parameters into short string codes
             string _patternCode = _type + "/" + X + "/" + Y + "/" + _colAmount + "/";
             string _formatedCode1 = _type + ", " + X + ", " + Y + ", " + _colAmount;
-            string _formatedCode2 = "";
+            string _formatedCode2;
 
 
             //  Get a name for an unnamed pattern
@@ -94,7 +95,7 @@ namespace Generatio
                 //  Get current date and time
                 //
                 //  Save the date and time to the pattern name
-                _patternName += $"{DateTime.Now:dd-MM-yyyy HH:mm:ss}";
+                _patternName += $"{DateTime.Now:dd.MM.yyyy HH:mm}";
 
 
                 //  Save the computer name, and the user name (currently logged in) to the pattern name
@@ -112,56 +113,53 @@ namespace Generatio
 
 
             //  Convert the colors to string codes
-            for (int i = 0; i < _colAmount - 1; i++)
-            {
-                _patternCode += _colorBytes[i] + "-";
-                _formatedCode2 += _colorBytes[i] + ", ";
-            }
-
-            //  Add the last color without a dash
-            _patternCode   += _colorBytes[_colAmount - 1];
-            _formatedCode2 += _colorBytes[_colAmount - 1];
+            _patternCode += string.Join("-", _colorBytes);
+            _formatedCode2 = string.Join(", ", _colorBytes);
 
 
             //  If dev mode is on - show the pattern info
             if (_showInfo)
             {
-                Write("\t\t[i]  - Dev info - encoded pattern for storing:");
-                Write("\n\t\t       " + _patternName);
-                Write("\n\t\t       " + _formatedCode1);
-                Write("\n\t\t       " + _formatedCode2 + "\n");
+                Write("\t\t[i]  - Закодированная информация об узоре:\n");
+                Write("\n\t\t          " + _patternName);
+                Write("\n\t\t          " + _formatedCode1);
+                Write("\n\t\t          " + _formatedCode2 + "\n");
 
-                Write("\n\t\t       PatternName");
-                Write("\n\t\t       Type, X, Y, AmountOfColors");
-                Write("\n\t\t       Colors (in bytes)");
+                ForegroundColor = ConsoleColor.DarkGray;
+                Write("\n\t\t          > [1] <  -  Название узора");
+                Write("\n\t\t          > [2] <  -  Тип узора, Размеры (Ширина, Высота), Кол-во цветов");
+                Write("\n\t\t          > [3] <  -  Используемые цвета (в байтах)\n");
+                ForegroundColor = ConsoleColor.White;
 
-                Write("\n\t\t       Shortcut: " + _patternCode + "\n\n");
+                Write("\n\t\t       Быстрая команда: " + _patternCode + "\n\n");
             }
 
-
-            List<string> _patternData = new List<string>
-            {
-                //  Add a special character for the ParseData function
-                //  So it doesn't remove spaces from the name string
-                "*" + _patternName,
-
-
-                //  Add base parameters
-                _formatedCode1,
+            if (_savePattern)
+            { 
+                List<string> _patternData = new List<string>
+                {
+                    //  Add a special character for the ParseData function
+                    //  So it doesn't remove spaces from the name string
+                    "*" + _patternName,
 
 
-                //  Add colors
-                _formatedCode2,
+                    //  Add base parameters
+                    "!" + _formatedCode1,
 
 
-                //  Add new line for better visual separation
-                //  (will be skipped by the parser anyway)
-                "\n"
-            };
+                    //  Add colors
+                    _formatedCode2,
 
-            if (_path == "") _path = gGalleryPath;
-            SaveData(_path, _fileName, _patternData, true, _showInfo);
-            Write("\n\n");
+
+                    //  Add new line for better visual separation
+                    //  (will be skipped by the parser anyway)
+                    "\n"
+                };
+
+                if (_path == "") _path = gGalleryPath;
+                SaveData(_path, _fileName, _patternData, true, _showInfo);
+                Write("\n\n");
+            }
         }
              //  Writing dev info and/or saving the pattern
              //  Write info for developers (usefull for changing the gallery parameters)
