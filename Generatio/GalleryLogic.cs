@@ -315,13 +315,13 @@ namespace Generatio
         static public void UpdateStockGallery()
         {
             //  Read the stock data for the gallery
-            List<string> _parsedData = ReadData(gGalleryPath, "Stock_pack1.db", true);
+            List<string> _parsedData = ReadData(gGalleryPath, "Stock_pack1.db", gDevMode);
             
             //  Parse the data into more easily usable
-            _parsedData = ParseData(_parsedData, true, true, "*", "", "*", true);
+            _parsedData = ParseData(_parsedData, true, true, "*", "", "*", gDevMode);
 
             //  Convert the data into patterns
-            GalleryBuffer = ConvertToGalleryPattern(_parsedData, true);
+            GalleryBuffer = ConvertToGalleryPattern(_parsedData, gDevMode);
 
             if (GalleryBuffer != null)
             {

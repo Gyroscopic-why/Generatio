@@ -13,12 +13,12 @@ namespace Generatio
 
             //  Get the path to the \users\user_name_here\documents folder
             //  And then create/navigate to: Gyroscopic\Generatio\
-        static public string gGalleryPath = GetPath() + "\\Gallery";
+        static public string gGalleryPath = GetPath(false, "\\Gyroscopic\\Generatio\\TestData\\Gallery", false);
 
 
             //  Get the path to the \users\user_name_here\documents folder
             //  And then create/navigate to: Gyroscopic\Generatio\
-        static public string gSettingsPath = GetPath() + "\\Settings";
+        static public string gSettingsPath = GetPath(false, "\\Gyroscopic\\Generatio\\TestData\\Settings", false);
 
         //------------------------- Stored settings variables -------------------------------------------------//
 

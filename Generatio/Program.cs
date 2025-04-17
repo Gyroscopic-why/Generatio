@@ -22,7 +22,7 @@ namespace Generatio
             int colorsAmount;
             ConsoleColor[] colors;
 
-            Title = "Generatio 1.6 beta";
+            Title = "Generatio 1.6 Gamma";
             Write("\n\n\n\n\n\n");
             if (!gIgnoreFullScreenMode) ForceFullScreen();
             Clear();
@@ -32,7 +32,7 @@ namespace Generatio
 
             task = GetUserTask();     // User is navigating menu
 
-            while (task != 6) {
+            while (task != 0) {
                 switch (task) {
                     case 1:           // Writing program info         -----  OPTION 1
                         WriteInfo();
