@@ -24,9 +24,9 @@ namespace Generatio
 
 
 
-        // Enable by entering ActivateNoLimitMode in the start menu
-        //
-        // Makes the size function ignore the upper limit (Max = from MaxWindowSize to int.MaxValue)
+            // Enable by entering ActivateNoLimitMode in the start menu
+            //
+            // Makes the size function ignore the upper limit (Max = from MaxWindowSize to int.MaxValue)
         static public bool gNoLimitMode = false;
 
 
