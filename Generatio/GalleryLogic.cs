@@ -314,7 +314,7 @@ namespace Generatio
         static public void UpdateStockGallery()
         {
             //  Read the stock data for the gallery
-            List<string> _parsedData = ReadData(gGalleryPath, "Stock_pack1.db", gShowInfo, false, "\t\t");
+            List<string> _parsedData = ReadData(gGalleryPath, "stock1.patterns", gShowInfo, false, "\t\t");
             
             //  Parse the data into more easily usable
             _parsedData = ParseData(_parsedData, true, true, "*", "", "*", gShowInfo, false, "\t\t");
@@ -496,8 +496,24 @@ namespace Generatio
                     ForegroundColor = ConsoleColor.White;
 
                     Write("\n\n\n\t\t\t\tДоступный функционал:");
-                    Write("\n\t\t\t[" + Math.Min(1, _stockAmount) + "-" + _stockAmount + "]\t- Посмотреть узор/узоры");
-                    Write("\n\t\t\t[" + Math.Min(_stockAmount + 1, _gallerySize + 1) + "-" + (_gallerySize + 1) + "]\t- Посмотреть узор/узоры");
+                }
+                else
+                {
+                    Write("\n\n\t\t[!]  - На данный момент галерея пуста   :(\n");
+                    Write("\n\t\t       Не забывайте сохранять свои узоры - чтобы они появлялись здесь");
+                    Write("\n\t\t[i]  - Совет: проверьте правильность указанного пути к сохранённым узорам\n\n");
+                }
+                if (_stockAmount > 0)
+                {
+                    Write("\n\t\t\t[");
+                    Write(1 + "-" + _stockAmount);
+                    Write("]\t- Стоковые узоры");
+                }
+                if (_userAmount > 0)
+                {
+                    Write("\n\t\t\t[");
+                    Write(_stockAmount + 1 + "-" + _gallerySize);
+                    Write("]\t- Пользовательские узоры");
                 }
                 Write("\n\t\t\t[0]\t- Выход из галереи\n");
             }
@@ -593,7 +609,8 @@ namespace Generatio
                 for (int i = 0; i < _parsedId.Count; i++)
                 {
                     Write("\n\n");
-                    GalleryStock[_parsedId[i]].Generate();
+                    if (_parsedId[i] < _stockAmount) GalleryStock[_parsedId[i]].Generate();
+                    else GalleryUser[_parsedId[i] - _stockAmount].Generate();
                 }
                 _parsedId.Clear();
             }

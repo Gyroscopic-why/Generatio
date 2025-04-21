@@ -18,7 +18,7 @@ namespace Generatio
         static void Main()
         {
             OutputEncoding = System.Text.Encoding.Unicode;
-            byte task;
+            string task;
             byte[] bestPatterns;
             int colorsAmount;
             ConsoleColor[] colors;
@@ -30,7 +30,7 @@ namespace Generatio
             ResetSettings();               //  Reset the settings to default values
             //  LoadSettings();            //  Load the settings from the file
 
-            Title = "Generatio 1.7";
+            Title = "Generatio 1.8";
             Write("\n\n\n\n\n\n");
             if (!gIgnoreFullScreen) ForceFullScreen();
             Clear();
@@ -40,13 +40,13 @@ namespace Generatio
 
             task = GetUserTask();     // User is navigating menu
 
-            while (task != 0) {
+            while (task != "0") {
                 switch (task) {
-                    case 1:           // Writing program info         -----  OPTION 1
+                    case "1":           // Writing program info         -----  OPTION 1
                         WriteInfo();
                         break;
 
-                    case 2:           // Generating patterns          -----  OPTION 2
+                    case "2":           // Generating patterns          -----  OPTION 2
 
                         if (!gGeneratedPatterns) Clear();  // Clear console if never generated any patterns
                         gGeneratedPatterns = true;         // 
@@ -85,22 +85,22 @@ namespace Generatio
                         break;
 
 
-                    case 3:     // Pattern gallery                    -----  OPTION 3
+                    case "3":     // Pattern gallery                    -----  OPTION 3
                         NavigateGallery();  // Navigate the gallery of stored patterns
                         break;
 
 
-                    case 4:     // Update the gallery                 -----  OPTION 4
+                    case "4":     // Update the gallery                 -----  OPTION 4
                         UpdateStockGallery();  // Update the stock patterns save
                         UpdateUserGallery();   // Update the user  patterns save
                         break;
 
 
-                    case 5:     // Change the program settings        -----  OPTION 6
+                    case "5":     // Change the program settings        -----  OPTION 6
                         ChangeSettings();      // Update the program settings
                         break;
 
-                    case 6:     // Generate a pattern by a shortcut   -----  OPTION 5
+                    case "6":     // Generate a pattern by a shortcut   -----  OPTION 5
                                 //
                                 // Absolutely temporary because I want to parse the shortcut straight from the menu
                                 // That way it will save even more time

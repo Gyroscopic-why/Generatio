@@ -616,21 +616,22 @@ namespace Generatio
         {
             //  Pattern are stored in the dictionary for easy access
             var Patterns = new Dictionary<byte, Action>()  {
-                { 1, () => Pattern1(X, Y, Colors, true, gAutoSave, gShowInfo) },
-                { 2, () => Pattern2(X, Y, Colors, true, gAutoSave, gShowInfo) },
-                { 3, () => Pattern3(X, Y, Colors, true, gAutoSave, gShowInfo) },
-                { 4, () => Pattern4(X, Y, Colors, true, gAutoSave, gShowInfo) },
-                { 5, () => Pattern5(X, Y, Colors, true, gAutoSave, gShowInfo) },
-                { 6, () => Pattern6(X, Y, Colors, true, gAutoSave, gShowInfo) },
-                { 7, () => Pattern7(X, Y, Colors, true, gAutoSave, gShowInfo) },
-                { 8, () => Pattern8(X, Y, Colors, true, gAutoSave, gShowInfo) },
-                { 9, () => Pattern9(X, Y, Colors, true, gAutoSave, gShowInfo) }
+                { 1,  () => Pattern1 (X, Y, Colors, true, gAutoSave, gShowInfo) },
+                { 2,  () => Pattern2 (X, Y, Colors, true, gAutoSave, gShowInfo) },
+                { 3,  () => Pattern3 (X, Y, Colors, true, gAutoSave, gShowInfo) },
+                { 4,  () => Pattern4 (X, Y, Colors, true, gAutoSave, gShowInfo) },
+                { 5,  () => Pattern5 (X, Y, Colors, true, gAutoSave, gShowInfo) },
+                { 6,  () => Pattern6 (X, Y, Colors, true, gAutoSave, gShowInfo) },
+                { 7,  () => Pattern7 (X, Y, Colors, true, gAutoSave, gShowInfo) },
+                { 8,  () => Pattern8 (X, Y, Colors, true, gAutoSave, gShowInfo) },
+                { 9,  () => Pattern9 (X, Y, Colors, true, gAutoSave, gShowInfo) },
+                { 10, () => Pattern10(X, Y, Colors, true, gAutoSave, gShowInfo) },
             };
 
             byte _randomId = 255;
             byte[] _usedIds = new byte[BestPatterns.Length];
 
-            for (int i = 0; i < BestPatterns.Length; i++) _usedIds[i] = 255;
+            for (int i = 0; i < _usedIds.Length; i++) _usedIds[i] = 255;
             if (!gIgnoreFullScreen) ForceFullScreen(2 * X, Y);
             Write("\n\n\n\t\t\t\t\tВот лучшие сгенерированые узоры:\n\n");
 
@@ -639,20 +640,28 @@ namespace Generatio
                 while (i % 2 == 0)
                 {
                     i++;
-                    _randomId = (byte)gRandom.Next(0, BestPatterns.Length);
-                    for (byte j = 0; j < BestPatterns.Length; j++) if (_randomId == _usedIds[j]) i--;
+                    _randomId = BestPatterns[gRandom.Next(0, BestPatterns.Length)];
+                    for (byte j = 0; j < _usedIds.Length; j++) if (_randomId == _usedIds[j]) i--;
                 }
                 _usedIds[i / 2] = _randomId;
                 Write("\n\n");
-                Patterns[BestPatterns[_randomId]](); // Printing the good ones
+                Patterns[_randomId](); // Printing the good ones
             }
+
+            Write("\n\n\t\tUsed id: ");
+            for(int i = 0; i < _usedIds.Length; i++)
+            {
+                Write(_usedIds[i] + " ");
+            }
+
+
             if (gAlwaysGenerate || Continue())
             {   // Asking if the user wants to generate more patters
 
                 if (!gIgnoreFullScreen) ForceFullScreen(2 * X, Y);
-                for (byte i = 1; i < Patterns.Count; i++)
+                for (byte i = 1; i < Patterns.Count + 1; i++)
                 {
-                    for (byte j = 0; j < BestPatterns.Length; j++)
+                    for (byte j = 0; j < _usedIds.Length; j++)
                     {
                         if (i == _usedIds[j])
                         {

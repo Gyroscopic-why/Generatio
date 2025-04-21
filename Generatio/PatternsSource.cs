@@ -12,6 +12,12 @@ namespace Generatio
         {
             int _curColor, _colAmount = _colors.Length, _edgeMargin = WindowWidth / 2 - X;
 
+            //  Shrink the pattern if it is too big
+            //  (optional)
+            if (gShrinkPatterns && X > WindowWidth / 2) X = WindowWidth / 2;
+            if (gShrinkPatterns && Y > WindowHeight) Y = WindowHeight;
+
+
             if (_savePattern || _showInfo) 
                 EncodePattern(1, X, Y, _colAmount, _colors, "", _savePattern, "", gGalleryPath, _showInfo);
 
@@ -62,6 +68,12 @@ namespace Generatio
         {
             int _curColor, _colAmount = _colors.Length, _edgeMargin = WindowWidth / 2 - X;
 
+            //  Shrink the pattern if it is too big
+            //  (optional)
+            if (gShrinkPatterns && X > WindowWidth / 2) X = WindowWidth / 2;
+            if (gShrinkPatterns && Y > WindowHeight) Y = WindowHeight;
+
+
             if (_savePattern || _showInfo) 
                 EncodePattern(2, X, Y, _colAmount, _colors, "", _savePattern, "", gGalleryPath, _showInfo);
 
@@ -83,6 +95,12 @@ namespace Generatio
         static public void Pattern3(int X, int Y, ConsoleColor[] _colors, bool _useMargin, bool _savePattern, bool _showInfo)
         {
             int _curColor, _colAmount = _colors.Length, _edgeMargin = WindowWidth / 2 - X;
+
+            //  Shrink the pattern if it is too big
+            //  (optional)
+            if (gShrinkPatterns && X > WindowWidth / 2) X = WindowWidth / 2;
+            if (gShrinkPatterns && Y > WindowHeight) Y = WindowHeight;
+
 
             if (_savePattern || _showInfo) 
                 EncodePattern(3, X, Y, _colAmount, _colors, "", _savePattern, "", gGalleryPath, _showInfo);
@@ -148,6 +166,12 @@ namespace Generatio
         {
             int _curColor, _colAmount = _colors.Length, _edgeMargin = WindowWidth / 2 - X;
 
+            //  Shrink the pattern if it is too big
+            //  (optional)
+            if (gShrinkPatterns && X > WindowWidth / 2) X = WindowWidth / 2;
+            if (gShrinkPatterns && Y > WindowHeight) Y = WindowHeight;
+
+
             if (_savePattern || _showInfo) 
                 EncodePattern(4, X, Y, _colAmount, _colors, "", _savePattern, "", gGalleryPath, _showInfo);
 
@@ -171,6 +195,12 @@ namespace Generatio
         {
             int _curColor, _colAmount = _colors.Length, _edgeMargin = WindowWidth / 2 - X;
 
+            //  Shrink the pattern if it is too big
+            //  (optional)
+            if (gShrinkPatterns && X > WindowWidth / 2) X = WindowWidth / 2;
+            if (gShrinkPatterns && Y > WindowHeight) Y = WindowHeight;
+
+
             if (_savePattern || _showInfo) 
                 EncodePattern(5, X, Y, _colAmount, _colors, "", _savePattern, "", gGalleryPath, _showInfo);
 
@@ -193,6 +223,12 @@ namespace Generatio
         static public void Pattern6(int X, int Y, ConsoleColor[] _colors, bool _useMargin, bool _savePattern, bool _showInfo)
         {
             int _curColor, _colAmount = _colors.Length, _edgeMargin = WindowWidth / 2 - X;
+
+            //  Shrink the pattern if it is too big
+            //  (optional)
+            if (gShrinkPatterns && X > WindowWidth / 2) X = WindowWidth / 2;
+            if (gShrinkPatterns && Y > WindowHeight) Y = WindowHeight;
+
 
             if (_savePattern || _showInfo) 
                 EncodePattern(6, X, Y, _colAmount, _colors, "", _savePattern, "", gGalleryPath, _showInfo);
@@ -243,6 +279,12 @@ namespace Generatio
         static public void Pattern7(int X, int Y, ConsoleColor[] _colors, bool _useMargin, bool _savePattern, bool _showInfo)
         {
             int _curColor, _colAmount = _colors.Length, _edgeMargin = WindowWidth / 2 - X;
+
+            //  Shrink the pattern if it is too big
+            //  (optional)
+            if (gShrinkPatterns && X > WindowWidth / 2) X = WindowWidth / 2;
+            if (gShrinkPatterns && Y > WindowHeight) Y = WindowHeight;
+
 
             if (_savePattern || _showInfo) 
                 EncodePattern(7, X, Y, _colAmount, _colors, "", _savePattern, "", gGalleryPath, _showInfo);
@@ -312,6 +354,12 @@ namespace Generatio
         {
             int _curColor, _colAmount = _colors.Length, _edgeMargin = WindowWidth / 2 - X;
 
+            //  Shrink the pattern if it is too big
+            //  (optional)
+            if (gShrinkPatterns && X > WindowWidth / 2) X = WindowWidth / 2;
+            if (gShrinkPatterns && Y > WindowHeight) Y = WindowHeight;
+
+
             if (_savePattern || _showInfo)
                 EncodePattern(8, X, Y, _colAmount, _colors, "", _savePattern, "", gGalleryPath, _showInfo);
 
@@ -349,6 +397,12 @@ namespace Generatio
         {
             int _curColor, _colAmount = _colors.Length, _edgeMargin = WindowWidth / 2 - X;
 
+            //  Shrink the pattern if it is too big
+            //  (optional)
+            if (gShrinkPatterns && X > WindowWidth / 2) X = WindowWidth / 2;
+            if (gShrinkPatterns && Y > WindowHeight) Y = WindowHeight;
+
+
             if (_savePattern || _showInfo)
                 EncodePattern(9, X, Y, _colAmount, _colors, "", _savePattern, "", gGalleryPath, _showInfo);
 
@@ -358,6 +412,36 @@ namespace Generatio
                 for (int j = 2 * i; j > 2 * i - X; j--)
                 {
                     _curColor = j % (_colAmount * 2 - 2);
+                    if (_curColor < 0) _curColor = Math.Abs(_curColor) % (_colAmount * 2 - 2);
+                    if (_curColor >= _colAmount) _curColor = _colAmount - _curColor % _colAmount - 2;
+                    BackgroundColor = _colors[_curColor];
+                    Write("  ");
+                }
+                BackgroundColor = ConsoleColor.Black;
+                WriteLine();
+            }
+            BackgroundColor = ConsoleColor.Black;
+        }
+
+        static public void Pattern10(int X, int Y, ConsoleColor[] _colors, bool _useMargin, bool _savePattern, bool _showInfo)
+        {
+            int _curColor, _colAmount = _colors.Length, _edgeMargin = WindowWidth / 2 - X;
+
+            //  Shrink the pattern if it is too big
+            //  (optional)
+            if (gShrinkPatterns && X > WindowWidth / 2) X = WindowWidth / 2;
+            if (gShrinkPatterns && Y > WindowHeight) Y = WindowHeight;
+
+
+            if (_savePattern || _showInfo)
+                EncodePattern(10, X, Y, _colAmount, _colors, "", _savePattern, "", gGalleryPath, _showInfo);
+
+            for (int i = 0; i < Y; i++)
+            {
+                if (_useMargin) for (int j = 0; j < _edgeMargin; j++) Write(" ");
+                for (int j = 2 * i; j > 2 * i - X; j--)
+                {
+                    _curColor = (j - 1 - i * 5) % (_colAmount * 2 - 2);
                     if (_curColor < 0) _curColor = Math.Abs(_curColor) % (_colAmount * 2 - 2);
                     if (_curColor >= _colAmount) _curColor = _colAmount - _curColor % _colAmount - 2;
                     BackgroundColor = _colors[_curColor];

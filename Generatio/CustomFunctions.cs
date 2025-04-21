@@ -106,10 +106,10 @@ namespace Generatio
         }   
              // Let the user choose the colors from the assets
         
-        static public byte GetUserTask()
+        static public string GetUserTask()
         {
-            byte _chosenTask = 255;
-            string _userInput;
+            bool _validTask = false;
+            string _userInput = "";
 
             Write("\n\n\n\t\t[?]  - Что вы хотите сделать?\n");
             Write("\t\t   > 1 <    - О программе\n");
@@ -125,22 +125,17 @@ namespace Generatio
             Write("\t\t   > 0 <    - Выход\n");
 
 
-            while (_chosenTask > 6)
+            while (!_validTask)
             {
                 Write("\n\t\tВаш выбор: ");
                 _userInput = ReadLine().Trim();
-                if (_userInput == "ActivateNoLimitMode") gNoSizeLimit = true;
-                else if (_userInput == "ActivateDevMode") gShowInfo = true;
-                else if (_userInput == "IgnoreFullScreenMode") gIgnoreFullScreen = true;
-                else if (_userInput == "AlwaysGenerate") gAlwaysGenerate = true;
-                else if (_userInput == "ВыдайМем") Write("\t\t:)   - А почему не 9?\n");
-                else if (!byte.TryParse(_userInput, out _chosenTask)) Write("\t\t[!]  - Не удалось распознать выбор. Пожалуйста, повторите ввод\n");
-                else
-                {
-                    if (_chosenTask > 6) Write("\t\t[!]  - Число не попадает в допустимый диапозон. Пожалуйста, повторите ввод\n");
-                }
+                if (_userInput == "ВыдайМем") Write("\t\t:)   - А почему не 9?\n");
+                else if (_userInput == "0" || _userInput == "1" || _userInput == "2" ||
+                         _userInput == "3" || _userInput == "4" || _userInput == "5")
+                    _validTask = true;
+                else Write("\t\t[!]  - Не удалось распознать выбор. Пожалуйста, повторите ввод\n");
             }
-            return _chosenTask;
+            return _userInput;
         }
              // Get the users wanted task
 

@@ -28,6 +28,8 @@ namespace Generatio
         static public bool gNoSizeLimit;
             //  Makes the program ignore your window size 
         static public bool gIgnoreFullScreen;
+            //  Shrinks the patterns if a critical error occurs to the size of the screen
+        static public bool gShrinkPatterns;
 
 
             //  Writes some info about the programs processes
@@ -54,9 +56,12 @@ namespace Generatio
         static public void ResetSettings()
         {
             gNoSizeLimit = false;
+            gIgnoreFullScreen = false;
+            gShrinkPatterns = true;
+
             gShowInfo = true;
             gAdvInfo = false;
-            gIgnoreFullScreen = false;
+            
             gAlwaysGenerate = true;
             gAutoSave = true;
             gUseShortcuts = true;
@@ -149,25 +154,25 @@ namespace Generatio
                 //-----------------------------------------//
 
 
-                ForegroundColor = ConsoleColor.DarkGray;   //  [5] Parse shortcuts from the menu option
+                ForegroundColor = ConsoleColor.DarkGray;   //  [5] Shrink patterns larger than max size option
                 Write("\n");                               //
-                if (gUseShortcuts)
+                if (gShrinkPatterns)
                 {
                     ForegroundColor = ConsoleColor.White;
-                    Write("\n\t\t  > 5 <    - Использовать быстрые команды для генерации: ");
+                    Write("\n\t\t  > 5 <    - Уменьшать узоры при превышении максимальных размеров: ");
                     ForegroundColor = ConsoleColor.Green;
                     Write("Да");
                 }
                 else
                 {
-                    Write("\n\t\t  > 5 <    - Использовать быстрые команды для генерации: ");
+                    Write("\n\t\t  > 5 <    - Уменьшать узоры при превышении максимальных размеров: ");
                     ForegroundColor = ConsoleColor.Red;
                     Write("Нет");
                 }
                 //-----------------------------------------//
 
 
-                ForegroundColor = ConsoleColor.DarkGray;   //  [6] Ingore full screen optiom
+                ForegroundColor = ConsoleColor.DarkGray;   //  [6] Ingore full screen option
                 if (gIgnoreFullScreen)
                 {
                     ForegroundColor = ConsoleColor.White;
@@ -247,7 +252,7 @@ namespace Generatio
                             gAdvInfo = !gAdvInfo;
                             break;
                         case '5':
-                            gUseShortcuts = !gUseShortcuts;
+                            gShrinkPatterns = !gShrinkPatterns;
                             break;
                         case '6':
                             gIgnoreFullScreen = !gIgnoreFullScreen;
