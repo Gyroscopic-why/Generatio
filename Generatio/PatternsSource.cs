@@ -13,7 +13,7 @@ namespace Generatio
             int _curColor, _colAmount = _colors.Length, _edgeMargin = WindowWidth / 2 - X;
 
             if (_savePattern || _showInfo) 
-                EncodePattern(1, X, Y, _colAmount, _colors, "", _savePattern, "Test pack1.db", gGalleryPath, _showInfo);
+                EncodePattern(1, X, Y, _colAmount, _colors, "", _savePattern, "", gGalleryPath, _showInfo);
 
             for (int i = 0; i < (Y + 1) / 2; i++)
             {
@@ -63,7 +63,7 @@ namespace Generatio
             int _curColor, _colAmount = _colors.Length, _edgeMargin = WindowWidth / 2 - X;
 
             if (_savePattern || _showInfo) 
-                EncodePattern(2, X, Y, _colAmount, _colors, "", _savePattern, "Test pack1.db", gGalleryPath, _showInfo);
+                EncodePattern(2, X, Y, _colAmount, _colors, "", _savePattern, "", gGalleryPath, _showInfo);
 
             for (int i = 0; i < Y; i++)
             {
@@ -85,7 +85,7 @@ namespace Generatio
             int _curColor, _colAmount = _colors.Length, _edgeMargin = WindowWidth / 2 - X;
 
             if (_savePattern || _showInfo) 
-                EncodePattern(3, X, Y, _colAmount, _colors, "", _savePattern, "Test pack1.db", gGalleryPath, _showInfo);
+                EncodePattern(3, X, Y, _colAmount, _colors, "", _savePattern, "", gGalleryPath, _showInfo);
 
             for (int i = 0; i < Y / 2; i++)
             {
@@ -149,7 +149,7 @@ namespace Generatio
             int _curColor, _colAmount = _colors.Length, _edgeMargin = WindowWidth / 2 - X;
 
             if (_savePattern || _showInfo) 
-                EncodePattern(4, X, Y, _colAmount, _colors, "", _savePattern, "Test pack1.db", gGalleryPath, _showInfo);
+                EncodePattern(4, X, Y, _colAmount, _colors, "", _savePattern, "", gGalleryPath, _showInfo);
 
             for (int i = 0; i < Y; i++)
             {
@@ -172,7 +172,7 @@ namespace Generatio
             int _curColor, _colAmount = _colors.Length, _edgeMargin = WindowWidth / 2 - X;
 
             if (_savePattern || _showInfo) 
-                EncodePattern(5, X, Y, _colAmount, _colors, "", _savePattern, "Test pack1.db", gGalleryPath, _showInfo);
+                EncodePattern(5, X, Y, _colAmount, _colors, "", _savePattern, "", gGalleryPath, _showInfo);
 
             for (int i = 0; i < Y; i++)
             {
@@ -195,7 +195,7 @@ namespace Generatio
             int _curColor, _colAmount = _colors.Length, _edgeMargin = WindowWidth / 2 - X;
 
             if (_savePattern || _showInfo) 
-                EncodePattern(6, X, Y, _colAmount, _colors, "", _savePattern, "Test pack1.db", gGalleryPath, _showInfo);
+                EncodePattern(6, X, Y, _colAmount, _colors, "", _savePattern, "", gGalleryPath, _showInfo);
 
             for (int i = 0; i < (Y + 1) / 2; i++)
             {
@@ -245,7 +245,7 @@ namespace Generatio
             int _curColor, _colAmount = _colors.Length, _edgeMargin = WindowWidth / 2 - X;
 
             if (_savePattern || _showInfo) 
-                EncodePattern(7, X, Y, _colAmount, _colors, "", _savePattern, "Test pack1.db", gGalleryPath, _showInfo);
+                EncodePattern(7, X, Y, _colAmount, _colors, "", _savePattern, "", gGalleryPath, _showInfo);
 
             for (int i = 0; i < Y / 2; i++)
             {
@@ -313,7 +313,7 @@ namespace Generatio
             int _curColor, _colAmount = _colors.Length, _edgeMargin = WindowWidth / 2 - X;
 
             if (_savePattern || _showInfo)
-                EncodePattern(8, X, Y, _colAmount, _colors, "", _savePattern, "Test pack1.db", gGalleryPath, _showInfo);
+                EncodePattern(8, X, Y, _colAmount, _colors, "", _savePattern, "", gGalleryPath, _showInfo);
 
             for (int i = 0; i < (Y + 1) / 2; i++)
             {
@@ -350,7 +350,7 @@ namespace Generatio
             int _curColor, _colAmount = _colors.Length, _edgeMargin = WindowWidth / 2 - X;
 
             if (_savePattern || _showInfo)
-                EncodePattern(9, X, Y, _colAmount, _colors, "", _savePattern, "Test pack1.db", gGalleryPath, _showInfo);
+                EncodePattern(9, X, Y, _colAmount, _colors, "", _savePattern, "", gGalleryPath, _showInfo);
 
             for (int i = 0; i < Y; i++)
             {

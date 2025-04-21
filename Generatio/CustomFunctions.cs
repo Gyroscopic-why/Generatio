@@ -1,8 +1,13 @@
 ﻿using System;
+
 using static System.Console;
 
+
 using static Generatio.GlobalSettings;
+using static Generatio.GlobalVariables;
 using static Generatio.CustomProcedures;
+using System.Collections.Generic;
+
 
 namespace Generatio
 {
@@ -15,7 +20,7 @@ namespace Generatio
             bool Generating = false;
             string UserInput = "";
 
-            if (!gIgnoreFullScreenMode) ForceFullScreen();
+            if (!gIgnoreFullScreen) ForceFullScreen();
 
             Write("\n\n\t\tВы хотите сгенерировать оставшиеся узоры? (ДА/НЕТ | YES/NO): ");
             UserInput = ReadLine().Trim().ToLower();
@@ -110,11 +115,11 @@ namespace Generatio
             Write("\t\t   > 1 <    - О программе\n");
             Write("\t\t   > 2 <    - Сгенерировать узор\n");
             Write("\t\t   > 3 <    - Галерея узоров\n");
+            Write("\t\t   > 4 <    - Обновить последнее сохранение галереи\n");
+            Write("\t\t   > 5 <    - Настройки\n");
 
             ForegroundColor = ConsoleColor.DarkGray;
-            Write("\t\t   > 4 <    - Сгенерировать полотно узоров\n");
-            Write("\t\t   > 5 <    - Сгенерировать узор по коду\n");
-            Write("\t\t   > 6 <    - Настройки\n");
+            Write("\t\t   > 6 <    - Сгенерировать узор по коду\n");
             ForegroundColor = ConsoleColor.White;
 
             Write("\t\t   > 0 <    - Выход\n");
@@ -124,9 +129,9 @@ namespace Generatio
             {
                 Write("\n\t\tВаш выбор: ");
                 _userInput = ReadLine().Trim();
-                if (_userInput == "ActivateNoLimitMode") gNoLimitMode = true;
-                else if (_userInput == "ActivateDevMode") gDevMode = true;
-                else if (_userInput == "IgnoreFullScreenMode") gIgnoreFullScreenMode = true;
+                if (_userInput == "ActivateNoLimitMode") gNoSizeLimit = true;
+                else if (_userInput == "ActivateDevMode") gShowInfo = true;
+                else if (_userInput == "IgnoreFullScreenMode") gIgnoreFullScreen = true;
                 else if (_userInput == "AlwaysGenerate") gAlwaysGenerate = true;
                 else if (_userInput == "ВыдайМем") Write("\t\t:)   - А почему не 9?\n");
                 else if (!byte.TryParse(_userInput, out _chosenTask)) Write("\t\t[!]  - Не удалось распознать выбор. Пожалуйста, повторите ввод\n");
@@ -151,7 +156,7 @@ namespace Generatio
 
 
 
-            if (!gIgnoreFullScreenMode) ForceFullScreen();  // Forcing full screen to get the max window size
+            if (!gIgnoreFullScreen) ForceFullScreen();  // Forcing full screen to get the max window size
 
             if (_sizeType == "высот") _maxSize = WindowHeight - 1;             // Setting the max window size
             else _maxSize = (WindowWidth - 1) / 2;                             //
@@ -299,8 +304,8 @@ namespace Generatio
                     BackgroundColor = ConsoleColor.Black;
                     Write("    -    ");
                 }
-                if (i > 5) Write(ColorNames[i] + " - " + ColorKeySign[9 + (i - 5) * 3] + "/" + ColorKeySign[9 + (i - 5) * 3 + 1] + "/" + ColorKeySign[9 + (i - 5) * 3 + 2] + "/" + i);
-                else Write(ColorNames[i] + " - " + ColorKeySign[i * 2] + "/" + ColorKeySign[i * 2 + 1] + "/" + i);
+                if (i > 5) Write(gColorNames[i] + " - " + gColorKeySigns[9 + (i - 5) * 3] + "/" + gColorKeySigns[9 + (i - 5) * 3 + 1] + "/" + gColorKeySigns[9 + (i - 5) * 3 + 2] + "/" + i);
+                else Write(gColorNames[i] + " - " + gColorKeySigns[i * 2] + "/" + gColorKeySigns[i * 2 + 1] + "/" + i);
                 BackgroundColor = ConsoleColor.Black;
                 WriteLine();
             }
@@ -356,7 +361,7 @@ namespace Generatio
                             {
                                 for (byte j = 0; j < 42 && !RightColor; j++)
                                 {
-                                    if (UserInput == ColorKeySign[j])
+                                    if (UserInput == gColorKeySigns[j])
                                     {
                                         RightColor = true;
                                         SelectedColor = j;
@@ -379,7 +384,7 @@ namespace Generatio
                 Write("\t\tЦвет успешно распознан! ");
                 ForegroundColor = gAllColors[SelectedColor];
                 if (SelectedColor == 15) BackgroundColor = ConsoleColor.White;
-                Write((i + 1) + "-ый цвет: " + ColorNames[SelectedColor]);
+                Write((i + 1) + "-ый цвет: " + gColorNames[SelectedColor]);
                 BackgroundColor = ConsoleColor.Black;
                 ForegroundColor = ConsoleColor.White;
                 Write("\n");
@@ -506,5 +511,20 @@ namespace Generatio
             return _byteColors;
         }
              // Convert colors from console colors to bytes
+
+
+        //------------------------  Return list  --------------------------------------------------//
+
+        static public List<string> ToStringList(string[] _array)
+        {
+            //  Store list
+            List<string> _list = new List<string>();
+
+            //  Convert array to list
+            for (int i = 0; i < _array.Length; i++) _list.Add(_array[i]);
+
+            //  Return the list
+            return _list;
+        }
     }
 }

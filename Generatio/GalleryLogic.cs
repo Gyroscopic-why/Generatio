@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
 using static System.Console;
 
@@ -60,31 +59,31 @@ namespace Generatio
                 switch (patternType)
                 {
                     case 1:
-                        Pattern1(width, height, ConvertColorsToConsole(colors), true, false, gDevMode);
+                        Pattern1(width, height, ConvertColorsToConsole(colors), true, false, gShowInfo);
                         break;
                     case 2:
-                        Pattern2(width, height, ConvertColorsToConsole(colors), true, false, gDevMode);
+                        Pattern2(width, height, ConvertColorsToConsole(colors), true, false, gShowInfo);
                         break;
                     case 3:
-                        Pattern3(width, height, ConvertColorsToConsole(colors), true, false, gDevMode);
+                        Pattern3(width, height, ConvertColorsToConsole(colors), true, false, gShowInfo);
                         break;
                     case 4:
-                        Pattern4(width, height, ConvertColorsToConsole(colors), true, false, gDevMode);
+                        Pattern4(width, height, ConvertColorsToConsole(colors), true, false, gShowInfo);
                         break;
                     case 5:
-                        Pattern5(width, height, ConvertColorsToConsole(colors), true, false, gDevMode);
+                        Pattern5(width, height, ConvertColorsToConsole(colors), true, false, gShowInfo);
                         break;
                     case 6:
-                        Pattern6(width, height, ConvertColorsToConsole(colors), true, false, gDevMode);
+                        Pattern6(width, height, ConvertColorsToConsole(colors), true, false, gShowInfo);
                         break;
                     case 7:
-                        Pattern7(width, height, ConvertColorsToConsole(colors), true, false, gDevMode);
+                        Pattern7(width, height, ConvertColorsToConsole(colors), true, false, gShowInfo);
                         break;
                     case 8:
-                        Pattern8(width, height, ConvertColorsToConsole(colors), true, false, gDevMode);
+                        Pattern8(width, height, ConvertColorsToConsole(colors), true, false, gShowInfo);
                         break;
                     case 9:
-                        Pattern9(width, height, ConvertColorsToConsole(colors), true, false, gDevMode);
+                        Pattern9(width, height, ConvertColorsToConsole(colors), true, false, gShowInfo);
                         break;
                     default:
                         break;
@@ -315,20 +314,57 @@ namespace Generatio
         static public void UpdateStockGallery()
         {
             //  Read the stock data for the gallery
-            List<string> _parsedData = ReadData(gGalleryPath, "Stock_pack1.db", gDevMode);
+            List<string> _parsedData = ReadData(gGalleryPath, "Stock_pack1.db", gShowInfo, false, "\t\t");
             
             //  Parse the data into more easily usable
-            _parsedData = ParseData(_parsedData, true, true, "*", "", "*", gDevMode);
+            _parsedData = ParseData(_parsedData, true, true, "*", "", "*", gShowInfo, false, "\t\t");
 
             //  Convert the data into patterns
-            GalleryBuffer = ConvertToGalleryPattern(_parsedData, gDevMode);
+            GalleryBuffer = ConvertToGalleryPattern(_parsedData, gAdvInfo);
 
             if (GalleryBuffer != null)
             {
                 //  Update the gallery
-                if (GalleryBuffer.Count > GalleryStock.Count)
+                GalleryStock = GalleryBuffer;
+            }
+        }
+
+        static public void UpdateUserGallery()
+        {
+            List<string> _patternFiles = ToStringList(GetFiles(gGalleryPath, true, gShowInfo, false, "\t\t"));
+            
+            //  Remove the unrelated files from the search
+            for(int i = 0; i < _patternFiles.Count; i++)
+            {
+                //  Check if the file doesnt have the .patterns extention
+                if (_patternFiles[i].IndexOf(".patterns", _patternFiles[i].Length - 9) == -1)
                 {
-                    GalleryStock = GalleryBuffer;
+                    //  Remove the unrelated file
+                    _patternFiles.RemoveAt(i);
+                    i--;
+                }
+            }
+
+            //  Reset the previous gallery save
+            GalleryUser.Clear();
+
+            //  Loop through all the pattern files
+            foreach (string _file in _patternFiles)
+            {
+                //  Read the stock data for the gallery
+                List<string> _parsedData = ReadData(gGalleryPath, _file, gShowInfo, false, "\t\t");
+
+                //  Parse the data into more easily usable
+                _parsedData = ParseData(_parsedData, true, true, "*", "", "*", gShowInfo, false, "\t\t");
+
+                //  Convert the data into patterns
+                GalleryBuffer = ConvertToGalleryPattern(_parsedData, gAdvInfo);
+
+                //  Update the gallery
+                foreach (GalleryPattern _pattern in GalleryBuffer)
+                {
+                    //  Add the pattern to the gallery
+                    GalleryUser.Add(_pattern);
                 }
             }
         }
@@ -410,12 +446,6 @@ namespace Generatio
 
         static public void NavigateGallery()
         {
-            UpdateStockGallery();
-
-            //  Amount of patterns present in the gallery
-            int gallerySize = GalleryStock.Count();
-
-            //if (!gGeneratedGpatterns) GenerateGallery();
             string _userInput = "";
 
             //  Temporary buffer for the help of parsing the user input
@@ -423,6 +453,13 @@ namespace Generatio
 
             //  List of Gallrey ids that the user wants to see
             List<int> _parsedId = new List<int>();
+
+            //  Amount of different patterns in the gallery
+            int _stockAmount = GalleryStock.Count;
+            int _userAmount = GalleryUser.Count;
+
+            //  Amount of patterns present in the gallery
+            int _gallerySize = _stockAmount + _userAmount;
 
             for (int hide = 0; hide < 1; hide++)
             {
@@ -432,33 +469,36 @@ namespace Generatio
                 Write("\n\t\t\t\t\tДобро пожаловать в галерею!\n");
                 ForegroundColor = ConsoleColor.White;
                 Write("\n\t\tЗдесь хранятся стоковые и ваши сохранённые узоры, а так же их параметры.");
-                Write("\n\t\tНа данный момент узоров: 20 (dev build version)\n");
+                Write("\n\t\tНа данный момент узоров в галереи: " + _gallerySize + "\n");
+
+                if (_gallerySize > 0)
+                {
+                    Write("\n\t\tДля просмотра узоров введите:");
+                    Write("\n\t\t  Одно число - для просмотра одного узора (под этим номером)");
+                    Write("\n\t\t  Два числа через '-' - для просмотра узоров под номерами от первого до второго числа");
+                    Write("\n\t\t  Несколько чисел через '/' - для просмотра нескольких узоров (только под этими номерами)\n\n");
 
 
-                Write("\n\t\tДля просмотра узоров введите:");
-                Write("\n\t\t  Одно число - для просмотра одного узора (под этим номером)");
-                Write("\n\t\t  Два числа через '-' - для просмотра узоров под номерами от первого до второго числа");
-                Write("\n\t\t  Несколько чисел через '/' - для просмотра нескольких узоров (только под этими номерами)\n\n");
+                    ForegroundColor = ConsoleColor.DarkGray;
+                    Write("\n\t\tПримеры ввода:");
+                    Write("\n\t\t  '12'       - будет показан только один узор (под этим номером в базе данных)");
+                    Write("\n\t\t  '3-8'      - будут показаны узоры под номерами 3, 4, 5, 6, 7 и 8 (от первого числа до второго)");
+                    Write("\n\t\t  '15/2/7/1' - будут показаны узоры под номерами 15, 2, 7 и 1 в таком же порядке как они были введены\n\n");
+                    ForegroundColor = ConsoleColor.White;
 
 
-                ForegroundColor = ConsoleColor.DarkGray;
-                Write("\n\t\tПримеры ввода:");
-                Write("\n\t\t  '12'       - будет показан только один узор (под этим номером в базе данных)");
-                Write("\n\t\t  '3-8'      - будут показаны узоры под номерами 3, 4, 5, 6, 7 и 8 (от первого числа до второго)");
-                Write("\n\t\t  '15/2/7/1' - будут показаны узоры под номерами 15, 2, 7 и 1 в таком же порядке как они были введены\n\n");
-                ForegroundColor = ConsoleColor.White;
+                    Write("\n\t\tПри вводе числа, будет выведен узор под этим номером, а также его параметры.");
+                    Write("\n\t\tОни включают в себя тип, размеры узоров, количество цветов и сами цвета.\n");
 
+                    Write("\n\t\tПараметры будут выглядеть как набор чисел с разделениями:");
+                    ForegroundColor = ConsoleColor.Green;
+                    Write("\n\t\t   Тип узора/Ширина/Высота/Количество цветов/Цвет1-Цвет2-Цвет3...\n");
+                    ForegroundColor = ConsoleColor.White;
 
-                Write("\n\t\tПри вводе числа, будет выведен узор под этим номером, а также его параметры.");
-                Write("\n\t\tОни включают в себя тип, размеры узоров, количество цветов и сами цвета.\n");
-
-                Write("\n\t\tПараметры будут выглядеть как набор чисел с разделениями:");
-                ForegroundColor = ConsoleColor.Green;
-                Write("\n\t\t   Тип узора/Ширина/Высота/Количество цветов/Цвет1-Цвет2-Цвет3...\n");
-                ForegroundColor = ConsoleColor.White;
-
-                Write("\n\n\n\t\t\t\tДоступный функционал:");
-                Write("\n\t\t\t[" + Math.Min(1, gallerySize) + "-" + gallerySize + "]\t- Посмотреть узор/узоры");
+                    Write("\n\n\n\t\t\t\tДоступный функционал:");
+                    Write("\n\t\t\t[" + Math.Min(1, _stockAmount) + "-" + _stockAmount + "]\t- Посмотреть узор/узоры");
+                    Write("\n\t\t\t[" + Math.Min(_stockAmount + 1, _gallerySize + 1) + "-" + (_gallerySize + 1) + "]\t- Посмотреть узор/узоры");
+                }
                 Write("\n\t\t\t[0]\t- Выход из галереи\n");
             }
 
@@ -469,7 +509,7 @@ namespace Generatio
 
                 if (int.TryParse(_userInput, out _helperId[0]))
                 {
-                    if (_helperId[0] > 0 && _helperId[0] < gallerySize + 1)
+                    if (_helperId[0] > 0 && _helperId[0] < _gallerySize + 1)
                     {
                         _parsedId.Add(_helperId[0] - 1);
                         Write("\n\t\tРаспознанный узор: " + _helperId[0] + "\n\n");
@@ -497,10 +537,10 @@ namespace Generatio
 
                                         //-----------  Limit the parsed intervals  -----------//
                                         //                                                    //
-                                        _helperId[0] = Math.Min(_helperId[0], gallerySize);   //
+                                        _helperId[0] = Math.Min(_helperId[0], _gallerySize);   //
                                         _helperId[0] = Math.Max(_helperId[0], 1);             //
                                                                                               //
-                                        _helperId[1] = Math.Min(_helperId[1], gallerySize);   //
+                                        _helperId[1] = Math.Min(_helperId[1], _gallerySize);   //
                                         _helperId[1] = Math.Max(_helperId[1], 1);             //
                                         //                                                    //
                                         //-----------  Limit the parsed intervals  -----------//
@@ -529,7 +569,7 @@ namespace Generatio
                                     {
                                         if (int.TryParse(_multiId[i], out _helperId[0]))
                                         {
-                                            if (_helperId[0] > 0 && _helperId[0] < gallerySize + 1)
+                                            if (_helperId[0] > 0 && _helperId[0] < _gallerySize + 1)
                                             {
                                                 _parsedId.Add(_helperId[0] - 1);
                                                 Write("\n\t\tРаспознанный узор: " + _helperId[0] + "\n\n");
@@ -537,7 +577,7 @@ namespace Generatio
                                         }
                                         if (int.TryParse(_multiId[i + 1], out _helperId[1]))
                                         {
-                                            if (_helperId[1] > 0 && _helperId[1] < gallerySize + 1)
+                                            if (_helperId[1] > 0 && _helperId[1] < _gallerySize + 1)
                                             {
                                                 _parsedId.Add(_helperId[1] - 1);
                                                 Write("\n\t\tРаспознанный узор: " + _helperId[1] + "\n\n");

@@ -1,5 +1,9 @@
 ﻿using System;
 
+using static System.Console;
+
+using static Generatio.GlobalVariables;
+using static Generatio.CustomProcedures;
 using static Generatio.DataManipulation;
 
 namespace Generatio
@@ -7,286 +11,275 @@ namespace Generatio
     internal class GlobalSettings
     {
 
-            //  Global random class object to not initialize it more than once
-        static public Random gRandom = new Random();
+            //  Get the path to the \users\user_name_here\documents folder
+            //  And then create/navigate to: Gyroscopic\Generatio\
+        static public string gGalleryPath = GetPath(false, "\\Gyroscopic\\Generatio\\Gallery", false);
 
 
             //  Get the path to the \users\user_name_here\documents folder
             //  And then create/navigate to: Gyroscopic\Generatio\
-        static public string gGalleryPath = GetPath(false, "\\Gyroscopic\\Generatio\\TestData\\Gallery", false);
+        static public string gSettingsPath = GetPath(false, "\\Gyroscopic\\Generatio\\Settings", false);
 
-
-            //  Get the path to the \users\user_name_here\documents folder
-            //  And then create/navigate to: Gyroscopic\Generatio\
-        static public string gSettingsPath = GetPath(false, "\\Gyroscopic\\Generatio\\TestData\\Settings", false);
 
         //------------------------- Stored settings variables -------------------------------------------------//
 
 
+            //  Makes the size function ignore the upper limit (Max = from MaxWindowSize to int.MaxValue)
+        static public bool gNoSizeLimit;
+            //  Makes the program ignore your window size 
+        static public bool gIgnoreFullScreen;
+
+
+            //  Writes some info about the programs processes
+        static public bool gShowInfo;
+            //  Writes additional debug dev info
+        static public bool gAdvInfo;
+
+
+
+            //  Always generates all patterns without asking for it over and over again in the final generation stage
+        static public bool gAlwaysGenerate;
+
+
+
+            //  Automatically saves the all generated patterns to the file
+            //  (if you want to save them, but not to generate them again)
+        static public bool gAutoSave;
+            //  Enable shortcut parsing from the menu
+        static public bool gUseShortcuts;
+
+
+
+
+        static public void ResetSettings()
+        {
+            gNoSizeLimit = false;
+            gShowInfo = true;
+            gAdvInfo = false;
+            gIgnoreFullScreen = false;
+            gAlwaysGenerate = true;
+            gAutoSave = true;
+            gUseShortcuts = true;
+
+            gGalleryPath  = GetPath(false, "\\Gyroscopic\\Generatio\\Gallery",  false);
+            gSettingsPath = GetPath(false, "\\Gyroscopic\\Generatio\\Settings", false);
+        }
+        //  Reset all settings to default values
+        static public void ChangeSettings()
+        {
+            string UserInput = "";
+
+            while (UserInput != "0")
+            {
+                if (!gGeneratedPatterns) Clear();
+                Write("\n\n\n\n\n\n");
+                PrintLogo();
+
+                Write("\t\t\t\t\t\t\tВыбрано: --- === Изменение настроек === ---\n\n\n");
+
+                Write("\t\t[i]  - Текущие настройки:");
+
+                ForegroundColor = ConsoleColor.DarkGray;   //  [1] Autosave option
+                Write("\n");                               //
+                if (gAutoSave)
+                {
+                    ForegroundColor = ConsoleColor.White;
+                    Write("\n\t\t  > 1 <    - Автосохранение всех сгенерированных узоров: ");
+                    ForegroundColor = ConsoleColor.Green;
+                    Write("Да");
+                }
+                else
+                {
+                    Write("\n\t\t  > 1 <    - Автосохранение всех сгенерированных узоров: ");
+                    ForegroundColor = ConsoleColor.Red;
+                    Write("Нет");
+                }
+                //-----------------------------------------//
+
+
+                ForegroundColor = ConsoleColor.DarkGray;   //  [2] Always generate option
+                if (gAlwaysGenerate)
+                {
+                    ForegroundColor = ConsoleColor.White;
+                    Write("\n\t\t  > 2 <    - Всегда генерировать все узоры: ");
+                    ForegroundColor = ConsoleColor.Green;
+                    Write("Да");
+                }
+                else
+                {
+                    Write("\n\t\t  > 2 <    - Всегда генерировать все узоры: ");
+                    ForegroundColor = ConsoleColor.Red;
+                    Write("Нет");
+                }
+                //-----------------------------------------//
+
+
+                ForegroundColor = ConsoleColor.DarkGray;   //  [3] Basic info output option
+                Write("\n");                               //
+                if (gShowInfo)
+                {
+                    ForegroundColor = ConsoleColor.White;
+                    Write("\n\t\t  > 3 <    - Выводить дополнительную информацию о процессах: ");
+                    ForegroundColor = ConsoleColor.Green;
+                    Write("Да");
+                }
+                else
+                {
+                    Write("\n\t\t  > 3 <    - Выводить дополнительную информацию о процессах: ");
+                    ForegroundColor = ConsoleColor.Red;
+                    Write("Нет");
+                }
+                //-----------------------------------------//
+
+
+                ForegroundColor = ConsoleColor.DarkGray;   //  [4] Advanced info output option
+                if (gAdvInfo)
+                {
+                    ForegroundColor = ConsoleColor.White;
+                    Write("\n\t\t  > 4 <    - Выводить служебную информацию: ");
+                    ForegroundColor = ConsoleColor.Green;
+                    Write("Да");
+                }
+                else
+                {
+                    Write("\n\t\t  > 4 <    - Выводить служебную информацию: ");
+                    ForegroundColor = ConsoleColor.Red;
+                    Write("Нет");
+                }
+                //-----------------------------------------//
+
+
+                ForegroundColor = ConsoleColor.DarkGray;   //  [5] Parse shortcuts from the menu option
+                Write("\n");                               //
+                if (gUseShortcuts)
+                {
+                    ForegroundColor = ConsoleColor.White;
+                    Write("\n\t\t  > 5 <    - Использовать быстрые команды для генерации: ");
+                    ForegroundColor = ConsoleColor.Green;
+                    Write("Да");
+                }
+                else
+                {
+                    Write("\n\t\t  > 5 <    - Использовать быстрые команды для генерации: ");
+                    ForegroundColor = ConsoleColor.Red;
+                    Write("Нет");
+                }
+                //-----------------------------------------//
+
+
+                ForegroundColor = ConsoleColor.DarkGray;   //  [6] Ingore full screen optiom
+                if (gIgnoreFullScreen)
+                {
+                    ForegroundColor = ConsoleColor.White;
+                    Write("\n\t\t  > 6 <    - Игнорировать режим полного экрана: ");
+                    ForegroundColor = ConsoleColor.Green;
+                    Write("Да");
+                }
+                else
+                {
+                    Write("\n\t\t  > 6 <    - Игнорировать режим полного экрана: ");
+                    ForegroundColor = ConsoleColor.Red;
+                    Write("Нет");
+                }
+                //-----------------------------------------//
+
+
+                ForegroundColor = ConsoleColor.DarkGray;   //  [7] No size limit option
+                if (gNoSizeLimit)
+                {
+                    ForegroundColor = ConsoleColor.White;
+                    Write("\n\t\t  > 7 <    - Режим без ограничений: ");
+                    ForegroundColor = ConsoleColor.Green;
+                    Write("Да");
+                }
+                else
+                {
+                    Write("\n\t\t  > 7 <    - Режим без ограничений: ");
+                    ForegroundColor = ConsoleColor.Red;
+                    Write("Нет");
+                }
+                //-----------------------------------------//
+
+
+
+                ForegroundColor = ConsoleColor.White;                         //  [8] Gallery path
+                Write("\n");                                                  //
+                Write("\n\t\t  > 8 <    - Изменить путь сохранения узоров");  //
+                ForegroundColor = ConsoleColor.DarkGray;                      //
+                Write("\n\t\t               Текущий: " + gGalleryPath);       //
+                //------------------------------------------------------------//
+
+
+                ForegroundColor = ConsoleColor.White;                         //  [9] Settings path
+                Write("\n\t\t  > 9 <    - Изменить путь к файлу настроек");   //
+                ForegroundColor = ConsoleColor.DarkGray;                      //
+                Write("\n\t\t               Текущий: " + gSettingsPath);      //
+                //------------------------------------------------------------//
+
+
+                ForegroundColor = ConsoleColor.White;                             //  [-] Reset settings to default
+                Write("\n");                                                      //
+                Write("\n\t\t  > - <    - Восстановить настройки по умолчанию");  //
+                //----------------------------------------------------------------//
+
+
+                Write("\n\t\t  > 0 <    - Назад");         //  Exit the settings menu
+                //-----------------------------------------//
+
+
+                Write("\n\n\t\t[->] - Ваш выбор: ");
+                UserInput = ReadLine().Trim();
+
+                for (int i = 0; i < UserInput.Length; i++)
+                {
+                    switch (UserInput[i])
+                    {
+                        case '1':
+                            gAutoSave = !gAutoSave;
+                            break;
+                        case '2':
+                            gAlwaysGenerate = !gAlwaysGenerate;
+                            break;
+                        case '3':
+                            gShowInfo = !gShowInfo;
+                            break;
+                        case '4':
+                            gAdvInfo = !gAdvInfo;
+                            break;
+                        case '5':
+                            gUseShortcuts = !gUseShortcuts;
+                            break;
+                        case '6':
+                            gIgnoreFullScreen = !gIgnoreFullScreen;
+                            break;
+                        case '7':
+                            gNoSizeLimit = !gNoSizeLimit;
+                            break;
+                        case '8':
+                            gGalleryPath = GetPath(true, "\\Gyroscopic\\Generatio\\Gallery", gShowInfo, false, "\t\t");
+                            break;
+                        case '9':
+                            gSettingsPath = GetPath(true, "\\Gyroscopic\\Generatio\\Settings", gShowInfo, false, "\t\t");
+                            break;
+                        case '-':
+                            ResetSettings();
+                            break;
+                    }
+                }
+            }
+        }
+        //  Changing the function as the user wants
+
+
+
+        static public void LoadSettings()
+        {
+            
+        }
+        static public void SaveSettings()
+        {
+            
+        }
 
-            // Enable by entering ActivateNoLimitMode in the start menu
-            //
-            // Makes the size function ignore the upper limit (Max = from MaxWindowSize to int.MaxValue)
-        static public bool gNoLimitMode = false;
-
-
-             // Enable by entering ActivateDevMode in the start menu
-             //
-             // Writes dev info (helpful for gallery uzor functionality)
-        static public bool gDevMode = false;
-
-
-             // Enable by entering IgnoreFullScreenMode in the start menu
-             //
-             // Makes the program ignore your window size 
-        static public bool gIgnoreFullScreenMode = false;
-
-
-             // Enable by entering AlwaysGenerate in the start menu
-             //
-             // Always generates all patterns without asking for it over and over again in the final generation stage
-        static public bool gAlwaysGenerate = false;
-
-
-             // Enable by entering AutoSave in the start menu
-             //
-             // Automatically saves the generated patterns to the file
-             // (if you want to save them, but not to generate them again)
-        static public bool gAutoSave = true;
-
-
-        //-----------------------  Basic track of generated or not patterns  ----------------------------------//
-
-
-
-             // If already generated GALLERY PATTERS
-        static public bool gGeneratedGpatterns = false;
-
-             // If already generated patterns through the standart system
-        static public bool gGeneratedPatterns = false;
-
-
-
-        //------------------------  Color variables  ----------------------------------------------------------//
-        
-
-
-             // Color names (for GetColors function) to write them compactly
-        static public string[] ColorNames = {
-                "Красный",
-                "Зелёный",
-                "Синий",
-                "Жёлтый",
-                "Фиолетовый",
-                "Голубой",
-
-                "Тёмно-Красный",
-                "Тёмно-Зелёный",
-                "Тёмно-Синий",
-                "Тёмно-Жёлтый",
-                "Тёмно-Фиолетовый",
-                "Тёмно-Голубой",
-
-                "Белый",
-                "Серый",
-                "Тёмно-серый",
-                "Чёрный",
-        };
-
-             // Color codes for compact and easy parsing of the user input
-        static public string[] ColorKeySign = {
-                "красный",
-                "к",
-
-                "зеленый",
-                "з",
-
-                "синий",
-                "с",
-
-                "желтый",
-                "ж",
-
-                "фиолетовый",
-                "ф",
-
-                "голубой",
-                "г",
-
-                ////////////////
-
-                "темнокрасный",
-                "ткрасный",
-                "тк",
-
-                "темнозеленый",
-                "тзеленый",
-                "тз",
-
-                "темносиний",
-                "тсиний",
-                "тс",
-
-                "темножелтый",
-                "тжелтый",
-                "тж",
-
-                "темнофиолетовый",
-                "тфиолетовый",
-                "тф",
-
-                "темноголубой",
-                "тголубой",
-                "тг",
-
-                ///////////////
-                
-                "белый",
-                "бел",
-                "б",
-
-                "серый",
-                "сер",
-                "чб",
-
-                "темносерый",
-                "тсерый",
-                "тсер",
-
-                "черный",
-                "чер",
-                "ч"
-        };
-
-
-
-             // Storing all the possible console colors for an easy access through this array
-             // (instead of a large switch-case statement everywhere)
-        readonly static public ConsoleColor[] gAllColors = {
-                ConsoleColor.Red,
-                ConsoleColor.Green,
-                ConsoleColor.Blue,
-                ConsoleColor.Yellow,
-                ConsoleColor.Magenta,
-                ConsoleColor.Cyan,
-
-                ConsoleColor.DarkRed,
-                ConsoleColor.DarkGreen,
-                ConsoleColor.DarkBlue,
-                ConsoleColor.DarkYellow,
-                ConsoleColor.DarkMagenta,
-                ConsoleColor.DarkCyan,
-
-                ConsoleColor.White,
-                ConsoleColor.Gray,
-                ConsoleColor.DarkGray,
-                ConsoleColor.Black
-        };
-
-
-
-        //------------------  Stored color assets for a fast generation  --------------------------------------//
-
-        //  sc  -  stored colors
-        //  2, 4, 7, 8, 12 - amount of colors in the array
-
-
-        readonly static public ConsoleColor[] scBlackWhite2 = {
-                ConsoleColor.White,
-                ConsoleColor.Black
-        };
-
-        readonly static public ConsoleColor[] scWhiteBlack4 = {
-                ConsoleColor.White,
-                ConsoleColor.Gray,
-                ConsoleColor.DarkGray,
-                ConsoleColor.Black
-        };
-
-        readonly static public ConsoleColor[] scBlue4 = {
-                ConsoleColor.Cyan,
-                ConsoleColor.DarkCyan,
-                ConsoleColor.Blue,
-                ConsoleColor.DarkBlue,
-        };
-
-        readonly static public ConsoleColor[] scRedBlue4 = {
-                ConsoleColor.Red,
-                ConsoleColor.DarkRed,
-                ConsoleColor.DarkBlue,
-                ConsoleColor.Blue
-        };
-
-        readonly static public ConsoleColor[] scMagentaRed4 = {
-
-                ConsoleColor.Magenta,
-                ConsoleColor.DarkMagenta,
-                ConsoleColor.DarkRed,
-                ConsoleColor.Red
-        };
-
-        readonly static public ConsoleColor[] scBlueMagentaGreen7 = {
-                ConsoleColor.DarkCyan,
-                ConsoleColor.Blue,
-                ConsoleColor.Magenta,
-                ConsoleColor.Green,
-                ConsoleColor.DarkGreen,
-                ConsoleColor.DarkMagenta,
-                ConsoleColor.DarkBlue,
-
-        };
-
-        readonly static public ConsoleColor[] scRedBlueGreenMagenta8 = {
-                ConsoleColor.DarkRed,
-                ConsoleColor.Red,
-                ConsoleColor.DarkBlue,
-                ConsoleColor.Blue,
-                ConsoleColor.Green,
-                ConsoleColor.DarkGreen,
-                ConsoleColor.DarkMagenta,
-                ConsoleColor.Magenta
-
-        };
-
-        readonly static public ConsoleColor[] scRedBlue8 = {
-                ConsoleColor.DarkMagenta,
-                ConsoleColor.Magenta,
-                ConsoleColor.Red,
-                ConsoleColor.DarkRed,
-
-                ConsoleColor.DarkBlue,
-                ConsoleColor.Blue,
-                ConsoleColor.DarkCyan,
-                ConsoleColor.Cyan
-        };
-
-        readonly static public ConsoleColor[] scMix12 = {
-                ConsoleColor.Cyan,
-                ConsoleColor.DarkCyan,
-                ConsoleColor.Blue,
-                ConsoleColor.DarkBlue,
-
-                ConsoleColor.DarkMagenta,
-                ConsoleColor.Magenta,
-                ConsoleColor.DarkRed,
-                ConsoleColor.Red,
-
-                ConsoleColor.DarkYellow,
-                ConsoleColor.Yellow,
-                ConsoleColor.Green,
-                ConsoleColor.DarkGreen,
-        };
-
-        readonly static public ConsoleColor[][] StoredColors = {
-            scBlackWhite2,
-            scWhiteBlack4,
-            scBlue4,
-            scRedBlue4,
-            scMagentaRed4,
-            scBlueMagentaGreen7,
-            scRedBlueGreenMagenta8,
-            scRedBlue8,
-            scMix12,
-        };
     }
 }

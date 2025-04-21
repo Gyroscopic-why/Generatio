@@ -4,6 +4,7 @@ using static System.Console;
 
 using static Generatio.GalleryLogic;
 using static Generatio.GlobalSettings;
+using static Generatio.GlobalVariables;
 using static Generatio.CustomFunctions;
 using static Generatio.CustomProcedures;
 
@@ -22,9 +23,16 @@ namespace Generatio
             int colorsAmount;
             ConsoleColor[] colors;
 
-            Title = "Generatio 1.6 Gamma";
+            //  Updating the gallery save  //
+            UpdateStockGallery();          //  For the stock patterns
+            UpdateUserGallery();           //  For the user  patterns
+
+            ResetSettings();               //  Reset the settings to default values
+            //  LoadSettings();            //  Load the settings from the file
+
+            Title = "Generatio 1.7";
             Write("\n\n\n\n\n\n");
-            if (!gIgnoreFullScreenMode) ForceFullScreen();
+            if (!gIgnoreFullScreen) ForceFullScreen();
             Clear();
 
             Write("\n\n\n\n\n\n");    //
@@ -40,19 +48,19 @@ namespace Generatio
 
                     case 2:           // Generating patterns          -----  OPTION 2
 
-                        if (!gGeneratedPatterns) Clear();  // Weird clear code
-                        gGeneratedPatterns = true;         // I really need to re-do this
+                        if (!gGeneratedPatterns) Clear();  // Clear console if never generated any patterns
+                        gGeneratedPatterns = true;         // 
                         Write("\n\n\n\n\n\n");             //
                         PrintLogo();                       //
                         Write("\n\t\t\t\t\t\t\tВыбрано: --- === Генерация узоров === ---\n\n");
 
-                        int Height = GetSize("высот");   //
-                        int Width  = GetSize("ширин");   // Getting the pattern sizes
+                        int height = GetSize("высот");   //
+                        int width  = GetSize("ширин");   // Getting the pattern sizes
 
                         if (ChooseColorType())  //-----------   User colors choice
                         {         
                             // Getting the amount of the colors
-                            colorsAmount = GetColorsAmount(Math.Min(Height, Width));
+                            colorsAmount = GetColorsAmount(Math.Min(height, width));
 
                             // Converting colors from numbers to console colors
                             colors = ConvertColorsToConsole(GetCustomColors(colorsAmount));    
@@ -67,35 +75,36 @@ namespace Generatio
                         }
 
                         // Choosing the best patterns
-                        bestPatterns = GetBestPatterns(colorsAmount, Width, Height);
+                        bestPatterns = GetBestPatterns(colorsAmount, width, height);
 
                         // Printing them
-                        PrintPatterns(bestPatterns, Width, Height, colors);           
+                        PrintPatterns(bestPatterns, width, height, colors);           
 
                         // Write success message
                         Write("\n\n\n\t\tГенерация узоров завершена.\n\n\n\n\n");
-                        gGeneratedPatterns = false;  //  ?    Yeah I still need to figure this out
                         break;
+
 
                     case 3:     // Pattern gallery                    -----  OPTION 3
                         NavigateGallery();  // Navigate the gallery of stored patterns
                         break;
 
 
-                    case 4:     // Generate a canvas of patterns      -----  OPTION 4
+                    case 4:     // Update the gallery                 -----  OPTION 4
+                        UpdateStockGallery();  // Update the stock patterns save
+                        UpdateUserGallery();   // Update the user  patterns save
                         break;
 
 
-                    case 5:     // Generate a pattern by a shortcut   -----  OPTION 5
+                    case 5:     // Change the program settings        -----  OPTION 6
+                        ChangeSettings();      // Update the program settings
+                        break;
+
+                    case 6:     // Generate a pattern by a shortcut   -----  OPTION 5
                                 //
                                 // Absolutely temporary because I want to parse the shortcut straight from the menu
                                 // That way it will save even more time
                         break;
-
-
-                    case 6:     // Change the program settings        -----  OPTION 6
-                        break;
-
 
                     default:    // Exit the program                   -----  OPTION 0
                         break;

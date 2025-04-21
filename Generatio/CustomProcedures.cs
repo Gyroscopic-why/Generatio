@@ -5,9 +5,9 @@ using static System.Console;
 
 using static Generatio.PatternSource;
 using static Generatio.GlobalSettings;
+using static Generatio.GlobalVariables;
 using static Generatio.CustomFunctions;
 using static Generatio.DataManipulation;
-using System.Linq;
 
 
 namespace Generatio
@@ -22,7 +22,7 @@ namespace Generatio
             ushort Counter = 0;
             if (X == 0) X = LargestWindowWidth / 13;
             if (Y == 0) Y = LargestWindowHeight / 26;
-            if (!gNoLimitMode)
+            if (!gNoSizeLimit)
             {
                 if (WindowWidth < X || WindowHeight < Y)
                 {
@@ -41,7 +41,7 @@ namespace Generatio
                     Write(WindowWidth + "x" + WindowHeight);
                     ForegroundColor = ConsoleColor.Black;
                     ReadKey();
-                    if (gGeneratedPatterns == false) Clear();
+                    if (!gGeneratedPatterns) Clear();
                 }
                 if (Counter > 1) Write("\n\n");
                 ForegroundColor = ConsoleColor.White;
@@ -108,6 +108,10 @@ namespace Generatio
             }
 
 
+            //  Get a file name for the patterns
+            if (_fileName == "") _fileName = Environment.UserName + ".patterns";
+
+
             //  Convert the colors to a byte array for a string code transformation
             byte[] _colorBytes = ConvertColorsToBytes(_colors);
 
@@ -157,7 +161,7 @@ namespace Generatio
                 };
 
                 if (_path == "") _path = gGalleryPath;
-                SaveData(_path, _fileName, _patternData, true, _showInfo);
+                SaveData(_path, _fileName, _patternData, true, _showInfo, false, "\t\t");
                 Write("\n\n");
             }
         }
@@ -612,22 +616,22 @@ namespace Generatio
         {
             //  Pattern are stored in the dictionary for easy access
             var Patterns = new Dictionary<byte, Action>()  {
-                { 1, () => Pattern1(X, Y, Colors, true, gAutoSave, gDevMode) },
-                { 2, () => Pattern2(X, Y, Colors, true, gAutoSave, gDevMode) },
-                { 3, () => Pattern3(X, Y, Colors, true, gAutoSave, gDevMode) },
-                { 4, () => Pattern4(X, Y, Colors, true, gAutoSave, gDevMode) },
-                { 5, () => Pattern5(X, Y, Colors, true, gAutoSave, gDevMode) },
-                { 6, () => Pattern6(X, Y, Colors, true, gAutoSave, gDevMode) },
-                { 7, () => Pattern7(X, Y, Colors, true, gAutoSave, gDevMode) },
-                { 8, () => Pattern8(X, Y, Colors, true, gAutoSave, gDevMode) },
-                { 9, () => Pattern9(X, Y, Colors, true, gAutoSave, gDevMode) }
+                { 1, () => Pattern1(X, Y, Colors, true, gAutoSave, gShowInfo) },
+                { 2, () => Pattern2(X, Y, Colors, true, gAutoSave, gShowInfo) },
+                { 3, () => Pattern3(X, Y, Colors, true, gAutoSave, gShowInfo) },
+                { 4, () => Pattern4(X, Y, Colors, true, gAutoSave, gShowInfo) },
+                { 5, () => Pattern5(X, Y, Colors, true, gAutoSave, gShowInfo) },
+                { 6, () => Pattern6(X, Y, Colors, true, gAutoSave, gShowInfo) },
+                { 7, () => Pattern7(X, Y, Colors, true, gAutoSave, gShowInfo) },
+                { 8, () => Pattern8(X, Y, Colors, true, gAutoSave, gShowInfo) },
+                { 9, () => Pattern9(X, Y, Colors, true, gAutoSave, gShowInfo) }
             };
 
             byte _randomId = 255;
             byte[] _usedIds = new byte[BestPatterns.Length];
 
             for (int i = 0; i < BestPatterns.Length; i++) _usedIds[i] = 255;
-            if (!gIgnoreFullScreenMode) ForceFullScreen(2 * X, Y);
+            if (!gIgnoreFullScreen) ForceFullScreen(2 * X, Y);
             Write("\n\n\n\t\t\t\t\tВот лучшие сгенерированые узоры:\n\n");
 
             for (byte i = 0; i < 2 * BestPatterns.Length; i++)
@@ -645,7 +649,7 @@ namespace Generatio
             if (gAlwaysGenerate || Continue())
             {   // Asking if the user wants to generate more patters
 
-                if (!gIgnoreFullScreenMode) ForceFullScreen(2 * X, Y);
+                if (!gIgnoreFullScreen) ForceFullScreen(2 * X, Y);
                 for (byte i = 1; i < Patterns.Count; i++)
                 {
                     for (byte j = 0; j < BestPatterns.Length; j++)
