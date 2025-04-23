@@ -56,40 +56,24 @@ namespace Generatio
 
             public void Generate()
             {
-                switch (patternType)
-                {
-                    case 1:
-                        Pattern1(width, height, ConvertColorsToConsole(colors), true, false, gShowInfo);
-                        break;
-                    case 2:
-                        Pattern2(width, height, ConvertColorsToConsole(colors), true, false, gShowInfo);
-                        break;
-                    case 3:
-                        Pattern3(width, height, ConvertColorsToConsole(colors), true, false, gShowInfo);
-                        break;
-                    case 4:
-                        Pattern4(width, height, ConvertColorsToConsole(colors), true, false, gShowInfo);
-                        break;
-                    case 5:
-                        Pattern5(width, height, ConvertColorsToConsole(colors), true, false, gShowInfo);
-                        break;
-                    case 6:
-                        Pattern6(width, height, ConvertColorsToConsole(colors), true, false, gShowInfo);
-                        break;
-                    case 7:
-                        Pattern7(width, height, ConvertColorsToConsole(colors), true, false, gShowInfo);
-                        break;
-                    case 8:
-                        Pattern8(width, height, ConvertColorsToConsole(colors), true, false, gShowInfo);
-                        break;
-                    case 9:
-                        Pattern9(width, height, ConvertColorsToConsole(colors), true, false, gShowInfo);
-                        break;
-                    default:
-                        break;
-                }
+                //  All posible pattern types dictionary
+                var patterns = new Dictionary<byte, Action>()  {
+                    { 1,  () => Pattern1 (width, height, ConvertColorsToConsole(colors), true, false, gShowInfo) },
+                    { 2,  () => Pattern2 (width, height, ConvertColorsToConsole(colors), true, false, gShowInfo) },
+                    { 3,  () => Pattern3 (width, height, ConvertColorsToConsole(colors), true, false, gShowInfo) },
+                    { 4,  () => Pattern4 (width, height, ConvertColorsToConsole(colors), true, false, gShowInfo) },
+                    { 5,  () => Pattern5 (width, height, ConvertColorsToConsole(colors), true, false, gShowInfo) },
+                    { 6,  () => Pattern6 (width, height, ConvertColorsToConsole(colors), true, false, gShowInfo) },
+                    { 7,  () => Pattern7 (width, height, ConvertColorsToConsole(colors), true, false, gShowInfo) },
+                    { 8,  () => Pattern8 (width, height, ConvertColorsToConsole(colors), true, false, gShowInfo) },
+                    { 9,  () => Pattern9 (width, height, ConvertColorsToConsole(colors), true, false, gShowInfo) },
+                    { 10, () => Pattern10(width, height, ConvertColorsToConsole(colors), true, false, gShowInfo) },
+                };
+
+                //  Generete the chosen pattern from the dictionary
+                patterns[patternType]();
             }
-                 //  Universal pattern generation by code
+            //  Universal pattern generation by code
 
             public byte GetPatternType() { return patternType; }
                  //  Returns the pattern type
@@ -119,7 +103,7 @@ namespace Generatio
         
         static public List<GalleryPattern> ConvertToGalleryPattern(List<string> _data, bool _showInfo = false)
         {
-            if (_data != null && _data.Count > 2)
+            if (_data != null && _data.Count > 1)
             {
                 //  Storing here the successfully converted gallery patterns
                 List<GalleryPattern> _converted = new List<GalleryPattern>();
@@ -128,15 +112,14 @@ namespace Generatio
                 List<byte> _colors = new List<byte>();
 
                 string _name = "Unnamed";
-                byte _patternType = 0;
-                ushort _width = 0;
-                ushort _height = 0;
-                ushort _colAmount = 0;
+                byte _patternType;
+                ushort _width;
+                ushort _height;
+                ushort _expectedColAmount;
 
                 for (int i = 0; i < _data.Count; i++)
                 {
-                    //  If the line is expected to not have pattern data
-                    //  But the name - we parse it
+                    //  If the line is expected to have the pattern name
                     if (_data[i].IndexOf(",") == -1)
                     {
                         _name = _data[i].Trim();
@@ -144,39 +127,126 @@ namespace Generatio
                         if (_showInfo)
                         {
                             //  Show the name of the pattern
-                            Write("\n\t\tУспешно распознанно название узора: " + _name + "\n");
+                            Write("\n\t\tРаспознанно название узора: " + _name + "\n");
                         }
                     }
 
                     //  If the line is expected to have pattern data
                     else
                     {
-                        //  Try get the special character indicating base pattern data
+                        //  Transform the data into more easily usable
                         _parserHelper = SplitForParsing(_data[i], ",");
 
-                        //  If found the special char - try parse base pattern data
-                        if (_parserHelper[0][0] == '!')
+                        //  If the data is at lest a full pattern with 2+ colors
+                        if (_parserHelper.Length > 5)
                         {
-
-                            //  Try parse the pattern Type
-                            if (byte.TryParse(_parserHelper[0].Replace("!", "").Trim(), out _patternType))
+                            //  Try parse the pattern type
+                            if (byte.TryParse(_parserHelper[0], out _patternType)
+                                && _patternType > 0 && _patternType < 11)
                             {
-
                                 //  Try parse the pattern size
                                 if (ushort.TryParse(_parserHelper[1].Trim(), out _width)
-                                    && ushort.TryParse(_parserHelper[2].Trim(), out _height))
+                                    && ushort.TryParse(_parserHelper[2].Trim(), out _height)
+                                    && _width > 0 && _height > 0)
                                 {
-
-                                    //  Try parse the amount of colors
-                                    if (ushort.TryParse(_parserHelper[3].Trim(), out _colAmount))
+                                    //  Try parse the amount of colors (2+ not 0 and not 1)
+                                    if (ushort.TryParse(_parserHelper[3].Trim(), out _expectedColAmount)
+                                        && _expectedColAmount > 1)
                                     {
+                                        //  Show the parsed base parameters
                                         if (_showInfo)
                                         {
-                                            //  Show the amount of colors
                                             Write("\n\t\tУспешно распознанны базовые параметры!");
                                             Write("\n\t\tТип узора: " + _patternType);
                                             Write("\n\t\tРазмеры узора: " + _width + "x" + _height);
-                                            Write("\n\t\tКоличество цветов: " + _colAmount + "\n");
+                                            Write("\n\t\tКоличество цветов: " + _expectedColAmount + "\n");
+                                        }
+
+                                        //  Try parse the colors
+                                        for (int j = 4; j < 4 + _expectedColAmount; j++)
+                                        {
+                                            //  If the color is out of bounds - break from loop
+                                            if (j >= _parserHelper.Length) j += _expectedColAmount;
+                                            else
+                                            {
+                                                //  Try parse the color
+                                                if (byte.TryParse(_parserHelper[j], out byte _holdColor))
+                                                {
+                                                    //  If the color is valid - add it to the list
+                                                    _colors.Add(_holdColor);
+                                                }
+                                                else if (_showInfo)
+                                                {
+                                                    //  If the color is invalid - output error
+                                                    Write("\n\t\tНе удалось распознать цвет: " + _parserHelper[j] + "\n");
+                                                }
+                                            }
+                                        }
+
+                                        //  Print the parsed colors
+                                        if (_showInfo)
+                                        {
+                                            if (_colors.Count > 0)
+                                            {
+                                                Write("\n\t\tУспешно распознанны цвета: ");
+                                                for (int j = 0; j < _colors.Count; j++)
+                                                {
+                                                    //  Convert colors to a byte array
+                                                    //  For the special display feature
+                                                    byte[] _colorBuffer = new byte[_colors.Count];
+                                                    for (int k = 0; k < _colors.Count; k++) _colorBuffer[k] = _colors[k];
+
+
+                                                    //  Show the successfully parsed color
+                                                    ForegroundColor = ConvertColorsToConsole(_colorBuffer)[j];
+                                                    if (_colorBuffer[j] == 15) BackgroundColor = ConsoleColor.White;
+                                                    Write(_colors[j]);
+
+
+                                                    // Reset text highlighting
+                                                    BackgroundColor = ConsoleColor.Black;
+                                                    ForegroundColor = ConsoleColor.White;
+                                                    Write("  ");
+                                                }
+                                            }
+                                            else
+                                            {
+                                                //  If the color parsing failed - output error
+                                                Write("\n\t\tНе удалось распознать цвета\n");
+                                            }
+                                        }
+
+
+                                        //  After data parsing and conversion
+                                        //  We check if we have enough data to check for its validation
+                                        if (_patternType > 0 && _width > 0 && _height > 0 && _expectedColAmount > 0 && _colors.Count > 0)
+                                        {
+                                            //  If the real (parsed) colors amount is equal to the expected one
+                                            if (_colors.Count == _expectedColAmount)
+                                            {
+                                                //  Add the successfully converted pattern to the list
+                                                _converted.Add(new GalleryPattern(_patternType, _width, _height, _expectedColAmount, _colors.ToArray(), _name));
+
+                                                if (_showInfo)
+                                                {
+                                                    //  Highlight the success of a pattern conversion
+                                                    ForegroundColor = ConsoleColor.Green;
+                                                    Write("\n\t\tУспешно распознан узор!\n");
+                                                    ForegroundColor = ConsoleColor.White;
+                                                }
+                                            }
+                                            else if (_showInfo)
+                                            {
+                                                //  Highlight pattern conversion error
+                                                ForegroundColor = ConsoleColor.Red;
+                                                Write("\n\t\tОшибка данных: настоящее количество цветов не совпадает с указанным");
+                                                ForegroundColor = ConsoleColor.White;
+                                                Write("\n\t\tУказано: " + _expectedColAmount + ", обнаружено: " + _colors.Count + "\n");
+                                            }
+
+                                            //  Reset the colors and name to avoid data mixing
+                                            _name = "Unnamed";
+                                            _colors.Clear();
                                         }
                                     }
                                     else if (_showInfo)
@@ -185,121 +255,20 @@ namespace Generatio
                                         Write("\n\t\tНе удалось распознать количество цветов: " + _parserHelper[3] + "\n");
                                 }
                                 //  Show error parsing the size if needed
-                                else if (_showInfo) Write("\n\t\tНе удалось распознать размеры узора: " + _parserHelper[1] + " " + _parserHelper[2] + "\n");
+                                else if (_showInfo) Write("\n\t\tНе удалось распознать размеры узора: " + _parserHelper[1] + "x" + _parserHelper[2] + "\n");
                             }
                             //  Show error parsing the type if needed
                             else if (_showInfo) Write("\n\t\tНе удалось распознать тип узора: " + _parserHelper[0] + "\n");
-
-
-                            /*  
-                             *  Trying to parse the base parameters of a pattern:
-                             *  Type, Width, Height, Amount of colors
-                             *  
-                             *  Saving them (if succeded)
-                             *  Else outputing an error
-                             *  And moving to the next line
-                             *  (Where we expect the colors to be)
-                             */
-                        }
-
-
-                        /*
-                         *  If the line doesnt indicate of the storing of:
-                         *  Pattern name, or base parameters
-                         *  =>  Then we look for colors in it
-                        */
-
-                        else
-                        {
-                            for (int j = 0; j < _parserHelper.Length; j++)
-                            {
-                                if (byte.TryParse(_parserHelper[j], out byte _holdColor))
-                                {
-                                    //  If the color is valid - add it to the list
-                                    _colors.Add(_holdColor);
-                                }
-                                else if (_showInfo)
-                                {
-                                    //  If the color is invalid - output error
-                                    Write("\n\t\tНе удалось распознать цвет: " + _parserHelper[j] + "\n");
-                                }
-                            }
-                            if (_showInfo)
-                            {
-                                if (_colors.Count > 0)
-                                {
-                                    Write("\n\t\tУспешно распознанны цвета: ");
-                                    for (int j = 0; j < _colors.Count; j++)
-                                    {
-                                        //  Convert colors to a byte array
-                                        //  For the special display feature
-                                        byte[] _colorBuffer = new byte[_colors.Count];
-                                        for (int k = 0; k < _colors.Count; k++) _colorBuffer[k] = _colors[k];
-
-
-                                        //  Show the successfully parsed color
-                                        ForegroundColor = ConvertColorsToConsole(_colorBuffer)[j];
-                                        if (_colorBuffer[j] == 15) BackgroundColor = ConsoleColor.White;
-                                        Write(_colors[j]);
-
-                                        // Reset text highlighting
-                                        BackgroundColor = ConsoleColor.Black;
-                                        ForegroundColor = ConsoleColor.White;
-                                        Write("  ");
-                                    }
-                                }
-                                else
-                                {
-                                    //  If the color parsing failed - output error
-                                    Write("\n\t\tНе удалось распознать цвета\n");
-                                }
-                            }
                         }
                     }
-
-                    //  After data parsing and conversion
-                    //  We check if we have enough data to check for its validation
-                    if (_patternType > 0 && _width > 0 && _height > 0 && _colAmount > 0 && _colors.Count > 0)
-                    {
-                        //  If the real parsed colors amount is equal to the expected one
-                        if (_colors.Count == _colAmount)
-                        {
-                            //  Add the successfully converted pattern to the list
-                            _converted.Add(new GalleryPattern(_patternType, _width, _height, _colAmount, _colors.ToArray(), _name));
-
-                            if (_showInfo)
-                            {
-                                //  Highlight the success of a pattern conversion
-                                ForegroundColor = ConsoleColor.Green;
-                                Write("\n\t\tУспешно распознан узор!\n");
-                                ForegroundColor = ConsoleColor.White;
-                            }
-                        }
-                        else if (_showInfo)
-                        {
-                            //  Highlight pattern conversion error
-                            ForegroundColor = ConsoleColor.Red;
-                            Write("\n\t\tОшибка данных: настоящее количество цветов не совпадает с указанным");
-                            ForegroundColor = ConsoleColor.White;
-                            Write("\n\t\tУказано: " + _colAmount + ", обнаружено: " + _colors.Count + "\n");
-                        }
-
-                        //  Reset the parameters to avoid data mixing
-                        _name = "Unnamed";
-                        _patternType = 0;
-                        _width = 0;
-                        _height = 0;
-                        _colAmount = 0;
-                        _colors.Clear();
-
-                        if (_showInfo) Write("\n\t\tПараметры были сброшены\n");
-                    }
-
                 }
 
-
-                //  Show the amount of successfully converted patterns
-                if (_showInfo) Write("\n\t\tУспешно обнаружено: " + _converted.Count + " узоров" + "\n");
+                //  Show the amount of successfully converted patterns or an error
+                if (_showInfo)
+                {
+                    if (_converted.Count > 0) Write("\n\t\tУспешно обнаружено: " + _converted.Count + " узоров" + "\n");
+                    else Write("\n\t\tНе удалось распознать сохранённые узоры: Некорректный формат данных\n");
+                }
 
                 //  Return the successfully converted patterns
                 return _converted;
@@ -311,10 +280,127 @@ namespace Generatio
         }
 
 
+        static public List<int> ParseGalleryChoice(int _gallerySize, out bool _choiceIsExit)
+        {
+            string _userInput;
+
+            //  Final list of all parsed patterns
+            List<int> _parsedId = new List<int>();
+            
+            //  Temporary buffer for the help of parsing the user input
+            int[] _helperId = new int[2];
+
+
+            //  Get the user input
+            Write("\n\t\t[->] - Ваш выбор: ");
+            _userInput = ReadLine().Trim();
+
+
+            //  Gallery exit logic
+            if (_userInput == "0")
+            {
+                _choiceIsExit = true;
+                return null;
+            }
+
+
+            //  If not exit - get the chosen patterns
+            //
+            //  Parse single pattern choice
+            if (int.TryParse(_userInput, out _helperId[0]))
+            {
+                if (_helperId[0] > 0 && _helperId[0] < _gallerySize + 1)
+                {
+                    _parsedId.Add(_helperId[0] - 1);
+                    Write("\n\t\tРаспознанный узор: " + _helperId[0] + "\n\n");
+                }
+                else if (_helperId[0] != 0) Write("\n\t\tИндекс вне границ базы данных. Повторите ввод");
+            }
+
+            //  Parse multiple patterns choice
+            else
+            {
+                string[] _multiId = SplitForParsing(_userInput, "-/, ");
+                string _splitters = GetSplitters(_userInput, "-/, ");
+
+                if (_multiId.Length > 1)
+                {
+                    for (int i = 0; i < _multiId.Length - 1; i += 2)
+                    {
+                        if (_multiId[i] != null && _multiId[i + 1] != null)
+                        {
+                            if (int.TryParse(_multiId[i].Trim(), out _helperId[0])
+                                && int.TryParse(_multiId[i + 1].Trim(), out _helperId[1]))
+                            {
+
+                                if (_splitters[i / 2] == '-')
+                                {
+
+                                    //-----------  Limit the parsed intervals  -----------//
+                                    //                                                    //
+                                    _helperId[0] = Math.Min(_helperId[0], _gallerySize);  //
+                                    _helperId[0] = Math.Max(_helperId[0], 1);             //
+                                                                                          //
+                                    _helperId[1] = Math.Min(_helperId[1], _gallerySize);  //
+                                    _helperId[1] = Math.Max(_helperId[1], 1);             //
+                                                                                          //                                                    //
+                                    //-----------  Limit the parsed intervals  -----------//
+
+
+                                    // Print success message
+                                    Write("\n\t\tРаспознан интервал с " + _helperId[0] + " по " + _helperId[1]);
+
+
+                                    // Check for a normal interval (from lower to bigger)
+                                    for (int j = 0; j <= _helperId[1] - _helperId[0]; j++)
+                                    {
+                                        // Add normal interval
+                                        _parsedId.Add(_helperId[0] + j - 1);
+                                    }
+
+
+                                    // Check for an inverted interval (from bigger to lower)
+                                    for (int j = 0; j <= _helperId[0] - _helperId[1]; j++)
+                                    {
+                                        // Add inverted interval
+                                        _parsedId.Add(_helperId[0] - j - 1);
+                                    }
+                                }
+                                else if (_splitters[i / 2] == '/' || _splitters[i / 2] == ',' || _splitters[i / 2] == ' ')
+                                {
+                                    if (int.TryParse(_multiId[i], out _helperId[0]))
+                                    {
+                                        if (_helperId[0] > 0 && _helperId[0] < _gallerySize + 1)
+                                        {
+                                            _parsedId.Add(_helperId[0] - 1);
+                                            Write("\n\t\tРаспознанный узор: " + _helperId[0] + "\n\n");
+                                        }
+                                    }
+                                    if (int.TryParse(_multiId[i + 1], out _helperId[1]))
+                                    {
+                                        if (_helperId[1] > 0 && _helperId[1] < _gallerySize + 1)
+                                        {
+                                            _parsedId.Add(_helperId[1] - 1);
+                                            Write("\n\t\tРаспознанный узор: " + _helperId[1] + "\n\n");
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                else Write("\n\t\tНе удалось распознать значения диапозона. Повторите ввод");
+            }
+
+            _choiceIsExit = false;
+            return _parsedId;
+        }
+
+
         static public void UpdateStockGallery()
         {
             //  Read the stock data for the gallery
-            List<string> _parsedData = ReadData(gGalleryPath, "stock1.patterns", gShowInfo, false, "\t\t");
+            List<string> _parsedData = ReadData(gGalleryPath, "1stock.patterns", gShowInfo, false, "\t\t");
             
             //  Parse the data into more easily usable
             _parsedData = ParseData(_parsedData, true, true, "*", "", "*", gShowInfo, false, "\t\t");
@@ -337,9 +423,13 @@ namespace Generatio
             for(int i = 0; i < _patternFiles.Count; i++)
             {
                 //  Check if the file doesnt have the .patterns extention
-                if (_patternFiles[i].IndexOf(".patterns", _patternFiles[i].Length - 9) == -1)
+                if (_patternFiles[i].Length < 9 ||
+                    _patternFiles[i].IndexOf(".patterns", _patternFiles[i].Length - 9) == -1 ||
+                    _patternFiles[i].IndexOf("stock.") != -1)
                 {
-                    //  Remove the unrelated file
+                    //  Remove the unrelated file, including:
+                    //  - Not .patterns files
+                    //  - Stock patterns
                     _patternFiles.RemoveAt(i);
                     i--;
                 }
@@ -446,13 +536,11 @@ namespace Generatio
 
         static public void NavigateGallery()
         {
-            string _userInput = "";
+            //  Logic for exiting the gallery
+            bool _exitFlag = false;
 
-            //  Temporary buffer for the help of parsing the user input
-            int[] _helperId = new int[2];
-
-            //  List of Gallrey ids that the user wants to see
-            List<int> _parsedId = new List<int>();
+            //  Choice of all the patterns the user wants to see
+            List<int> _choice;
 
             //  Amount of different patterns in the gallery
             int _stockAmount = GalleryStock.Count;
@@ -461,161 +549,88 @@ namespace Generatio
             //  Amount of patterns present in the gallery
             int _gallerySize = _stockAmount + _userAmount;
 
-            for (int hide = 0; hide < 1; hide++)
+            WriteGalleryInfo(_stockAmount, _userAmount);
+
+            //  While the user doesnt want to exit, show him the gallery
+            while (!_exitFlag)
             {
-                Write("\n\n");
+                //  Get the user pattern choice
+                _choice = ParseGalleryChoice(_gallerySize, out _exitFlag);
 
-                ForegroundColor = ConsoleColor.DarkCyan;
-                Write("\n\t\t\t\t\tДобро пожаловать в галерею!\n");
-                ForegroundColor = ConsoleColor.White;
-                Write("\n\t\tЗдесь хранятся стоковые и ваши сохранённые узоры, а так же их параметры.");
-                Write("\n\t\tНа данный момент узоров в галереи: " + _gallerySize + "\n");
-
-                if (_gallerySize > 0)
+                //  If the input is not (invalid or exit)
+                if (_choice != null)
                 {
-                    Write("\n\t\tДля просмотра узоров введите:");
-                    Write("\n\t\t  Одно число - для просмотра одного узора (под этим номером)");
-                    Write("\n\t\t  Два числа через '-' - для просмотра узоров под номерами от первого до второго числа");
-                    Write("\n\t\t  Несколько чисел через '/' - для просмотра нескольких узоров (только под этими номерами)\n\n");
-
-
-                    ForegroundColor = ConsoleColor.DarkGray;
-                    Write("\n\t\tПримеры ввода:");
-                    Write("\n\t\t  '12'       - будет показан только один узор (под этим номером в базе данных)");
-                    Write("\n\t\t  '3-8'      - будут показаны узоры под номерами 3, 4, 5, 6, 7 и 8 (от первого числа до второго)");
-                    Write("\n\t\t  '15/2/7/1' - будут показаны узоры под номерами 15, 2, 7 и 1 в таком же порядке как они были введены\n\n");
-                    ForegroundColor = ConsoleColor.White;
-
-
-                    Write("\n\t\tПри вводе числа, будет выведен узор под этим номером, а также его параметры.");
-                    Write("\n\t\tОни включают в себя тип, размеры узоров, количество цветов и сами цвета.\n");
-
-                    Write("\n\t\tПараметры будут выглядеть как набор чисел с разделениями:");
-                    ForegroundColor = ConsoleColor.Green;
-                    Write("\n\t\t   Тип узора/Ширина/Высота/Количество цветов/Цвет1-Цвет2-Цвет3...\n");
-                    ForegroundColor = ConsoleColor.White;
-
-                    Write("\n\n\n\t\t\t\tДоступный функционал:");
-                }
-                else
-                {
-                    Write("\n\n\t\t[!]  - На данный момент галерея пуста   :(\n");
-                    Write("\n\t\t       Не забывайте сохранять свои узоры - чтобы они появлялись здесь");
-                    Write("\n\t\t[i]  - Совет: проверьте правильность указанного пути к сохранённым узорам\n\n");
-                }
-                if (_stockAmount > 0)
-                {
-                    Write("\n\t\t\t[");
-                    Write(1 + "-" + _stockAmount);
-                    Write("]\t- Стоковые узоры");
-                }
-                if (_userAmount > 0)
-                {
-                    Write("\n\t\t\t[");
-                    Write(_stockAmount + 1 + "-" + _gallerySize);
-                    Write("]\t- Пользовательские узоры");
-                }
-                Write("\n\t\t\t[0]\t- Выход из галереи\n");
-            }
-
-            while (_userInput != "0")
-            {
-                Write("\n\t\tВаш выбор: ");
-                _userInput = ReadLine().Trim();
-
-                if (int.TryParse(_userInput, out _helperId[0]))
-                {
-                    if (_helperId[0] > 0 && _helperId[0] < _gallerySize + 1)
+                    //  Print every chosen pattern
+                    for (int i = 0; i < _choice.Count; i++)
                     {
-                        _parsedId.Add(_helperId[0] - 1);
-                        Write("\n\t\tРаспознанный узор: " + _helperId[0] + "\n\n");
+                        Write("\n\n");
+                        if (_choice[i] < _stockAmount) GalleryStock[_choice[i]].Generate();
+                        else GalleryUser[_choice[i] - _stockAmount].Generate();
                     }
-                    else if (_helperId[0] != 0) Write("\n\t\tИндекс вне границ базы данных. Повторите ввод");
                 }
-                else
-                {
-                    string[] _multiId = SplitForParsing(_userInput, "-/, ");
-                    string _splitters = GetSplitters(_userInput, "-/, ");
-
-                    if (_multiId.Length > 1)
-                    {
-                        for (int i = 0; i < _multiId.Length - 1; i += 2)
-                        {
-                            //Write(_splitters);
-                            if (_multiId[i] != null && _multiId[i + 1] != null)
-                            {
-                                if (int.TryParse(_multiId[i].Trim(), out _helperId[0])
-                                    && int.TryParse(_multiId[i + 1].Trim(), out _helperId[1]))
-                                {
-
-                                    if (_splitters[i / 2] == '-')
-                                    {
-
-                                        //-----------  Limit the parsed intervals  -----------//
-                                        //                                                    //
-                                        _helperId[0] = Math.Min(_helperId[0], _gallerySize);   //
-                                        _helperId[0] = Math.Max(_helperId[0], 1);             //
-                                                                                              //
-                                        _helperId[1] = Math.Min(_helperId[1], _gallerySize);   //
-                                        _helperId[1] = Math.Max(_helperId[1], 1);             //
-                                        //                                                    //
-                                        //-----------  Limit the parsed intervals  -----------//
-
-
-                                        // Print success message
-                                        Write("\n\t\tРаспознан интервал с " + _helperId[0] + " по " + _helperId[1]);
-
-
-                                        // Check for a normal interval (from lower to bigger)
-                                        for (int j = 0; j <= _helperId[1] - _helperId[0]; j++)
-                                        {
-                                            // Add normal interval
-                                            _parsedId.Add(_helperId[0] + j - 1);
-                                        }
-
-
-                                        // Check for an inverted interval (from bigger to lower)
-                                        for (int j = 0; j <= _helperId[0] - _helperId[1]; j++)
-                                        {
-                                            // Add inverted interval
-                                            _parsedId.Add(_helperId[0] - j - 1);
-                                        }
-                                    }
-                                    else if (_splitters[i / 2] == '/' || _splitters[i / 2] == ',' || _splitters[i / 2] == ' ')
-                                    {
-                                        if (int.TryParse(_multiId[i], out _helperId[0]))
-                                        {
-                                            if (_helperId[0] > 0 && _helperId[0] < _gallerySize + 1)
-                                            {
-                                                _parsedId.Add(_helperId[0] - 1);
-                                                Write("\n\t\tРаспознанный узор: " + _helperId[0] + "\n\n");
-                                            }
-                                        }
-                                        if (int.TryParse(_multiId[i + 1], out _helperId[1]))
-                                        {
-                                            if (_helperId[1] > 0 && _helperId[1] < _gallerySize + 1)
-                                            {
-                                                _parsedId.Add(_helperId[1] - 1);
-                                                Write("\n\t\tРаспознанный узор: " + _helperId[1] + "\n\n");
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    else Write("\n\t\tНе удалось распознать значения диапозона. Повторите ввод");
-                }
-                for (int i = 0; i < _parsedId.Count; i++)
-                {
-                    Write("\n\n");
-                    if (_parsedId[i] < _stockAmount) GalleryStock[_parsedId[i]].Generate();
-                    else GalleryUser[_parsedId[i] - _stockAmount].Generate();
-                }
-                _parsedId.Clear();
             }
-
         }
-             // For navigating the stored patterns (gallery)
+        // For navigating the stored patterns (gallery)
+
+
+        static public void WriteGalleryInfo(int _stockGallerySize, int _userGallerySize)
+        {
+            //  Full gallery size
+            int _gallerySize = _stockGallerySize + _userGallerySize;
+
+            Write("\n\n");
+
+            ForegroundColor = ConsoleColor.DarkCyan;
+            Write("\n\t\t\t\t\tДобро пожаловать в галерею!\n");
+            ForegroundColor = ConsoleColor.White;
+            Write("\n\t\tЗдесь хранятся стоковые и ваши сохранённые узоры, а так же их параметры.");
+            Write("\n\t\tНа данный момент узоров в галереи: " + _gallerySize + "\n");
+
+            if (_gallerySize > 0)
+            {
+                Write("\n\t\tДля просмотра узоров введите:");
+                Write("\n\t\t  Одно число - для просмотра одного узора (под этим номером)");
+                Write("\n\t\t  Два числа через '-' - для просмотра узоров под номерами от первого до второго числа");
+                Write("\n\t\t  Несколько чисел через '/' - для просмотра нескольких узоров (только под этими номерами)\n\n");
+
+
+                ForegroundColor = ConsoleColor.DarkGray;
+                Write("\n\t\tПримеры ввода:");
+                Write("\n\t\t  '12'       - будет показан только один узор (под этим номером в базе данных)");
+                Write("\n\t\t  '3-8'      - будут показаны узоры под номерами 3, 4, 5, 6, 7 и 8 (от первого числа до второго)");
+                Write("\n\t\t  '15/2/7/1' - будут показаны узоры под номерами 15, 2, 7 и 1 в таком же порядке как они были введены\n\n");
+                ForegroundColor = ConsoleColor.White;
+
+
+                Write("\n\t\tПри вводе числа, будет выведен узор под этим номером, а также его параметры.");
+                Write("\n\t\tОни включают в себя тип, размеры узоров, количество цветов и сами цвета.\n");
+
+                Write("\n\t\tПараметры будут выглядеть как набор чисел с разделениями:");
+                ForegroundColor = ConsoleColor.Green;
+                Write("\n\t\t   Тип узора/Ширина/Высота/Количество цветов/Цвет1-Цвет2-Цвет3...\n");
+                ForegroundColor = ConsoleColor.White;
+
+                Write("\n\n\n\t\t\t\tДоступный функционал:");
+            }
+            else
+            {
+                Write("\n\n\t\t[!]  - На данный момент галерея пуста   :(\n");
+                Write("\n\t\t       Не забывайте сохранять свои узоры - чтобы они появлялись здесь");
+                Write("\n\t\t[i]  - Совет: проверьте правильность указанного пути к сохранённым узорам\n\n");
+            }
+            if (_stockGallerySize > 0)
+            {
+                Write("\n\t\t\t[");
+                Write(1 + "-" + _stockGallerySize);
+                Write("]\t- Стоковые узоры");
+            }
+            if (_userGallerySize > 0)
+            {
+                Write("\n\t\t\t[");
+                Write(_stockGallerySize + 1 + "-" + _gallerySize);
+                Write("]\t- Пользовательские узоры");
+            }
+            Write("\n\t\t\t[0]\t- Выход из галереи\n");
+        }
     }
 }

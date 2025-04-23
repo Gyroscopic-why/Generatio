@@ -18,7 +18,7 @@ namespace Generatio
         static public bool Continue()
         {
             bool Generating = false;
-            string UserInput = "";
+            string UserInput;
 
             if (!gIgnoreFullScreen) ForceFullScreen();
 
@@ -242,7 +242,7 @@ namespace Generatio
 
         //------------------------  Returns arrays  -----------------------------------------------------------//
 
-        static public byte[] GetBestPatterns(int AmountOfColors, int X, int Y)
+        static public byte[] GetBestPatterns(int AmountOfColors)
         {
             byte[] BestPatterns = new byte[4];
 
@@ -258,27 +258,28 @@ namespace Generatio
             BestPatterns[3] = 8; //CHOOSING 4 THE BEST PatternS
 
             return BestPatterns;
-        }  
-             // Choose the best patterns
+        }
+        // Choose the best patterns
 
-        static public byte[] GetCustomColors(int Amount)
+        static public byte[] GetCustomColors(int _colAmount)
         {
-            //////EncodingColorKeys//////
-            //if (SelectedColor > 5) SelectedColor = 10 + (SelectedColor - 5) * 3;
-            //else SelectedColor *= 2;
+            //  Final color storing
+            byte[] _colors = new byte[_colAmount];
 
-            //////DecodingColorKeys//////
-            //if (SelectedColor < 13) SelectedColor /= 2;
-            //else SelectedColor = (SelectedColor - 10) / 3 + 5;
+            //  Temporary buffer for currently selected color
+            byte _selectedColor = 0;
 
-            byte[] Colors = new byte[Amount];
+            //  Temporary buffer for the user input
+            string _userInput = "";
 
-            byte SelectedColor = 1;
-            string UserInput = "";
-            bool UniqueColor = false;
-            bool RightColor;
+            //  Amount of the different chosen colors (to get at least 2 different colors from the bunch)
+            bool _differentColors = false;
+            byte _lastColor = 0; 
 
-            ////////////WRITING POSSIBLE OPTIONS//////////////////
+            //  Flag for parsing the currently selected color
+            bool _validColor;
+
+            //-------------  WRITING INFO  --------------------//
 
             Write("\n\n\n\t\t\t\t\tЦвета на выбор:\n\n");
             for (int i = 0; i < 16; i++)
@@ -299,8 +300,10 @@ namespace Generatio
                     BackgroundColor = ConsoleColor.Black;
                     Write("    -    ");
                 }
-                if (i > 5) Write(gColorNames[i] + " - " + gColorKeySigns[9 + (i - 5) * 3] + "/" + gColorKeySigns[9 + (i - 5) * 3 + 1] + "/" + gColorKeySigns[9 + (i - 5) * 3 + 2] + "/" + i);
-                else Write(gColorNames[i] + " - " + gColorKeySigns[i * 2] + "/" + gColorKeySigns[i * 2 + 1] + "/" + i);
+                //if (i > 5) Write(gColorNames[i] + " - " + gColorKeySigns[9 + (i - 5) * 3] + "/" + gColorKeySigns[9 + (i - 5) * 3 + 1] + "/" + gColorKeySigns[9 + (i - 5) * 3 + 2] + "/" + i);
+                //else Write(gColorNames[i] + " - " + gColorKeySigns[i * 2] + "/" + gColorKeySigns[i * 2 + 1] + "/" + i);
+
+                Write(gColorNames[i] + " - " + gColorKeySigns[i * 3] + "/" + gColorKeySigns[i * 3 + 1] + "/" + gColorKeySigns[i * 3 + 2] + "/" + i);
                 BackgroundColor = ConsoleColor.Black;
                 WriteLine();
             }
@@ -308,83 +311,159 @@ namespace Generatio
             ForegroundColor = ConsoleColor.White;
             BackgroundColor = ConsoleColor.Black;
 
-            /////////////USEFUL INFORMATION////////////////////////
+            //---------------  USEFUL INFORMATION  ------------------------//
 
-            Write("\n\t\t\t\tВводите цвета которые хотите использовать\n");
-            Write("\t\t\t\tВ том же порядке, который должен присутствовать в финальном узоре\n");
-            Write("\t\t\t\tЦвета МОГУТ повторяться если вам это необходимо\n");
-            Write("\t\t\t\tДолжно быть выбрано хотя бы 2 различных цвета\n\n");
+            Write("\n\t\t\t\t[i]  - Вводите цвета которые хотите использовать");
+            Write("\n\t\t\t\tВ том же порядке, который должен присутствовать в финальном узоре");
+            Write("\n\t\t\t\tЦвета МОГУТ повторяться если вам это необходимо");
+            Write("\n\t\t\t\tДолжно быть выбрано хотя бы 2 различных цвета\n");
 
-            ////////////GETTING COLORS////////////////////////////
+            Write("\n\t\t[i]  - Способы ввода цветов:");
+            Write("\n\t\t         > Введите кодовое слово отвечающее за цвет <");
+            Write("\n\t\t         > Слово СЛУЧАЙНО для выбора 1 цвета компьютеров <");
+            Write("\n\t\t         > Слова ВСЕ СЛУЧАЙНО/ВСЕСЛУЧ для выбора всех цветов компьютером <\n");
 
-            for (int i = 0; i < Amount; i++)
+
+            //------------------  GETTING COLORS  ------------------------//
+            for (int i = 0; i < _colAmount; i++)
             {
-                RightColor = false;
-                if (UserInput == "всеслучайно")
+                _validColor = false;
+                while (!_validColor)
                 {
-                    if (i == (Amount - 1) && UniqueColor == false) while (SelectedColor == Colors[i - 1]) SelectedColor = (byte)gRandom.Next(0, 16);
-                    else SelectedColor = (byte)gRandom.Next(0, 16);
-                }
-                else
-                {
-                    while (!RightColor)
+                    //  If we arent generating every color
+                    //  then ask the user for a color choice
+                    if (_userInput != "всеслучайно" && _userInput != "всеслуч")
                     {
-                        Write("\t\tВведите " + (i + 1) + "-ый цвет, или слово СЛУЧАЙНО для выбора 1 цвета компьютеров, или слова ВСЕ СЛУЧАЙНО для выбора всех цветов компьютером: ");
-                        UserInput = ReadLine();
+                        Write("\n\t\t" + (i + 1) + "-ый цвет) ");
 
-                        UserInput = UserInput.ToLower();
-                        UserInput = UserInput.Replace("-", "");
-                        UserInput = UserInput.Replace(" ", "");
-                        UserInput = UserInput.Replace("ё", "е");
-                        if (UserInput == "всеслучайно" || UserInput == "случайно")
+                        //  Get user input
+                        _userInput = ReadLine();
+
+                        //  Parse user input
+                        _userInput = _userInput.ToLower();
+                        _userInput = _userInput.Replace("-", "");
+                        _userInput = _userInput.Replace(" ", "");
+                        _userInput = _userInput.Replace("ё", "е");
+                    }
+
+                    //  Check for a rnd color
+                    if (_userInput == "случайно" || _userInput == "случ" ||
+                        _userInput == "всеслуч" || _userInput == "всеслучайно")
+                    {
+                        //  Choose a random color
+                        _selectedColor = (byte)gRandom.Next(0, 16);
+
+                        //  Check if it it unique 
+                        if (i != 0 && _selectedColor != _lastColor) _differentColors = true;
+                        // Update the last color for the next unique check
+                        _lastColor = _selectedColor; 
+                        
+                        //  If we are already at the last choosable color
+                        if (i == _colAmount - 1)
                         {
-                            if (i == (Amount - 1) && UniqueColor == false) while (SelectedColor == Colors[i - 1]) SelectedColor = (byte)gRandom.Next(0, 16);
-                            else SelectedColor = (byte)gRandom.Next(0, 16);
-                            RightColor = true;
+                            while (!_differentColors)
+                            {
+                                //  Choose a new random color (15/16 chance of being valid)
+                                _selectedColor = (byte)gRandom.Next(0, 16);
+
+                                //  Check if it is unique
+                                //  If so - exit the loop
+                                if (_selectedColor != _lastColor) _differentColors = true;
+                            }
                         }
-                        else
+
+                        //  Set the color flag to valid
+                        _validColor = true;
+                    }
+
+                    //  If not a rnd color - parse the user color choice
+                    else
+                    {
+                        //  Try parse the colors by the number
+                        for (byte j = 0; j < 16; j++)
                         {
-                            for (byte j = 0; j < 16; j++)
+                            //  If the user choice is a valid color number
+                            if (_userInput == j.ToString())
                             {
-                                if (UserInput == j.ToString())
+                                //  Save the color 
+                                _selectedColor = j;
+
+                                // exit the loop
+                                _validColor = true;
+                                j += 16;
+                            }
+                        }
+
+                        //  If number parsing failed
+                        if (!_validColor)
+                        {
+                            //  Try parse by the color keycodes
+                            for (byte j = 0; j < gColorKeySigns.Length && !_validColor; j++)
+                            {
+                                //  If a keycode matches (user choice is a valid color)
+                                if (_userInput == gColorKeySigns[j])
                                 {
-                                    RightColor = true;
-                                    SelectedColor = j;
+                                    //  Save the color
+                                    _selectedColor = (byte)(j / 3);
+
+                                    //  Exit the loop
+                                    _validColor = true;
                                 }
                             }
-                            if (!RightColor)
+                        }
+
+
+                        //  If the color parsing failed (unknown choice) - write error message
+                        if (!_validColor) Write("\t\tНе удалось распознать цвет. Пожалуйста, повторите ввод\n");
+
+                        //  Else if the parsed color is valid
+                        //  
+                        //  But it is the last possible choice for a color
+                        //  And there arent any different colors
+                        else if (i == (_colAmount - 1))
+                        {
+                            //  Unique color check logic
+                            if (i != 0 && _selectedColor != _lastColor) _differentColors = true;
+
+                            if (!_differentColors)
                             {
-                                for (byte j = 0; j < 42 && !RightColor; j++)
-                                {
-                                    if (UserInput == gColorKeySigns[j])
-                                    {
-                                        RightColor = true;
-                                        SelectedColor = j;
-                                        if (SelectedColor < 13) SelectedColor /= 2; //Decoding ColorKey
-                                        else SelectedColor = (byte)((SelectedColor - 10) / 3 + 5); ////////////
-                                    }
-                                }
-                            }
-                            if (!RightColor) Write("\t\tНе удалось распознать цвет. Пожалуйста, повторите ввод. Введите ОДНО ИЗ данных выше обозначений\n");
-                            else if (i == (Amount - 1) && UniqueColor == false && SelectedColor == Colors[i - 1])
-                            {
-                                RightColor = false;
+                                //  Invalidate this color
+                                _validColor = false;
+
+                                //  Write error message
                                 Write("\t\tДолжно быть хотя бы 2 различных цвета\n");
                             }
                         }
-                    }//41 is the length of the key array (amount of KeySigns)
+                    }
                 }
-                if (i != 0 && SelectedColor != Colors[i - 1]) UniqueColor = true;
-                Colors[i] = SelectedColor;
-                Write("\t\tЦвет успешно распознан! ");
-                ForegroundColor = gAllColors[SelectedColor];
-                if (SelectedColor == 15) BackgroundColor = ConsoleColor.White;
-                Write((i + 1) + "-ый цвет: " + gColorNames[SelectedColor]);
+
+                //  Save the valid color
+                _colors[i] = _selectedColor;
+
+
+                //  Unique color check logic
+                if (i != 0 && _selectedColor != _lastColor) _differentColors = true;
+
+                //  Update the last color for the next unique check
+                _lastColor = _selectedColor;
+
+
+                //  Write success message
+                Write("\t\tЦвет распознан! ");
+
+                ForegroundColor = gAllColors[_selectedColor];
+                if (_selectedColor == 15) BackgroundColor = ConsoleColor.White;
+
+                Write((i + 1) + "-ый цвет: " + gColorNames[_selectedColor]);
+
+                //  Reset output formatting
                 BackgroundColor = ConsoleColor.Black;
                 ForegroundColor = ConsoleColor.White;
                 Write("\n");
-            } /////////////Getting every colors except last
-            return Colors;
+            }
+
+            //  Return the selected colors
+            return _colors;
         }                         
              // Get the colors for the custom user choice
 

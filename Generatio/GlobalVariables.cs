@@ -48,21 +48,27 @@ namespace Generatio
             // Color codes for compact and easy parsing of the user input
         static public string[] gColorKeySigns = {
                 "красный",
+                "кр",
                 "к",
 
                 "зеленый",
+                "зел",
                 "з",
 
                 "синий",
+                "син",
                 "с",
 
                 "желтый",
+                "жел",
                 "ж",
 
                 "фиолетовый",
+                "фиол",
                 "ф",
 
                 "голубой",
+                "голуб",
                 "г",
 
                 ////////////////

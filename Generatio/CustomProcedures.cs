@@ -85,9 +85,8 @@ namespace Generatio
         {
             //  Convert parameters into short string codes
             string _patternCode = _type + "/" + X + "/" + Y + "/" + _colAmount + "/";
-            string _formatedCode1 = _type + ", " + X + ", " + Y + ", " + _colAmount;
-            string _formatedCode2;
-
+            string _formatedCode = _type + "," + X + "," + Y + "," + _colAmount + ",";
+            
 
             //  Get a name for an unnamed pattern
             if (_patternName == "")
@@ -118,7 +117,7 @@ namespace Generatio
 
             //  Convert the colors to string codes
             _patternCode += string.Join("-", _colorBytes);
-            _formatedCode2 = string.Join(", ", _colorBytes);
+            _formatedCode += string.Join(",", _colorBytes);
 
 
             //  If dev mode is on - show the pattern info
@@ -126,8 +125,7 @@ namespace Generatio
             {
                 Write("\t\t[i]  - Закодированная информация об узоре:\n");
                 Write("\n\t\t          " + _patternName);
-                Write("\n\t\t          " + _formatedCode1);
-                Write("\n\t\t          " + _formatedCode2 + "\n");
+                Write("\n\t\t          " + _formatedCode + "\n");
 
                 ForegroundColor = ConsoleColor.DarkGray;
                 Write("\n\t\t          > [1] <  -  Название узора");
@@ -146,18 +144,8 @@ namespace Generatio
                     //  So it doesn't remove spaces from the name string
                     "*" + _patternName,
 
-
-                    //  Add base parameters
-                    "!" + _formatedCode1,
-
-
-                    //  Add colors
-                    _formatedCode2,
-
-
-                    //  Add new line for better visual separation
-                    //  (will be skipped by the parser anyway)
-                    "\n"
+                    //  Add parameters + colors
+                    _formatedCode,
                 };
 
                 if (_path == "") _path = gGalleryPath;
@@ -611,6 +599,48 @@ namespace Generatio
 
         //------------------  Pattern related procedures  ----------------------------------------//
 
+        static public void GenerateUserPatternsLogic()
+        {
+            byte[] bestPatterns;
+            int colorsAmount;
+            ConsoleColor[] colors;
+
+            if (!gGeneratedPatterns) Clear();  // Clear console if never generated any patterns
+            gGeneratedPatterns = true;         // 
+            Write("\n\n\n\n\n\n");             //
+            PrintLogo();                       //
+            Write("\n\t\t\t\t\t\t\tВыбрано: --- === Генерация узоров === ---\n\n");
+
+            int height = GetSize("высот");   //
+            int width = GetSize("ширин");   // Getting the pattern sizes
+
+            if (ChooseColorType())  //-----------   User colors choice
+            {
+                // Getting the amount of the colors
+                colorsAmount = GetColorsAmount(Math.Min(height, width));
+
+                // Converting colors from numbers to console colors
+                colors = ConvertColorsToConsole(GetCustomColors(colorsAmount));
+            }
+            else  //-----------------------------   Asset colors choice
+            {
+                // Getting the asset colors array
+                colors = StoredColors[GetAssetColorsID()];
+
+                // Getting the amount of the colors
+                colorsAmount = colors.Length;
+            }
+
+            // Choosing the best patterns
+            bestPatterns = GetBestPatterns(colorsAmount);
+
+            // Printing them
+            PrintPatterns(bestPatterns, width, height, colors);
+
+            // Write success message
+            Write("\n\n\n\t\tГенерация узоров завершена.\n\n\n\n\n");
+        }
+             //  All the logic for generating a user-prompted pattern
 
         static public void PrintPatterns(byte[] BestPatterns, int X, int Y, ConsoleColor[] Colors)
         {

@@ -17,20 +17,18 @@ namespace Generatio
 
         static void Main()
         {
-            OutputEncoding = System.Text.Encoding.Unicode;
+            OutputEncoding = System.Text.Encoding.UTF8;
             string task;
-            byte[] bestPatterns;
-            int colorsAmount;
-            ConsoleColor[] colors;
 
             //  Updating the gallery save  //
             UpdateStockGallery();          //  For the stock patterns
             UpdateUserGallery();           //  For the user  patterns
+            //  -------------------------  //
 
             ResetSettings();               //  Reset the settings to default values
             //  LoadSettings();            //  Load the settings from the file
 
-            Title = "Generatio 1.8";
+            Title = "Generatio 1.9";
             Write("\n\n\n\n\n\n");
             if (!gIgnoreFullScreen) ForceFullScreen();
             Clear();
@@ -47,41 +45,7 @@ namespace Generatio
                         break;
 
                     case "2":           // Generating patterns          -----  OPTION 2
-
-                        if (!gGeneratedPatterns) Clear();  // Clear console if never generated any patterns
-                        gGeneratedPatterns = true;         // 
-                        Write("\n\n\n\n\n\n");             //
-                        PrintLogo();                       //
-                        Write("\n\t\t\t\t\t\t\tВыбрано: --- === Генерация узоров === ---\n\n");
-
-                        int height = GetSize("высот");   //
-                        int width  = GetSize("ширин");   // Getting the pattern sizes
-
-                        if (ChooseColorType())  //-----------   User colors choice
-                        {         
-                            // Getting the amount of the colors
-                            colorsAmount = GetColorsAmount(Math.Min(height, width));
-
-                            // Converting colors from numbers to console colors
-                            colors = ConvertColorsToConsole(GetCustomColors(colorsAmount));    
-                        }
-                        else  //-----------------------------   Asset colors choice
-                        {
-                            // Getting the asset colors array
-                            colors = StoredColors[GetAssetColorsID()];
-
-                            // Getting the amount of the colors
-                            colorsAmount = colors.Length;               
-                        }
-
-                        // Choosing the best patterns
-                        bestPatterns = GetBestPatterns(colorsAmount, width, height);
-
-                        // Printing them
-                        PrintPatterns(bestPatterns, width, height, colors);           
-
-                        // Write success message
-                        Write("\n\n\n\t\tГенерация узоров завершена.\n\n\n\n\n");
+                        GenerateUserPatternsLogic();  // Generate patterns by the user input
                         break;
 
 
@@ -100,7 +64,7 @@ namespace Generatio
                         ChangeSettings();      // Update the program settings
                         break;
 
-                    case "6":     // Generate a pattern by a shortcut   -----  OPTION 5
+                    case "6":   // Generate a pattern by a shortcut   -----  OPTION 5
                                 //
                                 // Absolutely temporary because I want to parse the shortcut straight from the menu
                                 // That way it will save even more time
