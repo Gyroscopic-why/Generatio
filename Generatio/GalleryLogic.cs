@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+
 using static System.Console;
 
 
 using static Generatio.PatternSource;
 using static Generatio.GlobalSettings;
+using static Generatio.GlobalVariables;
 using static Generatio.CustomFunctions;
+using static Generatio.CustomProcedures;
 using static Generatio.DataManipulation;
 
 
@@ -400,7 +403,7 @@ namespace Generatio
         static public void UpdateStockGallery()
         {
             //  Read the stock data for the gallery
-            List<string> _parsedData = ReadData(gGalleryPath, "1stock.patterns", gShowInfo, false, "\t\t");
+            List<string> _parsedData = ReadData(gGalleryPath, "1stock.patterns", gShowInfo, false, "\t\t", "\n");
             
             //  Parse the data into more easily usable
             _parsedData = ParseData(_parsedData, true, true, "*", "", "*", gShowInfo, false, "\t\t");
@@ -418,43 +421,46 @@ namespace Generatio
         static public void UpdateUserGallery()
         {
             List<string> _patternFiles = ToStringList(GetFiles(gGalleryPath, true, gShowInfo, false, "\t\t"));
-            
-            //  Remove the unrelated files from the search
-            for(int i = 0; i < _patternFiles.Count; i++)
+
+            if (_patternFiles != null)
             {
-                //  Check if the file doesnt have the .patterns extention
-                if (_patternFiles[i].Length < 9 ||
-                    _patternFiles[i].IndexOf(".patterns", _patternFiles[i].Length - 9) == -1 ||
-                    _patternFiles[i].IndexOf("stock.") != -1)
+                //  Remove the unrelated files from the search
+                for (int i = 0; i < _patternFiles.Count; i++)
                 {
-                    //  Remove the unrelated file, including:
-                    //  - Not .patterns files
-                    //  - Stock patterns
-                    _patternFiles.RemoveAt(i);
-                    i--;
+                    //  Check if the file doesnt have the .patterns extention
+                    if (_patternFiles[i].Length < 9 ||
+                        _patternFiles[i].IndexOf(".patterns", _patternFiles[i].Length - 9) == -1 ||
+                        _patternFiles[i].IndexOf("stock.") != -1)
+                    {
+                        //  Remove the unrelated file, including:
+                        //  - Not .patterns files
+                        //  - Stock patterns
+                        _patternFiles.RemoveAt(i);
+                        i--;
+                    }
                 }
-            }
 
-            //  Reset the previous gallery save
-            GalleryUser.Clear();
+                //  Reset the previous gallery save
+                GalleryUser.Clear();
 
-            //  Loop through all the pattern files
-            foreach (string _file in _patternFiles)
-            {
-                //  Read the stock data for the gallery
-                List<string> _parsedData = ReadData(gGalleryPath, _file, gShowInfo, false, "\t\t");
-
-                //  Parse the data into more easily usable
-                _parsedData = ParseData(_parsedData, true, true, "*", "", "*", gShowInfo, false, "\t\t");
-
-                //  Convert the data into patterns
-                GalleryBuffer = ConvertToGalleryPattern(_parsedData, gAdvInfo);
-
-                //  Update the gallery
-                foreach (GalleryPattern _pattern in GalleryBuffer)
+                //  Loop through all the pattern files
+                foreach (string _file in _patternFiles)
                 {
-                    //  Add the pattern to the gallery
-                    GalleryUser.Add(_pattern);
+                    //  Read the stock data for the gallery
+                    List<string> _parsedData = ReadData(gGalleryPath, _file, gShowInfo, false, "\t\t");
+
+                    //  Parse the data into more easily usable
+                    _parsedData = ParseData(_parsedData, true, true, "*", "", "*", gShowInfo, false, "\t\t");
+
+                    //  Convert the data into patterns
+                    GalleryBuffer = ConvertToGalleryPattern(_parsedData, gAdvInfo);
+
+                    //  Update the gallery
+                    foreach (GalleryPattern _pattern in GalleryBuffer)
+                    {
+                        //  Add the pattern to the gallery
+                        GalleryUser.Add(_pattern);
+                    }
                 }
             }
         }
@@ -578,7 +584,9 @@ namespace Generatio
             //  Full gallery size
             int _gallerySize = _stockGallerySize + _userGallerySize;
 
-            Write("\n\n");
+            if (!gGeneratedPatterns) Clear();
+            Write("\n\n\n\n\n\n");
+            PrintLogo();
 
             ForegroundColor = ConsoleColor.DarkCyan;
             Write("\n\t\t\t\t\tДобро пожаловать в галерею!\n");
@@ -602,15 +610,7 @@ namespace Generatio
                 ForegroundColor = ConsoleColor.White;
 
 
-                Write("\n\t\tПри вводе числа, будет выведен узор под этим номером, а также его параметры.");
-                Write("\n\t\tОни включают в себя тип, размеры узоров, количество цветов и сами цвета.\n");
-
-                Write("\n\t\tПараметры будут выглядеть как набор чисел с разделениями:");
-                ForegroundColor = ConsoleColor.Green;
-                Write("\n\t\t   Тип узора/Ширина/Высота/Количество цветов/Цвет1-Цвет2-Цвет3...\n");
-                ForegroundColor = ConsoleColor.White;
-
-                Write("\n\n\n\t\t\t\tДоступный функционал:");
+                Write("\n\n\n\t\t[i]  - Доступный функционал на данный момент:");
             }
             else
             {
@@ -620,17 +620,44 @@ namespace Generatio
             }
             if (_stockGallerySize > 0)
             {
-                Write("\n\t\t\t[");
+                
+                Write("\n\t\t         > ");
                 Write(1 + "-" + _stockGallerySize);
-                Write("]\t- Стоковые узоры");
+
+                //  Calculate margin for the gallery output
+                string _margin = "         ";
+                int _tempBuffer = _stockGallerySize;
+                while(_tempBuffer > 0)
+                {
+                    if(_margin.Length > 0) _margin = _margin.Remove(0, 1);
+                    _tempBuffer /= 10;
+                }
+
+                Write(" < " + _margin + " - Стоковые узоры");
             }
             if (_userGallerySize > 0)
             {
-                Write("\n\t\t\t[");
+                Write("\n\t\t         > ");
                 Write(_stockGallerySize + 1 + "-" + _gallerySize);
-                Write("]\t- Пользовательские узоры");
+
+                //  Calculate margin for the gallery output
+                string _margin = "          ";
+                int _tempBuffer = _stockGallerySize;
+                while (_tempBuffer > 0)
+                {
+                    if (_margin.Length > 0) _margin = _margin.Remove(0, 1);
+                    _tempBuffer /= 10;
+                }
+                _tempBuffer = _stockGallerySize + _userGallerySize;
+                while (_tempBuffer > 0)
+                {
+                    if (_margin.Length > 0) _margin = _margin.Remove(0, 1);
+                    _tempBuffer /= 10;
+                }
+
+                Write(" < " + _margin + " - Пользовательские узоры");
             }
-            Write("\n\t\t\t[0]\t- Выход из галереи\n");
+            Write("\n\t\t         > 0 <            - Выход из галереи\n");
         }
     }
 }

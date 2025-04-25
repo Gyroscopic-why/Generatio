@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using static System.Console;
 
@@ -6,14 +7,14 @@ using static System.Console;
 using static Generatio.GlobalSettings;
 using static Generatio.GlobalVariables;
 using static Generatio.CustomProcedures;
-using System.Collections.Generic;
+
 
 
 namespace Generatio
 {
     internal class CustomFunctions
     {
-        //-------------------  FUNCTIONS  ---------------------------------------------------------------------//
+        //-----------------------------  Returns bool  ---------------------------------------------------------//
         
         static public bool Continue()
         {
@@ -111,18 +112,17 @@ namespace Generatio
             bool _validTask = false;
             string _userInput = "";
 
-            Write("\n\n\n\t\t[?]  - Что вы хотите сделать?\n");
-            Write("\t\t   > 1 <    - О программе\n");
-            Write("\t\t   > 2 <    - Сгенерировать узор\n");
-            Write("\t\t   > 3 <    - Галерея узоров\n");
-            Write("\t\t   > 4 <    - Обновить последнее сохранение галереи\n");
-            Write("\t\t   > 5 <    - Настройки\n");
+            Write("\n\n\n\t\t[?]  - Что вы хотите сделать?");
+            Write("\n\t\t   > 1 <    - О программе");
+            Write("\n\t\t   > 2 <    - Сгенерировать узор\n");
 
-            ForegroundColor = ConsoleColor.DarkGray;
-            Write("\t\t   > 6 <    - Сгенерировать узор по коду\n");
-            ForegroundColor = ConsoleColor.White;
+            Write("\n\t\t   > 3 <    - Галерея узоров");
+            Write("\n\t\t   > 4 <    - Обновить последнее сохранение галереи\n");
 
-            Write("\t\t   > 0 <    - Выход\n");
+            Write("\n\t\t   > 5 <    - Настройки");
+            Write("\n\t\t   > 6 <    - Обновить сохранение настроек\n");
+
+            Write("\n\t\t   > 0 <    - Выход\n");
 
 
             while (!_validTask)
@@ -584,21 +584,80 @@ namespace Generatio
             }
             return _byteColors;
         }
-             // Convert colors from console colors to bytes
+        // Convert colors from console colors to bytes
 
 
-        //------------------------  Return list  --------------------------------------------------//
+        //-------------------  Array and List conversion  ------------------------------------------------------//
 
-        static public List<string> ToStringList(string[] _array)
+        static public List<byte> ToByteList(byte[] _array, int _startIndex = 0, int _endIndex = -1)
         {
+            if (_array == null) return null;
+
+            //  Set the parameters for a substring of the data
+            if (_endIndex == -1 || _endIndex > _array.Length) _endIndex = _array.Length;
+
             //  Store list
-            List<string> _list = new List<string>();
+            List<byte> _list = new List<byte>();
 
             //  Convert array to list
-            for (int i = 0; i < _array.Length; i++) _list.Add(_array[i]);
+            for (int i = _startIndex; i < _endIndex; i++) _list.Add(_array[i]);
 
             //  Return the list
             return _list;
         }
+        //  Converts a List(byte) to a Array(byte)
+        static public byte[] ToByteArray(List<byte> _list, int _startIndex = 0, int _endIndex = -1)
+        {
+            if (_list == null) return null;
+
+            //  Set the parameters for a substring of the data
+            if (_endIndex == -1 || _endIndex > _list.Count) _endIndex = _list.Count;
+
+            //  Store list
+            byte[] _array = new byte[_list.Count];
+
+            //  Convert list to array
+            for (int i = _startIndex; i < _endIndex; i++) _array[i] = _list[i];
+
+            //  Return the array
+            return _array;
+        }
+        //  Converts a Array(byte) to a List(byte)
+
+
+        static public List<string> ToStringList(string[] _array, int _startIndex = 0, int _endIndex = -1)
+        {
+            if (_array == null) return null;
+
+            //  Set the parameters for a substring of the data
+            if (_endIndex == -1 || _endIndex > _array.Length) _endIndex = _array.Length;
+
+            //  Store list
+            List<string> _list = new List<string>();
+
+            //  Convert array to list
+            for (int i = _startIndex; i < _endIndex; i++) _list.Add(_array[i]);
+
+            //  Return the list
+            return _list;
+        }
+             //  Converts a List(string) to a Array(string)
+        static public string[] ToStringArray(List<string> _list, int _startIndex = 0, int _endIndex = -1)
+        {
+            if (_list == null) return null;
+
+            //  Set the parameters for a substring of the data
+            if (_endIndex == -1 || _endIndex > _list.Count) _endIndex = _list.Count;
+
+            //  Store list
+            string[] _array = new string[_list.Count];
+
+            //  Convert list to array
+            for (int i = _startIndex; i < _endIndex; i++) _array[i] = _list[i];
+
+            //  Return the array
+            return _array;
+        }
+             //  Converts a Array(string) to a List(string)
     }
 }

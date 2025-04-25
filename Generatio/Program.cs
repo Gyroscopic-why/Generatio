@@ -1,12 +1,11 @@
-﻿using System;
-using static System.Console;
+﻿using static System.Console;
 
 
 using static Generatio.GalleryLogic;
 using static Generatio.GlobalSettings;
-using static Generatio.GlobalVariables;
 using static Generatio.CustomFunctions;
 using static Generatio.CustomProcedures;
+
 
 
 namespace Generatio
@@ -20,15 +19,12 @@ namespace Generatio
             OutputEncoding = System.Text.Encoding.UTF8;
             string task;
 
-            //  Updating the gallery save  //
-            UpdateStockGallery();          //  For the stock patterns
-            UpdateUserGallery();           //  For the user  patterns
-            //  -------------------------  //
+            //  Reset settings and gallery, load previous save
+            ResetAll();
 
-            ResetSettings();               //  Reset the settings to default values
-            //  LoadSettings();            //  Load the settings from the file
 
-            Title = "Generatio 1.9";
+
+            Title = "Generatio 2.0";
             Write("\n\n\n\n\n\n");
             if (!gIgnoreFullScreen) ForceFullScreen();
             Clear();

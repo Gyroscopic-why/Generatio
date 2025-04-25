@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using static System.Console;
 
 
+using static Generatio.GalleryLogic;
 using static Generatio.PatternSource;
 using static Generatio.GlobalSettings;
 using static Generatio.GlobalVariables;
@@ -50,11 +51,28 @@ namespace Generatio
              //  Force the user to enlarge the window to prevent limitations of the size of the patterns
 
 
+        static public void ResetAll()
+        {
+            //  Reset settings do default (fail save)
+            ResetSettings();
+
+            //  Load previous save of the settings
+            LoadSettings();
+
+
+            //  Update the gallery with patterns
+            UpdateStockGallery();
+            UpdateUserGallery();
+        }
+             //  Reset all the settings and patterns and load the previous save
+
 
         //----------------  Procedures exclusively meant for printing info  -----------------------------------//
 
+
         static public void WriteInfo()
-        {   //-----------------------  WRITTING INFO ABOUT THE PROGRAM  -----------------------------//
+        {   
+            //-----------------------  WRITTING INFO ABOUT THE PROGRAM  -----------------------------//
             if (!gGeneratedPatterns) Clear();
             Write("\n\n\n\n\n\n");
             PrintLogo();
@@ -75,7 +93,7 @@ namespace Generatio
 
             Write("\n\n\t\tНадеюсь вам поможет моя программа, удачи!\n\n\n\n");
         }
-        //  Write the info about the program
+             //  Write the info about the program
 
 
         static public void EncodePattern(short _type, int X, int Y, int _colAmount,
@@ -149,7 +167,7 @@ namespace Generatio
                 };
 
                 if (_path == "") _path = gGalleryPath;
-                SaveData(_path, _fileName, _patternData, true, _showInfo, false, "\t\t");
+                SaveData(_path, _fileName, _patternData, true, "\n", _showInfo, false, "\t\t");
                 Write("\n\n");
             }
         }
@@ -598,6 +616,7 @@ namespace Generatio
 
 
         //------------------  Pattern related procedures  ----------------------------------------//
+
 
         static public void GenerateUserPatternsLogic()
         {
