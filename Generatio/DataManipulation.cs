@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using System.Collections.Generic;
 
 using static System.Console;
-using System.Text;
 
 
 namespace Generatio
@@ -14,7 +14,7 @@ namespace Generatio
         //-----------------------------  Path related functions  ------------------------------------------//
 
 
-        static public string GetPath(bool _custom = false, string _subFolder = "\\Gyroscopic\\Unnamed",
+        static public string GetPath(bool _custom = false, bool _tryDefault = true, string _subFolder = "\\Gyroscopic\\Unnamed",
             bool _showInfo = false, bool _engLang = true, string _margin = "\t",
             string _startLine = "", string _endLine = "\n")
         {
@@ -218,7 +218,8 @@ namespace Generatio
                     //  And we can't create it
                     //  Get the stock path (C:\Users\user_name\Documents\Gyroscopic\Unnamed)
                     //  (Or C:\Users\user_name\AppData\Local\Gyroscopic\Unnamed)
-                    _path = GetPath(false, _subFolder, _showInfo);
+                    if (_tryDefault) _path = GetPath(false, _tryDefault, _subFolder, _showInfo);
+                    else return null;
                 }
 
 
@@ -694,7 +695,7 @@ namespace Generatio
 
                 if (_data != null)
                 {
-                    for (int i = 0; i < _data.Count; i++)
+                    for (int i = 0; i < _data.Count - 1; i++)
                     {
                         //  Save the data to the file
                         _dataSaver.Write(_data[i]);

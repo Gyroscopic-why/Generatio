@@ -20,7 +20,7 @@ namespace Generatio
 
         static public void ForceFullScreen(int X = 0, int Y = 0)
         {
-            ushort Counter = 0;
+            UInt16 Counter = 0;
             if (X == 0) X = LargestWindowWidth / 13;
             if (Y == 0) Y = LargestWindowHeight / 26;
             if (!gNoSizeLimit)
@@ -42,7 +42,6 @@ namespace Generatio
                     Write(WindowWidth + "x" + WindowHeight);
                     ForegroundColor = ConsoleColor.Black;
                     ReadKey();
-                    if (!gGeneratedPatterns) Clear();
                 }
                 if (Counter > 1) Write("\n\n");
                 ForegroundColor = ConsoleColor.White;
@@ -64,55 +63,149 @@ namespace Generatio
             UpdateStockGallery();
             UpdateUserGallery();
         }
-             //  Reset all the settings and patterns and load the previous save
+        //  Reset all the settings and patterns and load the previous save
+
+
 
 
         //----------------  Procedures exclusively meant for printing info  -----------------------------------//
 
 
-        static public void WriteInfo()
-        {   
-            //-----------------------  WRITTING INFO ABOUT THE PROGRAM  -----------------------------//
-            if (!gGeneratedPatterns) Clear();
+        static public void ResetUI(bool _forceFullScreen, bool _autoContinue)
+        {
+            //  Wait for the user (optional)
+            if (!_autoContinue)
+            {
+                Write("\n\t\tГотово! Нажмите любую кнопку чтобы продолжить: ");
+                ReadKey();
+            }
+
+            //  Force FullScreen (optional)
+            if (_forceFullScreen) ForceFullScreen(70, 30);
+
+
+            //  Clear the console without losing information
+            for (int i = 0; i < WindowHeight; i++) Write("\n");
+            Clear();
+
+            //  Print the logo
             Write("\n\n\n\n\n\n");
             PrintLogo();
+        }
+             //  Simple UI formatting (resetting the formatting)
 
-            Write("\t\t\t\t\t\t\tВыбрано: --- === О программе === ---\n\n\n");
 
-            Write("\t\tЭта программа была создана в учебных целях учеником Гунько Егором, для облегчения работы художникам.\n");
-            Write("\t\tЗдесь представлена не полная версия программы. Данная версия имеет ограниченный функционал, и будет дорабатываться в будующем.\n");
-            Write("\t\tЕё предназначение: помогать художникам, любителям и простым людям с созданием узоров.\n");
-            Write("\t\tПока что функционал не сильно велик, но программа уже может генерировать 9 типов узоров любых размеров по параметрам пользователя.\n\n");
+        static public void ResetSizeUI(string _sizeType, UInt16 _maxSize, uint _realMax, UInt16 _last = 0)
+        {
+            //  Reset UI, dont wait for additional input, print info
+            ResetUI(!gIgnoreFullScreen, true);
+            Write("\n\t\t\t\t\t\tВыбрано: --- === Создание узоров === ---\n\n\n");
 
-            Write("\t\tИнструкция по работе с программой:\n");
-            Write("\t\t  1. Выберите нужный вам пункт в меню\n");
-            Write("\t\t  2. Вводите параметры узоров, следуя указаниям на экране\n");
-            Write("\t\t  3. Выберете, генерировать или нет дополнительные узоры\n");
-            Write("\t\t  4. Сохраните параметры для генерации узоров, и сделайте снимок экрана для сохранения понравившихся узоров\n");
-            Write("\t\t  5. После сохранения, узоры в любой момент можно будет посмотреть в пункте 'галерея'\n");
+            if(_last != 0) Write("\t\t[=]  - Выбранная ширина: " + _last + "\n\n");
 
-            Write("\n\n\t\tНадеюсь вам поможет моя программа, удачи!\n\n\n\n");
+
+            //  Calculate margin for the gallery output
+            string _margin = "       ";
+            UInt16 _tempBuffer = _maxSize;
+            while (_tempBuffer > 0)
+            {
+                if (_margin.Length > 0) _margin = _margin.Remove(0, 1);
+                _tempBuffer /= 10;
+            }
+
+
+
+            //  Print earlier output UI
+            Write("\n\t\t[?]  - Выберете " + _sizeType + "у узора:");
+
+            Write("\n\t\t         > " + 5 + " - " + _maxSize);
+            if (_maxSize == 65535)
+            {
+                Write(" (рекоменд: " + _realMax + ") <    - Выбор в интервале");
+                Write("\n\t\t         > СЛУЧ/RAND <                   - Случайное значение");
+                Write("\n\t\t         > 0 <                           - Назад");
+            }
+            else
+            {
+                Write(" <" + _margin + " - Выбор в интервале");
+                Write("\n\t\t         > СЛУЧ/RAND <   - Случайное значение");
+                Write("\n\t\t         > 0 <           - Назад");
+            }
+
+
+            Write("\n\t\t[i]  - Чем больше " + _sizeType + "а узора, тем он красивее!\n");
+        }
+             //  UI reset for the GetSize() function
+
+
+        static public void WriteProgramInfo()
+        {
+            ResetUI(!gIgnoreFullScreen, true);
+            Write("\n\t\t\t\t\t\tВыбрано: --- === Информация о программе === ---\n\n\n");
+
+            //-----------------------  WRITTING INFO ABOUT THE PROGRAM  -----------------------------//
+
+
+            Write("\n\t\tЭта программа была создана в учебных целях учеником Гунько Егором, для облегчения работы художникам.");
+            Write("\n\t\tТехническая информация:  v2.1 (3122 + 1215: 4337 строк кода), последняя дата обновления: 20.4.2025\n");
+
+            Write("\n\t\t[i]  - Функционал:");
+            Write("\n\t\t         > Создание узоров (выбор размеров, цветов, названия для созданных узоров");
+            Write("\n\t\t         > Просмотр  сгенерированных узоров");
+            Write("\n\t\t         > Изменение настроек для более удобной работы с программой\n");
+
+            Write("\n\t\t[i]  - Инструкция по сохранению узоров в галерею:");
+            Write("\n\t\t         > Вводите номера узоров, которые желаете сохранить через ','");
+            Write("\n\t\t       Если хотите добавить узору название напишите:");
+            Write("\n\t\t         > номер_узора = название\n");
+
+            ForegroundColor = ConsoleColor.DarkGray;
+            Write("\n\t\t       Примеры ввода:");
+            Write("\n\t\t         > 1, 3, 10, 9");
+            Write("\n\t\t         > 1=Солнце,4=Море");
+            Write("\n\t\t         > 9, 8=20.2.2020 Февраль, 7, 2 = _мой_шедевр_\n");
+            ForegroundColor = ConsoleColor.White;
+
+
+
+            Write("\n\t\t[i]  - Инструкция по работе с галереей:");
+            Write("\n\t\t         > Одно число - для просмотра одного узора (под этим номером)");
+            Write("\n\t\t         > Два числа через '-' - для просмотра узоров под номерами от первого до второго числа");
+            Write("\n\t\t         > Несколько чисел через '/' - для просмотра нескольких узоров (только под этими номерами)\n");
+
+
+            ForegroundColor = ConsoleColor.DarkGray;
+            Write("\n\t\t       Примеры ввода:");
+            Write("\n\t\t         > 12 <        - будет показан только один узор под номером 12");
+            Write("\n\t\t         > 3-8 <       - будут показаны узоры под номерами 3, 4, 5, 6, 7 и 8");
+            Write("\n\t\t         > 15/2/7/1 <  - будут показаны узоры под номерами 15, 2, 7 и 1 (в таком же порядке)\n");
+            ForegroundColor = ConsoleColor.White;
+
+
+            Write("\n\t\tНадеюсь вам поможет моя программа, удачи! ");
+            ReadKey();
         }
              //  Write the info about the program
 
 
         static public void EncodePattern(short _type, int X, int Y, int _colAmount,
-            ConsoleColor[] _colors, string _patternName = "",
+            ConsoleColor[] _colors, string _patternName = "Unnamed",
             bool _savePattern = false, string _fileName = "", string _path = "",
             bool _showInfo = false)
         {
             //  Convert parameters into short string codes
-            string _patternCode = _type + "/" + X + "/" + Y + "/" + _colAmount + "/";
+            //string _patternCode = _type + "/" + X + "/" + Y + "/" + _colAmount + "/";
             string _formatedCode = _type + "," + X + "," + Y + "," + _colAmount + ",";
-            
+
 
             //  Get a name for an unnamed pattern
-            if (_patternName == "")
+            if (_patternName == "Unnamed" || _patternName == "")
             {
                 //  Get current date and time
                 //
+                //  Overwrite the pattern name
                 //  Save the date and time to the pattern name
-                _patternName += $"{DateTime.Now:dd.MM.yyyy HH:mm}";
+                _patternName = $"{DateTime.Now:dd.MM.yyyy HH:mm}";
 
 
                 //  Save the computer name, and the user name (currently logged in) to the pattern name
@@ -134,7 +227,7 @@ namespace Generatio
 
 
             //  Convert the colors to string codes
-            _patternCode += string.Join("-", _colorBytes);
+            //_patternCode += string.Join("-", _colorBytes);
             _formatedCode += string.Join(",", _colorBytes);
 
 
@@ -148,10 +241,10 @@ namespace Generatio
                 ForegroundColor = ConsoleColor.DarkGray;
                 Write("\n\t\t          > [1] <  -  Название узора");
                 Write("\n\t\t          > [2] <  -  Тип узора, Размеры (Ширина, Высота), Кол-во цветов");
-                Write("\n\t\t          > [3] <  -  Используемые цвета (в байтах)\n");
+                Write("\n\t\t          > [3] <  -  Используемые цвета (в байтах)\n\n\n");
                 ForegroundColor = ConsoleColor.White;
 
-                Write("\n\t\t       Быстрая команда: " + _patternCode + "\n\n");
+                //Write("\n\t\t       Быстрая команда: " + _patternCode + "\n\n");
             }
 
             if (_savePattern)
@@ -163,7 +256,7 @@ namespace Generatio
                     "*" + _patternName,
 
                     //  Add parameters + colors
-                    _formatedCode,
+                    _formatedCode + "\n",
                 };
 
                 if (_path == "") _path = gGalleryPath;
@@ -173,7 +266,6 @@ namespace Generatio
         }
              //  Writing dev info and/or saving the pattern
              //  Write info for developers (usefull for changing the gallery parameters)
-
 
 
         static public void PrintLogo()
@@ -618,46 +710,98 @@ namespace Generatio
         //------------------  Pattern related procedures  ----------------------------------------//
 
 
-        static public void GenerateUserPatternsLogic()
+        static public bool CreatePatternsLogic()
         {
-            byte[] bestPatterns;
-            int colorsAmount;
-            ConsoleColor[] colors;
+            byte[] _randomBestPatterns;
+            UInt16 _colAmount;
+            ConsoleColor[] _colors;
+            UInt16 _width = 0, _height = 0;
 
-            if (!gGeneratedPatterns) Clear();  // Clear console if never generated any patterns
-            gGeneratedPatterns = true;         // 
-            Write("\n\n\n\n\n\n");             //
-            PrintLogo();                       //
-            Write("\n\t\t\t\t\t\t\tВыбрано: --- === Генерация узоров === ---\n\n");
 
-            int height = GetSize("высот");   //
-            int width = GetSize("ширин");   // Getting the pattern sizes
 
-            if (ChooseColorType())  //-----------   User colors choice
+            while (_height == 0)
             {
-                // Getting the amount of the colors
-                colorsAmount = GetColorsAmount(Math.Min(height, width));
+                //  Reset UI, dont wait for additional input
+                ResetUI(!gIgnoreFullScreen, true);
+                Write("\n\t\t\t\t\t\tВыбрано: --- === Создание узоров === ---\n\n\n");
 
-                // Converting colors from numbers to console colors
-                colors = ConvertColorsToConsole(GetCustomColors(colorsAmount));
+
+                //  Get the pattern width
+                _width = GetSize("ширин");
+
+                //  Option: leave - Exit the pattern creation
+                if (_width == 0) return true;
+
+
+
+                //  Reset UI, dont wait for additional input
+                ResetUI(!gIgnoreFullScreen, true);
+
+                //  Get the pattern height
+                _height = GetSize("высот", _width);
             }
-            else  //-----------------------------   Asset colors choice
+
+
+            //  User color choice
+            if (ChooseColorType(_width, _height))
             {
-                // Getting the asset colors array
-                colors = StoredColors[GetAssetColorsID()];
+                //  Get the amount for the user colors
+                //  65'535 is the max possible amount for a UInt16 type (16 bit unsigned int)
+                _colAmount = GetColorsAmount(Math.Min(Math.Min(_width, _height), (UInt16)65535));
 
-                // Getting the amount of the colors
-                colorsAmount = colors.Length;
+                //  Get the custom colors
+                //  And convert them from bytes to ConsoleColors
+                _colors = ConvertColorsToConsole(GetCustomColors(_colAmount));
             }
 
-            // Choosing the best patterns
-            bestPatterns = GetBestPatterns(colorsAmount);
+            //  Asset colors choice
+            else
+            {
+                //  Choose asset colors
+                _colors = StoredColors[GetColorAssetID(_width, _height)];
 
-            // Printing them
-            PrintPatterns(bestPatterns, width, height, colors);
+                //  Extract the amount of colors from the chosen asset pack
+                _colAmount = (UInt16)_colors.Length;
+            }
 
-            // Write success message
+            //  Randomly chosing
+            _randomBestPatterns = ChooseBestPatterns(_colAmount);
+
+            //  Printing them
+            PrintPatterns(_randomBestPatterns, _width, _height, _colors);
+
+            if (!gAutoSave)
+            {
+                Write("\n\t\t[?]  - Какие узоры вы хотели бы сохранить в галерею?");
+                Write("\n\t\t[i]  - Введите номера узоров через ','");
+                Write("\n\t\t       Если хотите добавить узору название напишите: номер_узора = название\n");
+                Write("\n\t\t> 0 <   - Вернуться в меню\n");
+
+                Write("\n\t\t[->]  - Ваш выбор: ");
+                List<byte> _selected = SelectPatternsForSaving(out List<string> _names);
+                while (_selected.Count > 0)
+                {
+                    for (int i = 0; i < _selected.Count; i++)
+                    {
+                        //  Encode pattern
+                        //  Save it
+                        //  Write info about it and the process (optional)
+                        EncodePattern(_selected[i], _width, _height, _colAmount, _colors, _names[i],
+                            true, "", gGalleryPath, gShowInfo);
+                    }
+
+                    //  Continue selection
+                    Write("\n\t\t[->]  - Ваш выбор: ");
+                    _selected = SelectPatternsForSaving(out _names);
+                }
+            }
+
+            //  Write success message
             Write("\n\n\n\t\tГенерация узоров завершена.\n\n\n\n\n");
+
+
+            //  Return auto continue = false (wait for user input)
+            return false;
         }
              //  All the logic for generating a user-prompted pattern
 
@@ -665,16 +809,16 @@ namespace Generatio
         {
             //  Pattern are stored in the dictionary for easy access
             var Patterns = new Dictionary<byte, Action>()  {
-                { 1,  () => Pattern1 (X, Y, Colors, true, gAutoSave, gShowInfo) },
-                { 2,  () => Pattern2 (X, Y, Colors, true, gAutoSave, gShowInfo) },
-                { 3,  () => Pattern3 (X, Y, Colors, true, gAutoSave, gShowInfo) },
-                { 4,  () => Pattern4 (X, Y, Colors, true, gAutoSave, gShowInfo) },
-                { 5,  () => Pattern5 (X, Y, Colors, true, gAutoSave, gShowInfo) },
-                { 6,  () => Pattern6 (X, Y, Colors, true, gAutoSave, gShowInfo) },
-                { 7,  () => Pattern7 (X, Y, Colors, true, gAutoSave, gShowInfo) },
-                { 8,  () => Pattern8 (X, Y, Colors, true, gAutoSave, gShowInfo) },
-                { 9,  () => Pattern9 (X, Y, Colors, true, gAutoSave, gShowInfo) },
-                { 10, () => Pattern10(X, Y, Colors, true, gAutoSave, gShowInfo) },
+                { 1,  () => Pattern1 (X, Y, Colors, true, "", gAutoSave, gShowInfo) },
+                { 2,  () => Pattern2 (X, Y, Colors, true, "", gAutoSave, gShowInfo) },
+                { 3,  () => Pattern3 (X, Y, Colors, true, "", gAutoSave, gShowInfo) },
+                { 4,  () => Pattern4 (X, Y, Colors, true, "", gAutoSave, gShowInfo) },
+                { 5,  () => Pattern5 (X, Y, Colors, true, "", gAutoSave, gShowInfo) },
+                { 6,  () => Pattern6 (X, Y, Colors, true, "", gAutoSave, gShowInfo) },
+                { 7,  () => Pattern7 (X, Y, Colors, true, "", gAutoSave, gShowInfo) },
+                { 8,  () => Pattern8 (X, Y, Colors, true, "", gAutoSave, gShowInfo) },
+                { 9,  () => Pattern9 (X, Y, Colors, true, "", gAutoSave, gShowInfo) },
+                { 10, () => Pattern10(X, Y, Colors, true, "", gAutoSave, gShowInfo) },
             };
 
             byte _randomId = 255;
@@ -719,7 +863,7 @@ namespace Generatio
                         }
                     }
                     Write("\n\n");
-                    Patterns[i](); //Printing the rest
+                    if (i < Patterns.Count + 1) Patterns[i](); //Printing the rest
                 }
             }
         }

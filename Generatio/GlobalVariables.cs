@@ -9,14 +9,10 @@ namespace Generatio
         static public Random gRandom = new Random();
 
 
-        //-----------------------  Basic track of generated or not patterns  ----------------------------------//
+            //  Track of a force exit from the pattern creation menu
+        static public bool gForceExit = false;
 
 
-            // If already generated GALLERY PATTERS
-        static public bool gGeneratedGpatterns = false;
-
-            // If already generated patterns through the standart system
-        static public bool gGeneratedPatterns = false;
 
 
         //------------------------  Color variables  ----------------------------------------------------------//
@@ -46,7 +42,7 @@ namespace Generatio
         };
 
             // Color codes for compact and easy parsing of the user input
-        static public string[] gColorKeySigns = {
+        static public string[] gColorKeycodes = {
                 "красный",
                 "кр",
                 "к",
@@ -146,13 +142,10 @@ namespace Generatio
         //------------------  Stored color assets for a fast generation  --------------------------------------//
 
             //  sc  -  stored colors
-            //  2, 4, 7, 8, 12 - amount of colors in the array
+            //  2, 4, 5, 7, 8, 12 - amount of colors in the array
 
 
-        readonly static public ConsoleColor[] scBlackWhite2 = {
-                ConsoleColor.White,
-                ConsoleColor.Black
-        };
+        
 
         readonly static public ConsoleColor[] scWhiteBlack4 = {
                 ConsoleColor.White,
@@ -181,6 +174,14 @@ namespace Generatio
                 ConsoleColor.DarkMagenta,
                 ConsoleColor.DarkRed,
                 ConsoleColor.Red
+        };
+
+        readonly static public ConsoleColor[] scBlueWhite5 = {
+                ConsoleColor.DarkBlue,
+                ConsoleColor.Blue,
+                ConsoleColor.DarkCyan,
+                ConsoleColor.Cyan,
+                ConsoleColor.White
         };
 
         readonly static public ConsoleColor[] scBlueMagentaGreen7 = {
@@ -236,11 +237,11 @@ namespace Generatio
         };
 
         readonly static public ConsoleColor[][] StoredColors = {
-            scBlackWhite2,
             scWhiteBlack4,
             scBlue4,
             scRedBlue4,
             scMagentaRed4,
+            scBlueWhite5,
             scBlueMagentaGreen7,
             scRedBlueGreenMagenta8,
             scRedBlue8,

@@ -11,18 +11,23 @@ namespace Generatio
 {
     internal class PatternSource
     {
-        static public void Pattern1(int X, int Y, ConsoleColor[] _colors, bool _useMargin, bool _savePattern, bool _showInfo)
+        static public void Pattern1(int X, int Y, ConsoleColor[] _colors, bool _useMargin, string _name = "", bool _savePattern = false, bool _showInfo = false)
         {
             int _curColor, _colAmount = _colors.Length, _edgeMargin = WindowWidth / 2 - X;
 
             //  Shrink the pattern if it is too big
             //  (optional)
             if (gShrinkPatterns && X > WindowWidth / 2) X = WindowWidth / 2;
-            if (gShrinkPatterns && Y > WindowHeight) Y = WindowHeight;
+            if (gShrinkPatterns && Y > WindowHeight)    Y = WindowHeight;
 
 
-            if (_savePattern || _showInfo) 
-                EncodePattern(1, X, Y, _colAmount, _colors, "", _savePattern, "", gGalleryPath, _showInfo);
+            if (_savePattern || _showInfo)
+                EncodePattern(1, X, Y, _colAmount, _colors, _name, _savePattern, "", gGalleryPath, _showInfo);
+
+            for (int j = 0; j < (WindowWidth - _name.Length) / 2 - 2; j++) Write(" ");
+            if (_name == "") Write("No 1\n\n");
+            else Write("  " + _name + "\n\n");
+
 
             for (int i = 0; i < (Y + 1) / 2; i++)
             {
@@ -67,7 +72,7 @@ namespace Generatio
             BackgroundColor = ConsoleColor.Black;
         }
 
-        static public void Pattern2(int X, int Y, ConsoleColor[] _colors, bool _useMargin, bool _savePattern, bool _showInfo)
+        static public void Pattern2(int X, int Y, ConsoleColor[] _colors, bool _useMargin, string _name = "", bool _savePattern = false, bool _showInfo = false)
         {
             int _curColor, _colAmount = _colors.Length, _edgeMargin = WindowWidth / 2 - X;
 
@@ -77,8 +82,13 @@ namespace Generatio
             if (gShrinkPatterns && Y > WindowHeight) Y = WindowHeight;
 
 
-            if (_savePattern || _showInfo) 
-                EncodePattern(2, X, Y, _colAmount, _colors, "", _savePattern, "", gGalleryPath, _showInfo);
+            if (_savePattern || _showInfo)
+                EncodePattern(2, X, Y, _colAmount, _colors, _name, _savePattern, "", gGalleryPath, _showInfo);
+
+            for (int j = 0; j < (WindowWidth - _name.Length) / 2 - 2; j++) Write(" ");
+            if (_name == "") Write("No 2\n\n");
+            else Write("  " + _name + "\n\n");
+
 
             for (int i = 0; i < Y; i++)
             {
@@ -95,7 +105,7 @@ namespace Generatio
             }
         }
 
-        static public void Pattern3(int X, int Y, ConsoleColor[] _colors, bool _useMargin, bool _savePattern, bool _showInfo)
+        static public void Pattern3(int X, int Y, ConsoleColor[] _colors, bool _useMargin, string _name = "", bool _savePattern = false, bool _showInfo = false)
         {
             int _curColor, _colAmount = _colors.Length, _edgeMargin = WindowWidth / 2 - X;
 
@@ -106,7 +116,12 @@ namespace Generatio
 
 
             if (_savePattern || _showInfo) 
-                EncodePattern(3, X, Y, _colAmount, _colors, "", _savePattern, "", gGalleryPath, _showInfo);
+                EncodePattern(3, X, Y, _colAmount, _colors, _name, _savePattern, "", gGalleryPath, _showInfo);
+
+            for (int j = 0; j < (WindowWidth - _name.Length) / 2 - 2; j++) Write(" ");
+            if (_name == "") Write("No 3\n\n");
+            else Write("  " + _name + "\n\n");
+
 
             for (int i = 0; i < Y / 2; i++)
             {
@@ -165,7 +180,7 @@ namespace Generatio
             BackgroundColor = ConsoleColor.Black;
         }
 
-        static public void Pattern4(int X, int Y, ConsoleColor[] _colors, bool _useMargin, bool _savePattern, bool _showInfo)
+        static public void Pattern4(int X, int Y, ConsoleColor[] _colors, bool _useMargin, string _name = "", bool _savePattern = false, bool _showInfo = false)
         {
             int _curColor, _colAmount = _colors.Length, _edgeMargin = WindowWidth / 2 - X;
 
@@ -175,8 +190,13 @@ namespace Generatio
             if (gShrinkPatterns && Y > WindowHeight) Y = WindowHeight;
 
 
-            if (_savePattern || _showInfo) 
-                EncodePattern(4, X, Y, _colAmount, _colors, "", _savePattern, "", gGalleryPath, _showInfo);
+            if (_savePattern || _showInfo)
+                EncodePattern(4, X, Y, _colAmount, _colors, _name, _savePattern, "", gGalleryPath, _showInfo);
+
+            for (int j = 0; j < (WindowWidth - _name.Length) / 2 - 2; j++) Write(" ");
+            if (_name == "") Write("No 4\n\n");
+            else Write("  " + _name + "\n\n");
+
 
             for (int i = 0; i < Y; i++)
             {
@@ -194,7 +214,7 @@ namespace Generatio
             BackgroundColor = ConsoleColor.Black;
         }
 
-        static public void Pattern5(int X, int Y, ConsoleColor[] _colors, bool _useMargin, bool _savePattern, bool _showInfo)
+        static public void Pattern5(int X, int Y, ConsoleColor[] _colors, bool _useMargin, string _name = "", bool _savePattern = false, bool _showInfo = false)
         {
             int _curColor, _colAmount = _colors.Length, _edgeMargin = WindowWidth / 2 - X;
 
@@ -204,8 +224,13 @@ namespace Generatio
             if (gShrinkPatterns && Y > WindowHeight) Y = WindowHeight;
 
 
-            if (_savePattern || _showInfo) 
-                EncodePattern(5, X, Y, _colAmount, _colors, "", _savePattern, "", gGalleryPath, _showInfo);
+            if (_savePattern || _showInfo)
+                EncodePattern(5, X, Y, _colAmount, _colors, _name, _savePattern, "", gGalleryPath, _showInfo);
+
+            for (int j = 0; j < (WindowWidth - _name.Length) / 2 - 2; j++) Write(" ");
+            if (_name == "") Write("No 5\n\n");
+            else Write("  " + _name + "\n\n");
+
 
             for (int i = 0; i < Y; i++)
             {
@@ -223,7 +248,7 @@ namespace Generatio
             BackgroundColor = ConsoleColor.Black;
         }
 
-        static public void Pattern6(int X, int Y, ConsoleColor[] _colors, bool _useMargin, bool _savePattern, bool _showInfo)
+        static public void Pattern6(int X, int Y, ConsoleColor[] _colors, bool _useMargin, string _name = "", bool _savePattern = false, bool _showInfo = false)
         {
             int _curColor, _colAmount = _colors.Length, _edgeMargin = WindowWidth / 2 - X;
 
@@ -233,8 +258,13 @@ namespace Generatio
             if (gShrinkPatterns && Y > WindowHeight) Y = WindowHeight;
 
 
-            if (_savePattern || _showInfo) 
-                EncodePattern(6, X, Y, _colAmount, _colors, "", _savePattern, "", gGalleryPath, _showInfo);
+            if (_savePattern || _showInfo)
+                EncodePattern(6, X, Y, _colAmount, _colors, _name, _savePattern, "", gGalleryPath, _showInfo);
+
+            for (int j = 0; j < (WindowWidth - _name.Length) / 2 - 2; j++) Write(" ");
+            if (_name == "") Write("No 6\n\n");
+            else Write("  " + _name + "\n\n");
+
 
             for (int i = 0; i < (Y + 1) / 2; i++)
             {
@@ -279,7 +309,7 @@ namespace Generatio
             BackgroundColor = ConsoleColor.Black;
         }
 
-        static public void Pattern7(int X, int Y, ConsoleColor[] _colors, bool _useMargin, bool _savePattern, bool _showInfo)
+        static public void Pattern7(int X, int Y, ConsoleColor[] _colors, bool _useMargin, string _name = "", bool _savePattern = false, bool _showInfo = false)
         {
             int _curColor, _colAmount = _colors.Length, _edgeMargin = WindowWidth / 2 - X;
 
@@ -289,8 +319,13 @@ namespace Generatio
             if (gShrinkPatterns && Y > WindowHeight) Y = WindowHeight;
 
 
-            if (_savePattern || _showInfo) 
-                EncodePattern(7, X, Y, _colAmount, _colors, "", _savePattern, "", gGalleryPath, _showInfo);
+            if (_savePattern || _showInfo)
+                EncodePattern(7, X, Y, _colAmount, _colors, _name, _savePattern, "", gGalleryPath, _showInfo);
+
+            for (int j = 0; j < (WindowWidth - _name.Length) / 2 - 2; j++) Write(" ");
+            if (_name == "") Write("No 7\n\n");
+            else Write("  " + _name + "\n\n");
+
 
             for (int i = 0; i < Y / 2; i++)
             {
@@ -353,7 +388,7 @@ namespace Generatio
             BackgroundColor = ConsoleColor.Black;
         }
 
-        static public void Pattern8(int X, int Y, ConsoleColor[] _colors, bool _useMargin, bool _savePattern, bool _showInfo)
+        static public void Pattern8(int X, int Y, ConsoleColor[] _colors, bool _useMargin, string _name = "", bool _savePattern = false, bool _showInfo = false)
         {
             int _curColor, _colAmount = _colors.Length, _edgeMargin = WindowWidth / 2 - X;
 
@@ -364,7 +399,12 @@ namespace Generatio
 
 
             if (_savePattern || _showInfo)
-                EncodePattern(8, X, Y, _colAmount, _colors, "", _savePattern, "", gGalleryPath, _showInfo);
+                EncodePattern(8, X, Y, _colAmount, _colors, _name, _savePattern, "", gGalleryPath, _showInfo);
+
+            for (int j = 0; j < (WindowWidth - _name.Length) / 2 - 2; j++) Write(" ");
+            if (_name == "") Write("No 8\n\n");
+            else Write("  " + _name + "\n\n");
+
 
             for (int i = 0; i < (Y + 1) / 2; i++)
             {
@@ -396,7 +436,7 @@ namespace Generatio
             BackgroundColor = ConsoleColor.Black;
         }
 
-        static public void Pattern9(int X, int Y, ConsoleColor[] _colors, bool _useMargin, bool _savePattern, bool _showInfo)
+        static public void Pattern9(int X, int Y, ConsoleColor[] _colors, bool _useMargin, string _name = "", bool _savePattern = false, bool _showInfo = false)
         {
             int _curColor, _colAmount = _colors.Length, _edgeMargin = WindowWidth / 2 - X;
 
@@ -407,7 +447,12 @@ namespace Generatio
 
 
             if (_savePattern || _showInfo)
-                EncodePattern(9, X, Y, _colAmount, _colors, "", _savePattern, "", gGalleryPath, _showInfo);
+                EncodePattern(9, X, Y, _colAmount, _colors, _name, _savePattern, "", gGalleryPath, _showInfo);
+
+            for (int j = 0; j < (WindowWidth - _name.Length) / 2 - 2; j++) Write(" ");
+            if (_name == "") Write("No 9\n\n");
+            else Write("  " + _name + "\n\n");
+
 
             for (int i = 0; i < Y; i++)
             {
@@ -426,7 +471,7 @@ namespace Generatio
             BackgroundColor = ConsoleColor.Black;
         }
 
-        static public void Pattern10(int X, int Y, ConsoleColor[] _colors, bool _useMargin, bool _savePattern, bool _showInfo)
+        static public void Pattern10(int X, int Y, ConsoleColor[] _colors, bool _useMargin, string _name = "", bool _savePattern = false, bool _showInfo = false)
         {
             int _curColor, _colAmount = _colors.Length, _edgeMargin = WindowWidth / 2 - X;
 
@@ -437,7 +482,12 @@ namespace Generatio
 
 
             if (_savePattern || _showInfo)
-                EncodePattern(10, X, Y, _colAmount, _colors, "", _savePattern, "", gGalleryPath, _showInfo);
+                EncodePattern(10, X, Y, _colAmount, _colors, _name, _savePattern, "", gGalleryPath, _showInfo);
+
+            for (int j = 0; j < (WindowWidth - _name.Length) / 2 - 2; j++) Write(" ");
+            if (_name == "") Write("No 10\n\n");
+            else Write("  " + _name + "\n\n");
+
 
             for (int i = 0; i < Y; i++)
             {

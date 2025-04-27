@@ -6,7 +6,6 @@ using static System.Console;
 
 using static Generatio.PatternSource;
 using static Generatio.GlobalSettings;
-using static Generatio.GlobalVariables;
 using static Generatio.CustomFunctions;
 using static Generatio.CustomProcedures;
 using static Generatio.DataManipulation;
@@ -25,11 +24,11 @@ namespace Generatio
             private readonly byte patternType;
 
             //  Dimensions for the pattern
-            private readonly ushort width;
-            private readonly ushort height;
+            private readonly UInt16 width;
+            private readonly UInt16 height;
 
             //  Amount of colors
-            static private ushort colAmount;
+            static private UInt16 colAmount;
 
             //  Array of colors (in bytes))
             private readonly byte[] colors = new byte[colAmount];
@@ -42,8 +41,8 @@ namespace Generatio
 
 
             public GalleryPattern(byte iPatternType,
-                ushort iWidth, ushort iHeight,
-                ushort iColAmount, byte[] iColors,
+                UInt16 iWidth, UInt16 iHeight,
+                UInt16 iColAmount, byte[] iColors,
                 string iName = "Unnamed")
             {
                 // i - input
@@ -61,16 +60,16 @@ namespace Generatio
             {
                 //  All posible pattern types dictionary
                 var patterns = new Dictionary<byte, Action>()  {
-                    { 1,  () => Pattern1 (width, height, ConvertColorsToConsole(colors), true, false, gShowInfo) },
-                    { 2,  () => Pattern2 (width, height, ConvertColorsToConsole(colors), true, false, gShowInfo) },
-                    { 3,  () => Pattern3 (width, height, ConvertColorsToConsole(colors), true, false, gShowInfo) },
-                    { 4,  () => Pattern4 (width, height, ConvertColorsToConsole(colors), true, false, gShowInfo) },
-                    { 5,  () => Pattern5 (width, height, ConvertColorsToConsole(colors), true, false, gShowInfo) },
-                    { 6,  () => Pattern6 (width, height, ConvertColorsToConsole(colors), true, false, gShowInfo) },
-                    { 7,  () => Pattern7 (width, height, ConvertColorsToConsole(colors), true, false, gShowInfo) },
-                    { 8,  () => Pattern8 (width, height, ConvertColorsToConsole(colors), true, false, gShowInfo) },
-                    { 9,  () => Pattern9 (width, height, ConvertColorsToConsole(colors), true, false, gShowInfo) },
-                    { 10, () => Pattern10(width, height, ConvertColorsToConsole(colors), true, false, gShowInfo) },
+                    { 1,  () => Pattern1 (width, height, ConvertColorsToConsole(colors), true, name, false, gShowInfo) },
+                    { 2,  () => Pattern2 (width, height, ConvertColorsToConsole(colors), true, name, false, gShowInfo) },
+                    { 3,  () => Pattern3 (width, height, ConvertColorsToConsole(colors), true, name, false, gShowInfo) },
+                    { 4,  () => Pattern4 (width, height, ConvertColorsToConsole(colors), true, name, false, gShowInfo) },
+                    { 5,  () => Pattern5 (width, height, ConvertColorsToConsole(colors), true, name, false, gShowInfo) },
+                    { 6,  () => Pattern6 (width, height, ConvertColorsToConsole(colors), true, name, false, gShowInfo) },
+                    { 7,  () => Pattern7 (width, height, ConvertColorsToConsole(colors), true, name, false, gShowInfo) },
+                    { 8,  () => Pattern8 (width, height, ConvertColorsToConsole(colors), true, name, false, gShowInfo) },
+                    { 9,  () => Pattern9 (width, height, ConvertColorsToConsole(colors), true, name, false, gShowInfo) },
+                    { 10, () => Pattern10(width, height, ConvertColorsToConsole(colors), true, name, false, gShowInfo) },
                 };
 
                 //  Generete the chosen pattern from the dictionary
@@ -81,13 +80,13 @@ namespace Generatio
             public byte GetPatternType() { return patternType; }
                  //  Returns the pattern type
 
-            public ushort GetWidth() { return width; }
+            public UInt16 GetWidth() { return width; }
                  //  Returns the pattern width
 
-            public ushort GetHeight() { return height; }
+            public UInt16 GetHeight() { return height; }
                  //  Returns the pattern height
 
-            public ushort GetColAmount() { return colAmount; }
+            public UInt16 GetColAmount() { return colAmount; }
                  //  Returns the amount of colors in the pattern 
 
             public byte[] GetColorsBytes() { return colors; }
@@ -99,8 +98,8 @@ namespace Generatio
         }
 
 
-        static public List<GalleryPattern> GalleryStock  = new List<GalleryPattern>();
-        static public List<GalleryPattern> GalleryUser   = new List<GalleryPattern>();
+        static public List<GalleryPattern> StockGallery  = new List<GalleryPattern>();
+        static public List<GalleryPattern> UserGallery   = new List<GalleryPattern>();
         static public List<GalleryPattern> GalleryBuffer = new List<GalleryPattern>();
 
         
@@ -116,9 +115,9 @@ namespace Generatio
 
                 string _name = "Unnamed";
                 byte _patternType;
-                ushort _width;
-                ushort _height;
-                ushort _expectedColAmount;
+                UInt16 _width;
+                UInt16 _height;
+                UInt16 _expectedColAmount;
 
                 for (int i = 0; i < _data.Count; i++)
                 {
@@ -148,12 +147,12 @@ namespace Generatio
                                 && _patternType > 0 && _patternType < 11)
                             {
                                 //  Try parse the pattern size
-                                if (ushort.TryParse(_parserHelper[1].Trim(), out _width)
-                                    && ushort.TryParse(_parserHelper[2].Trim(), out _height)
+                                if (UInt16.TryParse(_parserHelper[1].Trim(), out _width)
+                                    && UInt16.TryParse(_parserHelper[2].Trim(), out _height)
                                     && _width > 0 && _height > 0)
                                 {
                                     //  Try parse the amount of colors (2+ not 0 and not 1)
-                                    if (ushort.TryParse(_parserHelper[3].Trim(), out _expectedColAmount)
+                                    if (UInt16.TryParse(_parserHelper[3].Trim(), out _expectedColAmount)
                                         && _expectedColAmount > 1)
                                     {
                                         //  Show the parsed base parameters
@@ -414,7 +413,7 @@ namespace Generatio
             if (GalleryBuffer != null)
             {
                 //  Update the gallery
-                GalleryStock = GalleryBuffer;
+                StockGallery = GalleryBuffer;
             }
         }
 
@@ -441,7 +440,7 @@ namespace Generatio
                 }
 
                 //  Reset the previous gallery save
-                GalleryUser.Clear();
+                UserGallery.Clear();
 
                 //  Loop through all the pattern files
                 foreach (string _file in _patternFiles)
@@ -459,7 +458,7 @@ namespace Generatio
                     foreach (GalleryPattern _pattern in GalleryBuffer)
                     {
                         //  Add the pattern to the gallery
-                        GalleryUser.Add(_pattern);
+                        UserGallery.Add(_pattern);
                     }
                 }
             }
@@ -549,8 +548,8 @@ namespace Generatio
             List<int> _choice;
 
             //  Amount of different patterns in the gallery
-            int _stockAmount = GalleryStock.Count;
-            int _userAmount = GalleryUser.Count;
+            int _stockAmount = StockGallery.Count;
+            int _userAmount = UserGallery.Count;
 
             //  Amount of patterns present in the gallery
             int _gallerySize = _stockAmount + _userAmount;
@@ -570,8 +569,8 @@ namespace Generatio
                     for (int i = 0; i < _choice.Count; i++)
                     {
                         Write("\n\n");
-                        if (_choice[i] < _stockAmount) GalleryStock[_choice[i]].Generate();
-                        else GalleryUser[_choice[i] - _stockAmount].Generate();
+                        if (_choice[i] < _stockAmount) StockGallery[_choice[i]].Generate();
+                        else UserGallery[_choice[i] - _stockAmount].Generate();
                     }
                 }
             }
@@ -584,31 +583,34 @@ namespace Generatio
             //  Full gallery size
             int _gallerySize = _stockGallerySize + _userGallerySize;
 
-            if (!gGeneratedPatterns) Clear();
-            Write("\n\n\n\n\n\n");
-            PrintLogo();
+            ResetUI(!gIgnoreFullScreen, true);
+            Write("\n\t\t\t\t\t\tВыбрано: --- === Просмотр галереи === ---\n\n\n");
 
             ForegroundColor = ConsoleColor.DarkCyan;
-            Write("\n\t\t\t\t\tДобро пожаловать в галерею!\n");
+            Write("\n\t\tДобро пожаловать в галерею!\n");
             ForegroundColor = ConsoleColor.White;
-            Write("\n\t\tЗдесь хранятся стоковые и ваши сохранённые узоры, а так же их параметры.");
-            Write("\n\t\tНа данный момент узоров в галереи: " + _gallerySize + "\n");
+
+
+
+            Write("\n\t\tЗдесь хранятся ");
+            ForegroundColor = ConsoleColor.Yellow;
+            Write("стоковые и пользовательские сохранённые узоры, ");
+            ForegroundColor = ConsoleColor.White;
+            Write("а так же их параметры.");
+
+
+            Write("\n\t\tНа данный момент узоров в галереи: ");
+            if (_gallerySize > 100) ForegroundColor = ConsoleColor.Green;
+            else ForegroundColor = ConsoleColor.Red;
+            Write(_gallerySize + "\n");
+            ForegroundColor = ConsoleColor.White;
 
             if (_gallerySize > 0)
             {
                 Write("\n\t\tДля просмотра узоров введите:");
-                Write("\n\t\t  Одно число - для просмотра одного узора (под этим номером)");
-                Write("\n\t\t  Два числа через '-' - для просмотра узоров под номерами от первого до второго числа");
-                Write("\n\t\t  Несколько чисел через '/' - для просмотра нескольких узоров (только под этими номерами)\n\n");
-
-
-                ForegroundColor = ConsoleColor.DarkGray;
-                Write("\n\t\tПримеры ввода:");
-                Write("\n\t\t  '12'       - будет показан только один узор (под этим номером в базе данных)");
-                Write("\n\t\t  '3-8'      - будут показаны узоры под номерами 3, 4, 5, 6, 7 и 8 (от первого числа до второго)");
-                Write("\n\t\t  '15/2/7/1' - будут показаны узоры под номерами 15, 2, 7 и 1 в таком же порядке как они были введены\n\n");
-                ForegroundColor = ConsoleColor.White;
-
+                Write("\n\t\t   > Одно число - для просмотра одного узора (под этим номером)");
+                Write("\n\t\t   > Два числа через '-' - для просмотра узоров под номерами от первого до второго числа");
+                Write("\n\t\t   > Несколько чисел через '/' - для просмотра нескольких узоров (только под этими номерами)\n");
 
                 Write("\n\n\n\t\t[i]  - Доступный функционал на данный момент:");
             }

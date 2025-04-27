@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using static System.Console;
 
 
-using static Generatio.GlobalVariables;
 using static Generatio.CustomFunctions;
 using static Generatio.CustomProcedures;
 using static Generatio.DataManipulation;
@@ -19,12 +18,13 @@ namespace Generatio
 
             //  Get the path to the \users\user_name_here\documents folder
             //  And then create/navigate to: Gyroscopic\Generatio\
-        static public string gGalleryPath = GetPath(false, "\\Gyroscopic\\Generatio\\Gallery", false);
+        static public string gGalleryPath = GetPath(false, true, "\\Gyroscopic\\Generatio\\Gallery", false);
 
 
             //  Get the path to the \users\user_name_here\documents folder
             //  And then create/navigate to: Gyroscopic\Generatio\
-        static public string gSettingsPath = GetPath(false, "\\Gyroscopic\\Generatio\\Settings", false);
+        static public string gSettingsPath = GetPath(false, true, "\\Gyroscopic\\Generatio\\Settings", false);
+
 
 
         //------------------------- Stored settings variables -------------------------------------------------//
@@ -53,18 +53,17 @@ namespace Generatio
             //  Automatically saves the all generated patterns to the file
             //  (if you want to save them, but not to generate them again)
         static public bool gAutoSave;
-            //  Enable shortcut parsing from the menu
-        static public bool gUseShortcuts;
+            //  Automatically assigns new names to unnamed patterns
+        static public bool gAutonameUnnamedPatterns;
 
 
 
 
         static public void ResetSettings()
         {
-            gAutoSave = true;
             gAlwaysGenerate = true;
-
-            gUseShortcuts = true;
+            gAutoSave = true;
+            gAutonameUnnamedPatterns = true;
 
             gShowInfo = false;
             gAdvInfo = false;
@@ -75,8 +74,8 @@ namespace Generatio
 
 
 
-            gGalleryPath  = GetPath(false, "\\Gyroscopic\\Generatio\\Gallery",  false);
-            gSettingsPath = GetPath(false, "\\Gyroscopic\\Generatio\\Settings", false);
+            gGalleryPath  = GetPath(false, true, "\\Gyroscopic\\Generatio\\Gallery",  false);
+            gSettingsPath = GetPath(false, true, "\\Gyroscopic\\Generatio\\Settings", false);
         }
              //  Reset all settings to default values
 
@@ -86,63 +85,64 @@ namespace Generatio
 
             while (UserInput != "0")
             {
-                if (!gGeneratedPatterns) Clear();
-                Write("\n\n\n\n\n\n");
-                PrintLogo();
-
-                Write("\t\t\t\t\t\t\tВыбрано: --- === Изменение настроек === ---\n\n\n");
+                ResetUI(!gIgnoreFullScreen, true);
+                Write("\n\t\t\t\t\t\tВыбрано: --- === Изменение настроек === ---\n\n\n");
 
                 Write("\t\t[i]  - Текущие настройки:");
 
-                ForegroundColor = ConsoleColor.DarkGray;   //  [1] Autosave option
-                Write("\n");                               //
-                if (gAutoSave)
-                {
-                    ForegroundColor = ConsoleColor.White;
-                    Write("\n\t\t  > 1 <    - Автосохранение всех сгенерированных узоров: ");
-                    ForegroundColor = ConsoleColor.Green;
-                    Write("Да");
-                }
-                else
-                {
-                    Write("\n\t\t  > 1 <    - Автосохранение всех сгенерированных узоров: ");
-                    ForegroundColor = ConsoleColor.Red;
-                    Write("Нет");
-                }
-                //-----------------------------------------//
 
-
-                ForegroundColor = ConsoleColor.DarkGray;   //  [2] Always generate option
+                ForegroundColor = ConsoleColor.DarkGray;   //  [1] Always generate option
                 if (gAlwaysGenerate)
                 {
                     ForegroundColor = ConsoleColor.White;
-                    Write("\n\t\t  > 2 <    - Всегда генерировать все узоры: ");
+                    Write("\n\t\t  > 1 <    - Всегда генерировать все узоры: ");
                     ForegroundColor = ConsoleColor.Green;
                     Write("Да");
                 }
                 else
                 {
-                    Write("\n\t\t  > 2 <    - Всегда генерировать все узоры: ");
+                    Write("\n\t\t  > 1 <    - Всегда генерировать все узоры: ");
                     ForegroundColor = ConsoleColor.Red;
                     Write("Нет");
                 }
                 //-----------------------------------------//
 
-                ForegroundColor = ConsoleColor.DarkGray;   //  [2] Always generate option
-                if (gUseShortcuts)
+
+                ForegroundColor = ConsoleColor.DarkGray;   //  [2] Autosave option
+                if (gAutoSave)
                 {
                     ForegroundColor = ConsoleColor.White;
-                    Write("\n\t\t  > 3 <    - Использовать короткие команды для генерации узоров: ");
+                    Write("\n\t\t  > 2 <    - Автосохранение всех сгенерированных узоров: ");
                     ForegroundColor = ConsoleColor.Green;
                     Write("Да");
                 }
                 else
                 {
-                    Write("\n\t\t  > 3 <    - Использовать короткие команды для генерации узоров: ");
+                    Write("\n\t\t  > 2 <    - Автосохранение всех сгенерированных узоров: ");
                     ForegroundColor = ConsoleColor.Red;
                     Write("Нет");
                 }
                 //-----------------------------------------//
+
+
+                ForegroundColor = ConsoleColor.DarkGray;   //  [3] Automatically assign names to unnamed patterns
+                if (gAutonameUnnamedPatterns)
+                {
+                    ForegroundColor = ConsoleColor.White;
+                    Write("\n\t\t  > 3 <    - Автоматически называть безымянные сохранённые узоры: ");
+                    ForegroundColor = ConsoleColor.Green;
+                    Write("Да");
+                }
+                else
+                {
+                    Write("\n\t\t  > 3 <    - Автоматически называть безымянные сохранённые узоры: ");
+                    ForegroundColor = ConsoleColor.Red;
+                    Write("Нет");
+                }
+                //-----------------------------------------//
+
+
+
 
 
                 ForegroundColor = ConsoleColor.DarkGray;   //  [4] Basic info output option
@@ -265,16 +265,20 @@ namespace Generatio
                 //  Parse choice
                 for (int i = 0; i < UserInput.Length; i++)
                 {
+                    //  For the situation of a path change
+                    //  Saving the previous state to not revert to the default state
+                    string _previousValidPath;
+
                     switch (UserInput[i])
                     {
                         case '1':
-                            gAutoSave = !gAutoSave;
-                            break;
-                        case '2':
                             gAlwaysGenerate = !gAlwaysGenerate;
                             break;
+                        case '2':
+                            gAutoSave = !gAutoSave;
+                            break;
                         case '3':
-                            gUseShortcuts = !gUseShortcuts;
+                            gAutonameUnnamedPatterns = !gAutonameUnnamedPatterns;
                             break;
                         case '4':
                             gShowInfo = !gShowInfo;
@@ -292,10 +296,14 @@ namespace Generatio
                             gNoSizeLimit = !gNoSizeLimit;
                             break;
                         case '9':
-                            gGalleryPath = GetPath(true, "\\Gyroscopic\\Generatio\\Gallery", gShowInfo, false, "\t\t");
+                            _previousValidPath = gGalleryPath;
+                            gGalleryPath = GetPath(true, false, "\\Gyroscopic\\Generatio\\Gallery", gShowInfo, false, "\t\t");
+                            if (gGalleryPath == null) gGalleryPath = _previousValidPath;
                             break;
                         case '=':
-                            gSettingsPath = GetPath(true, "\\Gyroscopic\\Generatio\\Settings", gShowInfo, false, "\t\t");
+                            _previousValidPath = gSettingsPath;
+                            gSettingsPath = GetPath(true, false, "\\Gyroscopic\\Generatio\\Settings", gShowInfo, false, "\t\t");
+                            if (gSettingsPath == null) gSettingsPath = _previousValidPath;
                             break;
                         case '-':
                             ResetSettings();
@@ -317,19 +325,20 @@ namespace Generatio
             try
             {
                 //  Read the binary encoded settings data
-                List<byte> _data = ReadBinaryData(gSettingsPath, "Generatio.settings", gShowInfo, false, "\t\t");
+                List<byte> _data = ReadBinaryData(gSettingsPath, "Generatio.settings", gShowInfo, false, "\t\t", "\n");
 
                 //  Transform the first byte to our boolean settings
-                gAutoSave         = (_data[0] & 0b00000001) != 0;
-                gAlwaysGenerate   = (_data[0] & 0b00000010) != 0;
-                gUseShortcuts     = (_data[0] & 0b00000100) != 0;
+                gAlwaysGenerate           = (_data[0] & 0b00000001) != 0;
+                gAutoSave                 = (_data[0] & 0b00000010) != 0;
+                gAutonameUnnamedPatterns  = (_data[0] & 0b00000100) != 0;
 
-                gShowInfo         = (_data[0] & 0b00001000) != 0;
-                gAdvInfo          = (_data[0] & 0b00010000) != 0;
+                gShowInfo                 = (_data[0] & 0b00001000) != 0;
+                gAdvInfo                  = (_data[0] & 0b00010000) != 0;
 
-                gShrinkPatterns   = (_data[0] & 0b00100000) != 0;
-                gIgnoreFullScreen = (_data[0] & 0b01000000) != 0;
-                gNoSizeLimit      = (_data[0] & 0b10000000) != 0;
+                gShrinkPatterns           = (_data[0] & 0b00100000) != 0;
+                gIgnoreFullScreen         = (_data[0] & 0b01000000) != 0;
+                gNoSizeLimit              = (_data[0] & 0b10000000) != 0;
+
 
                 //  Transform the rest of the bytes to our gallery path
                 byte[] _gPathBytes = ToByteArray(_data, 1);
@@ -353,16 +362,17 @@ namespace Generatio
             //  8 bits (1 byte) for 8 settings (binary number)
             byte[] _encodedBoolSettings = new byte[] { 0b00000000 };
 
-            if (gAutoSave)         _encodedBoolSettings[0] |= 0b00000001;   //  1 bit
-            if (gAlwaysGenerate)   _encodedBoolSettings[0] |= 0b00000010;   //  2 bit
-            if (gUseShortcuts)     _encodedBoolSettings[0] |= 0b00000100;   //  3 bit
+            
+            if (gAlwaysGenerate)           _encodedBoolSettings[0] |= 0b00000001;   //  1 bit
+            if (gAutoSave)                 _encodedBoolSettings[0] |= 0b00000010;   //  2 bit
+            if (gAutonameUnnamedPatterns)  _encodedBoolSettings[0] |= 0b00000100;   //  3 bit
 
-            if (gShowInfo)         _encodedBoolSettings[0] |= 0b00001000;   //  4 bit
-            if (gAdvInfo)          _encodedBoolSettings[0] |= 0b00010000;   //  5 bit
+            if (gShowInfo)                 _encodedBoolSettings[0] |= 0b00001000;   //  4 bit
+            if (gAdvInfo)                  _encodedBoolSettings[0] |= 0b00010000;   //  5 bit
 
-            if (gShrinkPatterns)   _encodedBoolSettings[0] |= 0b00100000;   //  6 bit
-            if (gIgnoreFullScreen) _encodedBoolSettings[0] |= 0b01000000;   //  7 bit
-            if (gNoSizeLimit)      _encodedBoolSettings[0] |= 0b10000000;   //  8 bit
+            if (gShrinkPatterns)           _encodedBoolSettings[0] |= 0b00100000;   //  6 bit
+            if (gIgnoreFullScreen)         _encodedBoolSettings[0] |= 0b01000000;   //  7 bit
+            if (gNoSizeLimit)              _encodedBoolSettings[0] |= 0b10000000;   //  8 bit
 
 
             //  Get the data into a more convinient format of a List of byte[] arrays
