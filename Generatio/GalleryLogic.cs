@@ -327,9 +327,9 @@ namespace Generatio
 
                 if (_multiId.Length > 1)
                 {
-                    for (int i = 0; i < _multiId.Length - 1; i += 2)
+                    for (int i = 0; i < _multiId.Length; i += 2)
                     {
-                        if (_multiId[i] != null && _multiId[i + 1] != null)
+                        if (i < _multiId.Length - 1 && _multiId[i] != null && _multiId[i + 1] != null)
                         {
                             if (int.TryParse(_multiId[i].Trim(), out _helperId[0])
                                 && int.TryParse(_multiId[i + 1].Trim(), out _helperId[1]))
@@ -342,29 +342,29 @@ namespace Generatio
                                     //                                                    //
                                     _helperId[0] = Math.Min(_helperId[0], _gallerySize);  //
                                     _helperId[0] = Math.Max(_helperId[0], 1);             //
-                                                                                          //
+                                    //                                                    //
                                     _helperId[1] = Math.Min(_helperId[1], _gallerySize);  //
                                     _helperId[1] = Math.Max(_helperId[1], 1);             //
-                                                                                          //                                                    //
+                                    //                                                    //                                                    //
                                     //-----------  Limit the parsed intervals  -----------//
 
 
-                                    // Print success message
-                                    Write("\n\t\tРаспознан интервал с " + _helperId[0] + " по " + _helperId[1]);
+                                    //  Print success message
+                                    if (gAdvInfo) Write("\n\t\tРаспознан интервал с " + _helperId[0] + " по " + _helperId[1]);
 
 
-                                    // Check for a normal interval (from lower to bigger)
+                                    //  Check for a normal interval (from lower to bigger)
                                     for (int j = 0; j <= _helperId[1] - _helperId[0]; j++)
                                     {
-                                        // Add normal interval
+                                        //  Add normal interval
                                         _parsedId.Add(_helperId[0] + j - 1);
                                     }
 
 
-                                    // Check for an inverted interval (from bigger to lower)
+                                    //  Check for an inverted interval (from bigger to lower)
                                     for (int j = 0; j <= _helperId[0] - _helperId[1]; j++)
                                     {
-                                        // Add inverted interval
+                                        //  Add inverted interval
                                         _parsedId.Add(_helperId[0] - j - 1);
                                     }
                                 }
@@ -375,7 +375,7 @@ namespace Generatio
                                         if (_helperId[0] > 0 && _helperId[0] < _gallerySize + 1)
                                         {
                                             _parsedId.Add(_helperId[0] - 1);
-                                            Write("\n\t\tРаспознанный узор: " + _helperId[0] + "\n\n");
+                                            if (gAdvInfo) Write("\n\t\tРаспознанный узор: " + _helperId[0] + "\n");
                                         }
                                     }
                                     if (int.TryParse(_multiId[i + 1], out _helperId[1]))
@@ -383,10 +383,53 @@ namespace Generatio
                                         if (_helperId[1] > 0 && _helperId[1] < _gallerySize + 1)
                                         {
                                             _parsedId.Add(_helperId[1] - 1);
-                                            Write("\n\t\tРаспознанный узор: " + _helperId[1] + "\n\n");
+                                            if (gAdvInfo) Write("\n\t\tРаспознанный узор: " + _helperId[1] + "\n");
                                         }
                                     }
                                 }
+                            }
+                        }
+                        else if (int.TryParse(_multiId[i].Trim(), out _helperId[1]))
+                        {
+                            if (_splitters.Length > 0 && _splitters[i - 1] == '-' && _multiId.Length > 1)
+                            {
+                                if (int.TryParse(_multiId[i - 1].Trim(), out _helperId[0]))
+                                {
+                                    //-----------  Limit the parsed intervals  -----------//
+                                    //                                                    //
+                                    _helperId[0] = Math.Min(_helperId[0], _gallerySize);  //
+                                    _helperId[0] = Math.Max(_helperId[0], 1);             //
+                                    //                                                    //
+                                    _helperId[1] = Math.Min(_helperId[1], _gallerySize);  //
+                                    _helperId[1] = Math.Max(_helperId[1], 1);             //
+                                    //                                                    //                                                    //
+                                    //-----------  Limit the parsed intervals  -----------//
+
+
+                                    //  Print success message
+                                    if (gAdvInfo) Write("\n\t\tРаспознан интервал с " + _helperId[0] + " по " + _helperId[1]);
+
+
+                                    //  Check for a normal interval (from lower to bigger)
+                                    for (int j = 1; j <= _helperId[1] - _helperId[0]; j++)
+                                    {
+                                        //  Add normal interval
+                                        _parsedId.Add(_helperId[0] + j - 1);
+                                    }
+
+
+                                    //  Check for an inverted interval (from bigger to lower)
+                                    for (int j = 0; j <= _helperId[0] - _helperId[1] - 1; j++)
+                                    {
+                                        //  Add inverted interval
+                                        _parsedId.Add(_helperId[0] - j - 1);
+                                    }
+                                }
+                            }
+                            else if (_helperId[1] > 0 && _helperId[1] < _gallerySize + 1)
+                            {
+                                _parsedId.Add(_helperId[1] - 1);
+                                if (gAdvInfo) Write("\n\t\tРаспознанный узор: " + _helperId[1] + "\n\n");
                             }
                         }
                     }
