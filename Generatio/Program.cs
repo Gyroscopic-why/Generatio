@@ -14,7 +14,7 @@ namespace Generatio
     {
         static void Main()
         {
-            Title = "Generatio 2.1";
+            Title = "Generatio 2.1.2";
             OutputEncoding = System.Text.Encoding.UTF8;
 
 

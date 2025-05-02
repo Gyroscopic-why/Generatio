@@ -680,63 +680,87 @@ namespace Generatio
              // Returns a string (array of chars): Get the splitters in the input strings that match the criteria
         static public string[] SplitForParsing(string _input, string _criterias)
         {
-            // Future length for the string array
+            //  Future length for the string array
             //
-            // Consists of how many splitters from the criterias string we have found in our input string
+            //  Consists of how many splitters from the criterias string we have found in our input string (+1)
             int _arrayLength = 1;
 
-            // Save the position for the last found splitter
-            // Needed to save the new section between the splitters
+            //  Save the position for the last found splitter
+            //  Needed to save the new section between the splitters
             int _lastSplitCharPos = 0;
 
             for (int i = 0; i < _input.Length; i++)
             {
-                for (int j = 0; j < _criterias.Length; j++)  // For every splitter in the criterias string
+                for (int j = 0; j < _criterias.Length; j++)  //  For every splitter in the criterias string
                 {
-                    if (_input[i] == _criterias[j])  // If the splitter is found
+                    if (_input[i] == _criterias[j])  //  If the splitter is found
                     {
-                        _arrayLength++;             // Increase the future array length
-                        j += _criterias.Length;     // Exit the loop - go find the next splitter
+                        _arrayLength++;             //  Increase the future array length
+                        j += _criterias.Length;     //  Exit the loop - go find the next splitter
                     }
                 }
             }
 
-            // Initialisse the string array with the calculated length
+            //  Initialize the string array with the calculated length
             string[] _result = new string[_arrayLength];
 
-            for (int i = 0; i < _arrayLength; i++)          // For every string in the string array   //
+            for (int i = 0; i < _arrayLength; i++)          //  For every string in the string array   //
             {
 
                 for (int j = _lastSplitCharPos; j < _input.Length; j++)
-                {                                           // For every interval in the input string //
+                {                                           //  For every interval in the input string //
 
                     for (int k = 0; k < _criterias.Length; k++)
-                    {       // Distinquish the intervals from each others by the criteria characters  //
+                    {       //  Distinquish the intervals from each others by the criteria characters  //
 
                         if (_input[j] == _criterias[k])
                         {
-                            // If the splitter is found                                               //
+                            //  If the splitter is found                                               //
 
-                            // Extract the found interval from the last splitter to the current splitter
+                            //  Extract the found interval from the last splitter to the current splitter
                             _result[i] += _input.Substring(_lastSplitCharPos, j - _lastSplitCharPos);
 
-                            // Save the new last found splitter position
+                            //  Save the new last found splitter position
                             _lastSplitCharPos = j + 1;
 
-                            // Exit the loops to increase the saving index
+                            //  Exit the loops to increase the saving index
                             j += _input.Length;
                             k += _criterias.Length;
                         }
                         else if (j == _input.Length - 1)
                         {
-                            // If we got to the end of the input string                               //
-                            // So we need to save the last remaining interval                         //
+                            //  If we got to the end of the input string                               //
+                            //  So we need to save the last remaining interval                         //
 
 
-                            // Extract the last interval from the last splitter to the end of the string
-                            _result[i] += _input.Substring(_lastSplitCharPos, j - _lastSplitCharPos + 1);
+                            //  Extract the last interval from the last splitter to the end of the string
+                            //
+                            //  If the last char of or input is a splitter - save all but it
+                            for (int l = 0; l < _criterias.Length; l++)
+                            {
+                                if(_input[_input.Length - 1] == _criterias[l])
+                                {
+                                    //  Save the last input substring without the splitter (last char)
+                                    _result[i] += _input.Substring(_lastSplitCharPos, j - _lastSplitCharPos);
 
-                            // Exit the loops for good
+                                    //  Exit the criteria splitters search loop
+                                    l += _criterias.Length;
+
+                                    //  Logic flag for singular save
+                                    _lastSplitCharPos = _input.Length;
+                                }
+                            }
+                            if (_lastSplitCharPos != _input.Length)
+                            {
+                                //  Save all the last characters from the input string
+                                _result[i] += _input.Substring(_lastSplitCharPos, j - _lastSplitCharPos + 1);
+
+                                //  Exit the loops for good
+                                _lastSplitCharPos = _input.Length;
+                            }
+
+
+                            //  Exit the loops for good
                             j += _input.Length;
                             k += _criterias.Length;
                         }
