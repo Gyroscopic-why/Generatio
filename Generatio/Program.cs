@@ -7,14 +7,13 @@ using static Generatio.CustomFunctions;
 using static Generatio.CustomProcedures;
 
 
-
 namespace Generatio
 {
     internal class Program
     {
         static void Main()
         {
-            Title = "Generatio 2.1.2";
+            Title = "Generatio 2.2 alpha";
             OutputEncoding = System.Text.Encoding.UTF8;
 
 
