@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using static System.Console;
 
 
+using static Generatio.UI;
 using static Generatio.GlobalSettings;
 using static Generatio.GlobalVariables;
-using static Generatio.CustomProcedures;
 
 
 
@@ -103,7 +103,7 @@ namespace Generatio
         //---------------------------  Returns numbers  -------------------------------------------------------//
 
 
-        static public byte GetColorAssetID(UInt16 width, uint height)
+        static public byte GetColorAssetID(UInt16 width, UInt32 height)
         {
 			string userInput;
 			byte choice = 0;
@@ -117,13 +117,13 @@ namespace Generatio
 
             //  Print all the options
 			Write("\n\n\t\tВсего есть " + StoredColors.Length + " коллекций цветов:");
-			for (int i = 0; i < StoredColors.Length; i++)
+			for (Int32 i = 0; i < StoredColors.Length; i++)
 			{
                 //  Write the info about the current collection
 				Write("\n\n\t\t  > " + (i + 1) + " <    ");
 
 
-				for (int j = 0; j < StoredColors[i].Length; j++)
+				for (Int32 j = 0; j < StoredColors[i].Length; j++)
 				{
 					BackgroundColor = StoredColors[i][j];
 
@@ -141,7 +141,7 @@ namespace Generatio
 
 				//  Write the margin
 				BackgroundColor = ConsoleColor.Black;
-				for (int j = 0; j < 12 - StoredColors[i].Length; j++) Write("      ");
+				for (Int32 j = 0; j < 12 - StoredColors[i].Length; j++) Write("      ");
 
                 //  Write the color amount in this collection
 				Write("\t- " + StoredColors[i].Length + " цвета(ов)");
@@ -169,7 +169,7 @@ namespace Generatio
 		static public UInt16 GetColorsAmount(UInt16 maxAmount)
 		{
 			UInt16 amount = 0;             // We will be storing the final parsed result here
-			const int minAmount = 2;    // Min amount is a constant
+			const Int32 minAmount = 2;    // Min amount is a constant
 			string userInput;           // For user input parsing
 
 
@@ -217,7 +217,7 @@ namespace Generatio
         {
             UInt16 pictureSize = 1;            //  Storing the final parsed result
 			UInt16 maxSize, realMax;      //  Max allowed size, and maxWindowSize
-            const int minSize = 5;     // Min size is a constant
+            const Int32 minSize = 5;     // Min size is a constant
             string userInput;      // For user input parsing
 
 
@@ -313,7 +313,7 @@ namespace Generatio
         
         
 
-		/*static public long Factorial(int Number)
+		/*static public long Factorial(Int32 Number)
         {
             long FactorialOfNumber = 1;
             while (Number > 1)
@@ -386,7 +386,7 @@ namespace Generatio
             //-------------  WRITING INFO  --------------------//
 
             Write("\n\n\n\t\t\t\t\tЦвета на выбор:\n\n");
-            for (int i = 0; i < 16; i++)
+            for (Int32 i = 0; i < 16; i++)
             {
                 ForegroundColor = gAllColors[i];
                 Write("\t\t\t\t");
@@ -429,7 +429,7 @@ namespace Generatio
 
 
             //------------------  GETTING COLORS  ------------------------//
-            for (int i = 0; i < colAmount; i++)
+            for (Int32 i = 0; i < colAmount; i++)
             {
                 validColor = false;
                 while (!validColor)
@@ -572,23 +572,48 @@ namespace Generatio
 		     // Get the colors for the custom user choice
 
 
-		static public byte[] ChooseBestPatterns(int AmountOfColors)
+		static public void RankPatterns(Int32 colAmount, out List<Byte> best, out List<Byte> remaining)
 		{
-			byte[] bestPatterns = new byte[5];
+            best = new List<byte>();
+            remaining = new List<byte>();
 
-			if (AmountOfColors < 3) bestPatterns[0] = 2;
-			else bestPatterns[0] = 9;
+            if (colAmount < 3)
+            {
+                best.Add(2);
+                remaining.Add(9);
+            }
+            else
+            {
+                best.Add(9);
+                remaining.Add(2);
+            }
 
-			if (gRandom.Next(0, 100) < 50) bestPatterns[1] = 1;
-			else bestPatterns[1] = 6;
+            if (gRandom.Next(0, 100) < 50)
+            {
+                best.Add(1);
+                remaining.Add(6);
+            }
+            else
+            {
+                best.Add(6);
+                remaining.Add(1);
+            }
 
-			if (gRandom.Next(0, 100) > 40) bestPatterns[2] = 3;
-			else bestPatterns[2] = 7;
+            if (gRandom.Next(0, 100) > 40)
+            {
+                best.Add(3);
+                remaining.Add(7);
+            }
+            else
+            {
+                best.Add(7);
+                remaining.Add(3);
+            }
 
-			bestPatterns[3] = 8;
-			bestPatterns[4] = 10;
-
-			return bestPatterns;
+            best.Add(8);
+            best.Add(10);
+            remaining.Add(4);
+            remaining.Add(5);
 		}
 		     // Choosing the best patterns
 		static public List<byte> SelectPatternsForSaving(out List<string> patternNames)
@@ -600,10 +625,10 @@ namespace Generatio
             //  User input split by the special char ","
             string[] choices = ReadLine().Split(',');
 
-            for (int i = 0; i < choices.Length; i++)
+            for (Int32 i = 0; i < choices.Length; i++)
             {
                 //  Id of the splitter between the pattern type and name
-                int helper = choices[i].IndexOf('=');
+                Int32 helper = choices[i].IndexOf('=');
 
                 //  If the pattern is unnamed
                 if (helper == -1)
@@ -660,9 +685,9 @@ namespace Generatio
         {
             string splitters = "";
 
-            for(int i = 0; i < input.Length; i++)
+            for(Int32 i = 0; i < input.Length; i++)
             {
-                for (int j = 0; j < criteria.Length; j++) // For every splitter in the criterias string
+                for (Int32 j = 0; j < criteria.Length; j++) // For every splitter in the criterias string
                 {
                     if (input[i] == criteria[j])
                     {
@@ -683,15 +708,15 @@ namespace Generatio
             //  Future length for the string array
             //
             //  Consists of how many splitters from the criterias string we have found in our input string (+1)
-            int arrayLength = 1;
+            Int32 arrayLength = 1;
 
             //  Save the position for the last found splitter
             //  Needed to save the new section between the splitters
-            int lastSplitCharPos = 0;
+            Int32 lastSplitCharPos = 0;
 
-            for (int i = 0; i < input.Length; i++)
+            for (Int32 i = 0; i < input.Length; i++)
             {
-                for (int j = 0; j < criterias.Length; j++)  //  For every splitter in the criterias string
+                for (Int32 j = 0; j < criterias.Length; j++)  //  For every splitter in the criterias string
                 {
                     if (input[i] == criterias[j])  //  If the splitter is found
                     {
@@ -704,13 +729,13 @@ namespace Generatio
             //  Initialize the string array with the calculated length
             string[] result = new string[arrayLength];
 
-            for (int i = 0; i < arrayLength; i++)          //  For every string in the string array   //
+            for (Int32 i = 0; i < arrayLength; i++)          //  For every string in the string array   //
             {
 
-                for (int j = lastSplitCharPos; j < input.Length; j++)
+                for (Int32 j = lastSplitCharPos; j < input.Length; j++)
                 {                                           //  For every interval in the input string //
 
-                    for (int k = 0; k < criterias.Length; k++)
+                    for (Int32 k = 0; k < criterias.Length; k++)
                     {       //  Distinquish the intervals from each others by the criteria characters  //
 
                         if (input[j] == criterias[k])
@@ -736,7 +761,7 @@ namespace Generatio
                             //  Extract the last interval from the last splitter to the end of the string
                             //
                             //  If the last char of or input is a splitter - save all but it
-                            for (int l = 0; l < criterias.Length; l++)
+                            for (Int32 l = 0; l < criterias.Length; l++)
                             {
                                 if(input[input.Length - 1] == criterias[l])
                                 {
@@ -778,7 +803,7 @@ namespace Generatio
         static public ConsoleColor[] ConvertColorsToConsole(byte[] colorIdx)
         {
             ConsoleColor[] colors = new ConsoleColor[colorIdx.Length];
-            for (int i = 0; i < colors.Length; i++) colors[i] = gAllColors[colorIdx[i]];
+            for (Int32 i = 0; i < colors.Length; i++) colors[i] = gAllColors[colorIdx[i]];
             return colors;
         }
              // Convert colors from bytes to console colors
@@ -786,7 +811,7 @@ namespace Generatio
         static public byte[] ConvertColorsToBytes(ConsoleColor[] colors)
         {
             byte[] byteColors = new byte[colors.Length];
-            for (int i = 0; i < byteColors.Length; i++)
+            for (Int32 i = 0; i < byteColors.Length; i++)
             {
                 for (byte colorId = 0; colorId < 16; colorId++)
                 {
@@ -801,7 +826,7 @@ namespace Generatio
 
         //-------------------  Array and List conversion  ------------------------------------------------------//
 
-        static public List<byte> ToByteList(byte[] array, int startIndex = 0, int endIndex = -1)
+        static public List<byte> ToByteList(byte[] array, Int32 startIndex = 0, Int32 endIndex = -1)
         {
             if (array == null) return null;
 
@@ -812,13 +837,13 @@ namespace Generatio
             List<byte> list = new List<byte>();
 
             //  Convert array to list
-            for (int i = startIndex; i < endIndex; i++) list.Add(array[i]);
+            for (Int32 i = startIndex; i < endIndex; i++) list.Add(array[i]);
 
             //  Return the list
             return list;
         }
              //  Converts a List(byte) to a Array(byte)
-        static public byte[] ToByteArray(List<byte> list, int startIndex = 0, int endIndex = -1)
+        static public byte[] ToByteArray(List<byte> list, Int32 startIndex = 0, Int32 endIndex = -1)
         {
             if (list == null) return null;
 
@@ -829,7 +854,7 @@ namespace Generatio
             byte[] array = new byte[list.Count];
 
             //  Convert list to array
-            for (int i = startIndex; i < endIndex; i++) array[i] = list[i];
+            for (Int32 i = startIndex; i < endIndex; i++) array[i] = list[i];
 
             //  Return the array
             return array;
@@ -837,7 +862,7 @@ namespace Generatio
              //  Converts a Array(byte) to a List(byte)
 
 
-        static public List<string> ToStringList(string[] array, int startIndex = 0, int endIndex = -1)
+        static public List<string> ToStringList(string[] array, Int32 startIndex = 0, Int32 endIndex = -1)
         {
             if (array == null) return null;
 
@@ -848,13 +873,13 @@ namespace Generatio
             List<string> list = new List<string>();
 
             //  Convert array to list
-            for (int i = startIndex; i < endIndex; i++) list.Add(array[i]);
+            for (Int32 i = startIndex; i < endIndex; i++) list.Add(array[i]);
 
             //  Return the list
             return list;
         }
              //  Converts a List(string) to a Array(string)
-        static public string[] ToStringArray(List<string> list, int startIndex = 0, int endIndex = -1)
+        static public string[] ToStringArray(List<string> list, Int32 startIndex = 0, Int32 endIndex = -1)
         {
             if (list == null) return null;
 
@@ -865,7 +890,7 @@ namespace Generatio
             string[] array = new string[list.Count];
 
             //  Convert list to array
-            for (int i = startIndex; i < endIndex; i++) array[i] = list[i];
+            for (Int32 i = startIndex; i < endIndex; i++) array[i] = list[i];
 
             //  Return the array
             return array;

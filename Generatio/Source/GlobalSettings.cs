@@ -5,8 +5,8 @@ using System.Collections.Generic;
 using static System.Console;
 
 
+using static Generatio.UI;
 using static Generatio.CustomFunctions;
-using static Generatio.CustomProcedures;
 
 using GyroscopicDataLibrary;
 
@@ -31,7 +31,7 @@ namespace Generatio
         //------------------------- Stored settings variables -------------------------------------------------//
 
 
-            //  Makes the size function ignore the upper limit (Max = from MaxWindowSize to int.MaxValue)
+            //  Makes the size function ignore the upper limit (Max = from MaxWindowSize to Int32.MaxValue)
         static public bool gNoSizeLimit;
             //  Makes the program ignore your window size 
         static public bool gIgnoreFullScreen;
@@ -46,8 +46,8 @@ namespace Generatio
 
 
 
-            //  Always generates all patterns without asking for it in the final generation stage
-        static public bool gAlwaysGenerate;
+            //  Always draw all patterns without asking for it in the final generation stage
+        static public bool gAlwaysDrawAll;
 
 
 
@@ -62,7 +62,7 @@ namespace Generatio
 
         static public void ResetSettings()
         {
-            gAlwaysGenerate = true;
+            gAlwaysDrawAll = true;
             gAutoSave = true;
             gAutonameUnnamedPatterns = true;
 
@@ -74,7 +74,6 @@ namespace Generatio
             gNoSizeLimit = false;
 
 
-
             gGalleryPath  = BetterDataIO.GetPath(false, true, "\\Gyroscopic\\Generatio\\Gallery",  false);
             gSettingsPath = BetterDataIO.GetPath(false, true, "\\Gyroscopic\\Generatio\\Settings", false);
         }
@@ -82,9 +81,9 @@ namespace Generatio
 
         static public void ChangeSettings()
         {
-            string UserInput = "";
+            string userInput = "";
 
-            while (UserInput != "0")
+            while (userInput != "0")
             {
                 ResetUI(!gIgnoreFullScreen, true);
                 Write("\n\t\t\t\t\t\tВыбрано: --- === Изменение настроек === ---\n\n\n");
@@ -92,8 +91,8 @@ namespace Generatio
                 Write("\t\t[i]  - Текущие настройки:");
 
 
-                ForegroundColor = ConsoleColor.DarkGray;   //  [1] Always generate option
-                if (gAlwaysGenerate)
+                ForegroundColor = ConsoleColor.DarkGray;   //  [1] Always draw option
+                if (gAlwaysDrawAll)
                 {
                     ForegroundColor = ConsoleColor.White;
                     Write("\n\t\t  > 1 <    - Всегда генерировать все узоры: ");
@@ -261,19 +260,19 @@ namespace Generatio
 
                 //  Get the user input
                 Write("\n\n\t\t[->] - Ваш выбор: ");
-                UserInput = ReadLine().Trim();
+                userInput = ReadLine().Trim();
 
                 //  Parse choice
-                for (int i = 0; i < UserInput.Length; i++)
+                for (Int32 i = 0; i < userInput.Length; i++)
                 {
                     //  For the situation of a path change
                     //  Saving the previous state to not revert to the default state
                     string previousValidPath;
 
-                    switch (UserInput[i])
+                    switch (userInput[i])
                     {
                         case '1':
-                            gAlwaysGenerate = !gAlwaysGenerate;
+                            gAlwaysDrawAll = !gAlwaysDrawAll;
                             break;
                         case '2':
                             gAutoSave = !gAutoSave;
@@ -329,7 +328,7 @@ namespace Generatio
                 List<byte> binData = BetterDataIO.ReadBinaryData(gSettingsPath, "Generatio.settings", gShowInfo, false, "\t\t", "\n");
 
                 //  Transform the first byte to our boolean settings
-                gAlwaysGenerate           = (binData[0] & 0b00000001) != 0;
+                gAlwaysDrawAll            = (binData[0] & 0b00000001) != 0;
                 gAutoSave                 = (binData[0] & 0b00000010) != 0;
                 gAutonameUnnamedPatterns  = (binData[0] & 0b00000100) != 0;
 
@@ -364,7 +363,7 @@ namespace Generatio
             byte[] encodedBoolSettings = new byte[] { 0b00000000 };
 
             
-            if (gAlwaysGenerate)           encodedBoolSettings[0] |= 0b00000001;   //  1 bit
+            if (gAlwaysDrawAll)            encodedBoolSettings[0] |= 0b00000001;   //  1 bit
             if (gAutoSave)                 encodedBoolSettings[0] |= 0b00000010;   //  2 bit
             if (gAutonameUnnamedPatterns)  encodedBoolSettings[0] |= 0b00000100;   //  3 bit
 
