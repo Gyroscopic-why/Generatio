@@ -4,14 +4,12 @@ namespace Generatio
 {
     internal class GlobalVariables
     {
-
             //  Global random class object to not initialize it more than once
         static public Random gRandom = new Random();
 
 
             //  Track of a force exit from the pattern creation menu
-        static public bool gForceExit = false;
-
+        //static public bool gForceExit = false;
 
 
 
@@ -19,7 +17,7 @@ namespace Generatio
 
 
 
-            // Color names (for GetColors function) to write them compactly
+        // Color names (for GetColors function) to write them compactly
         static public string[] gColorNames = {
                 "Красный",
                 "Зелёный",
@@ -143,9 +141,6 @@ namespace Generatio
 
             //  sc  -  stored colors
             //  2, 4, 5, 7, 8, 12 - amount of colors in the array
-
-
-        
 
         readonly static public ConsoleColor[] scWhiteBlack4 = {
                 ConsoleColor.White,

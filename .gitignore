@@ -302,3 +302,5 @@ __pycache__/
 *.props
 Generatio/Properties/AssemblyInfo.cs
 -tree -r HEAD
+Generatio/obj/Release/build.force
+Generatio/obj/Release/Generatio.csproj.Up2Date

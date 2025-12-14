@@ -5,9 +5,10 @@ using System.Collections.Generic;
 using static System.Console;
 
 
+using static Generatio.UI;
 using static Generatio.CustomFunctions;
-using static Generatio.CustomProcedures;
-using static Generatio.DataManipulation;
+
+using GyroscopicDataLibrary;
 
 
 
@@ -16,21 +17,21 @@ namespace Generatio
     internal class GlobalSettings
     {
 
-            //  Get the path to the \users\user_name_here\documents folder
+            //  Get the path to the \users\usernamehere\documents folder
             //  And then create/navigate to: Gyroscopic\Generatio\
-        static public string gGalleryPath = GetPath(false, true, "\\Gyroscopic\\Generatio\\Gallery", false);
+        static public string gGalleryPath = BetterDataIO.GetPath(false, true, "\\Gyroscopic\\Generatio\\Gallery", false);
 
 
-            //  Get the path to the \users\user_name_here\documents folder
+            //  Get the path to the \users\usernamehere\documents folder
             //  And then create/navigate to: Gyroscopic\Generatio\
-        static public string gSettingsPath = GetPath(false, true, "\\Gyroscopic\\Generatio\\Settings", false);
+        static public string gSettingsPath = BetterDataIO.GetPath(false, true, "\\Gyroscopic\\Generatio\\Settings", false);
 
 
 
         //------------------------- Stored settings variables -------------------------------------------------//
 
 
-            //  Makes the size function ignore the upper limit (Max = from MaxWindowSize to int.MaxValue)
+            //  Makes the size function ignore the upper limit (Max = from MaxWindowSize to Int32.MaxValue)
         static public bool gNoSizeLimit;
             //  Makes the program ignore your window size 
         static public bool gIgnoreFullScreen;
@@ -45,8 +46,8 @@ namespace Generatio
 
 
 
-            //  Always generates all patterns without asking for it in the final generation stage
-        static public bool gAlwaysGenerate;
+            //  Always draw all patterns without asking for it in the final generation stage
+        static public bool gAlwaysDrawAll;
 
 
 
@@ -61,7 +62,7 @@ namespace Generatio
 
         static public void ResetSettings()
         {
-            gAlwaysGenerate = true;
+            gAlwaysDrawAll = true;
             gAutoSave = true;
             gAutonameUnnamedPatterns = true;
 
@@ -73,17 +74,16 @@ namespace Generatio
             gNoSizeLimit = false;
 
 
-
-            gGalleryPath  = GetPath(false, true, "\\Gyroscopic\\Generatio\\Gallery",  false);
-            gSettingsPath = GetPath(false, true, "\\Gyroscopic\\Generatio\\Settings", false);
+            gGalleryPath  = BetterDataIO.GetPath(false, true, "\\Gyroscopic\\Generatio\\Gallery",  false);
+            gSettingsPath = BetterDataIO.GetPath(false, true, "\\Gyroscopic\\Generatio\\Settings", false);
         }
              //  Reset all settings to default values
 
         static public void ChangeSettings()
         {
-            string UserInput = "";
+            string userInput = "";
 
-            while (UserInput != "0")
+            while (userInput != "0")
             {
                 ResetUI(!gIgnoreFullScreen, true);
                 Write("\n\t\t\t\t\t\tВыбрано: --- === Изменение настроек === ---\n\n\n");
@@ -91,8 +91,8 @@ namespace Generatio
                 Write("\t\t[i]  - Текущие настройки:");
 
 
-                ForegroundColor = ConsoleColor.DarkGray;   //  [1] Always generate option
-                if (gAlwaysGenerate)
+                ForegroundColor = ConsoleColor.DarkGray;   //  [1] Always draw option
+                if (gAlwaysDrawAll)
                 {
                     ForegroundColor = ConsoleColor.White;
                     Write("\n\t\t  > 1 <    - Всегда генерировать все узоры: ");
@@ -260,19 +260,19 @@ namespace Generatio
 
                 //  Get the user input
                 Write("\n\n\t\t[->] - Ваш выбор: ");
-                UserInput = ReadLine().Trim();
+                userInput = ReadLine().Trim();
 
                 //  Parse choice
-                for (int i = 0; i < UserInput.Length; i++)
+                for (Int32 i = 0; i < userInput.Length; i++)
                 {
                     //  For the situation of a path change
                     //  Saving the previous state to not revert to the default state
-                    string _previousValidPath;
+                    string previousValidPath;
 
-                    switch (UserInput[i])
+                    switch (userInput[i])
                     {
                         case '1':
-                            gAlwaysGenerate = !gAlwaysGenerate;
+                            gAlwaysDrawAll = !gAlwaysDrawAll;
                             break;
                         case '2':
                             gAutoSave = !gAutoSave;
@@ -296,14 +296,14 @@ namespace Generatio
                             gNoSizeLimit = !gNoSizeLimit;
                             break;
                         case '9':
-                            _previousValidPath = gGalleryPath;
-                            gGalleryPath = GetPath(true, false, "\\Gyroscopic\\Generatio\\Gallery", gShowInfo, false, "\t\t");
-                            if (gGalleryPath == null) gGalleryPath = _previousValidPath;
+                            previousValidPath = gGalleryPath;
+                            gGalleryPath = BetterDataIO.GetPath(true, false, "\\Gyroscopic\\Generatio\\Gallery", gShowInfo, false, "\t\t");
+                            if (gGalleryPath == null) gGalleryPath = previousValidPath;
                             break;
                         case '=':
-                            _previousValidPath = gSettingsPath;
-                            gSettingsPath = GetPath(true, false, "\\Gyroscopic\\Generatio\\Settings", gShowInfo, false, "\t\t");
-                            if (gSettingsPath == null) gSettingsPath = _previousValidPath;
+                            previousValidPath = gSettingsPath;
+                            gSettingsPath = BetterDataIO.GetPath(true, false, "\\Gyroscopic\\Generatio\\Settings", gShowInfo, false, "\t\t");
+                            if (gSettingsPath == null) gSettingsPath = previousValidPath;
                             break;
                         case '-':
                             ResetSettings();
@@ -325,24 +325,24 @@ namespace Generatio
             try
             {
                 //  Read the binary encoded settings data
-                List<byte> _data = ReadBinaryData(gSettingsPath, "Generatio.settings", gShowInfo, false, "\t\t", "\n");
+                List<byte> binData = BetterDataIO.ReadBinaryData(gSettingsPath, "Generatio.settings", gShowInfo, false, "\t\t", "\n");
 
                 //  Transform the first byte to our boolean settings
-                gAlwaysGenerate           = (_data[0] & 0b00000001) != 0;
-                gAutoSave                 = (_data[0] & 0b00000010) != 0;
-                gAutonameUnnamedPatterns  = (_data[0] & 0b00000100) != 0;
+                gAlwaysDrawAll            = (binData[0] & 0b00000001) != 0;
+                gAutoSave                 = (binData[0] & 0b00000010) != 0;
+                gAutonameUnnamedPatterns  = (binData[0] & 0b00000100) != 0;
 
-                gShowInfo                 = (_data[0] & 0b00001000) != 0;
-                gAdvInfo                  = (_data[0] & 0b00010000) != 0;
+                gShowInfo                 = (binData[0] & 0b00001000) != 0;
+                gAdvInfo                  = (binData[0] & 0b00010000) != 0;
 
-                gShrinkPatterns           = (_data[0] & 0b00100000) != 0;
-                gIgnoreFullScreen         = (_data[0] & 0b01000000) != 0;
-                gNoSizeLimit              = (_data[0] & 0b10000000) != 0;
+                gShrinkPatterns           = (binData[0] & 0b00100000) != 0;
+                gIgnoreFullScreen         = (binData[0] & 0b01000000) != 0;
+                gNoSizeLimit              = (binData[0] & 0b10000000) != 0;
 
 
                 //  Transform the rest of the bytes to our gallery path
-                byte[] _gPathBytes = ToByteArray(_data, 1);
-                gGalleryPath = Encoding.UTF8.GetString(_gPathBytes).Substring(1);
+                byte[] gPathBytes = ToByteArray(binData, 1);
+                gGalleryPath = Encoding.UTF8.GetString(gPathBytes).Substring(1);
 
                 if (gShowInfo) Write("\t\tСохранение настроек успешно загружено!\n\n");
             }
@@ -360,33 +360,33 @@ namespace Generatio
         static public void SaveSettings()
         {
             //  8 bits (1 byte) for 8 settings (binary number)
-            byte[] _encodedBoolSettings = new byte[] { 0b00000000 };
+            byte[] encodedBoolSettings = new byte[] { 0b00000000 };
 
             
-            if (gAlwaysGenerate)           _encodedBoolSettings[0] |= 0b00000001;   //  1 bit
-            if (gAutoSave)                 _encodedBoolSettings[0] |= 0b00000010;   //  2 bit
-            if (gAutonameUnnamedPatterns)  _encodedBoolSettings[0] |= 0b00000100;   //  3 bit
+            if (gAlwaysDrawAll)            encodedBoolSettings[0] |= 0b00000001;   //  1 bit
+            if (gAutoSave)                 encodedBoolSettings[0] |= 0b00000010;   //  2 bit
+            if (gAutonameUnnamedPatterns)  encodedBoolSettings[0] |= 0b00000100;   //  3 bit
 
-            if (gShowInfo)                 _encodedBoolSettings[0] |= 0b00001000;   //  4 bit
-            if (gAdvInfo)                  _encodedBoolSettings[0] |= 0b00010000;   //  5 bit
+            if (gShowInfo)                 encodedBoolSettings[0] |= 0b00001000;   //  4 bit
+            if (gAdvInfo)                  encodedBoolSettings[0] |= 0b00010000;   //  5 bit
 
-            if (gShrinkPatterns)           _encodedBoolSettings[0] |= 0b00100000;   //  6 bit
-            if (gIgnoreFullScreen)         _encodedBoolSettings[0] |= 0b01000000;   //  7 bit
-            if (gNoSizeLimit)              _encodedBoolSettings[0] |= 0b10000000;   //  8 bit
+            if (gShrinkPatterns)           encodedBoolSettings[0] |= 0b00100000;   //  6 bit
+            if (gIgnoreFullScreen)         encodedBoolSettings[0] |= 0b01000000;   //  7 bit
+            if (gNoSizeLimit)              encodedBoolSettings[0] |= 0b10000000;   //  8 bit
 
 
             //  Get the data into a more convinient format of a List of byte[] arrays
-            List<byte[]> _settingsData = new List<byte[]>
+            List<byte[]> settingsData = new List<byte[]>
             {
                 //  a byte number representing our 8 binary settings
-                _encodedBoolSettings,
+                encodedBoolSettings,
 
                 //  Transform the paths to byte[] arrays
                 Encoding.UTF8.GetBytes(gGalleryPath)
             };
 
             //  Save the encoded settings to the special binary Generatio.settings file
-            SaveBinaryData(gSettingsPath, "Generatio.settings", _settingsData, false, "", gShowInfo, false, "\t\t", "\n");
+            BetterDataIO.SaveBinaryData(gSettingsPath, "Generatio.settings", settingsData, false, "", gShowInfo, false, "\t\t", "\n");
         }
              //  Encode current settings data, and save it
     }
