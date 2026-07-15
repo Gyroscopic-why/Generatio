@@ -2,8 +2,9 @@
 
 using static System.Console;
 
-using static Generatio.GalleryLogic;
 using static Generatio.GlobalSettings;
+
+
 
 namespace Generatio
 {
@@ -45,7 +46,7 @@ namespace Generatio
             ResetSettings();  //  Reset settings do default (fail save)
             LoadSettings();   //  Load previous save of the settings
 
-            UpdateGallery();  //  UpdateGallerySave
+            Gallery.GalleryManager.UpdateGallery();  //  UpdateGallerySave
         }
 
 

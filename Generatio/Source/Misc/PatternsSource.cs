@@ -47,7 +47,7 @@ namespace Generatio
             }
             public void Save(UInt32 compactUnixDateTime)
             {
-                Byte[] packedColors = GalleryLogic.PackColors(CustomFunctions.ConvertColorsToBytes(colors));
+                Byte[] packedColors = Gallery.GalleryManager.PackColors(CustomFunctions.ConvertColorsToBytes(colors));
                 GalleryEncodings.EncodeV3("", type, _sizeX, _sizeY, (UInt16)colors.Length, packedColors, compactUnixDateTime, _patternName);
                 //  Temporary bullshit
             }

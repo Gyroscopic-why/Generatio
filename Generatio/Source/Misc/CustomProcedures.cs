@@ -4,13 +4,12 @@ using System.Collections.Generic;
 using AVcontrol;
 using GyroscopicDataLibrary;
 
+using static System.Console;
 
 using static Generatio.CustomFunctions;
-using static Generatio.GalleryLogic;
 using static Generatio.GlobalSettings;
 using static Generatio.GlobalVariables;
 using static Generatio.PatternSource;
-using static System.Console;
 
 
 
@@ -79,15 +78,15 @@ namespace Generatio
 
             if (savePattern)
             { 
-                List<string> patternData = new List<string>
-                {
+                List<string> patternData =
+                [
                     //  Add a special character for the ParseData function
                     //  So it doesn't remove spaces from the name string
                     "*" + patternName,
 
                     //  Add parameters + colors
                     formatedCode + "\n",
-                };
+                ];
 
                 if (path == "") path = gGalleryPath;
                 BetterDataIO.SaveData(path, fileName, patternData, true, "\n", showInfo, false, "\t\t");
@@ -126,8 +125,8 @@ namespace Generatio
                 colAmount = (UInt16)colors.Length;
             }
 
-            List<Pattern> patterns = new List<Pattern>()
-            {
+            List<Pattern> patterns =
+            [
                 new PatternType1 (width, height, colors, "1",  true, true),
                 new PatternType2 (width, height, colors, "2",  true, true),
                 new PatternType3 (width, height, colors, "3",  true, true),
@@ -138,14 +137,14 @@ namespace Generatio
                 new PatternType8 (width, height, colors, "8",  true, true),
                 new PatternType9 (width, height, colors, "9",  true, true),
                 new PatternType10(width, height, colors, "10", true, true)
-            };
+            ];
             RankPatterns(colAmount, out List<Byte> best, out List<Byte> remaining);
-            DrawPatterns(patterns, best, remaining);
+            Gallery.GalleryManager.DrawPatterns(patterns, best, remaining);
 
             UInt32 compactUnixDateTime = DateTime4b.Now.PassedTotalMinutes;
             if (!gAutoSave)
             {
-                List<byte> selected = new List<byte>();
+                List<byte> selected = [];
 
                 Write("\n\t\t[?]  - Какие узоры вы хотели бы сохранить в галерею?");
                 Write("\n\t\t[i]  - Введите номера узоров через ','");
@@ -163,8 +162,7 @@ namespace Generatio
             else for (Int32 i = 0; i < patterns.Count; i++) patterns[i].Save(compactUnixDateTime);
 
             Write("\n\n\n\t\tГенерация узоров завершена.\n\n\n\n\n");
-            return false;  //  false = dont auto continue (dont erase generated patterns as of now)
+            return false;  //  dont auto continue (dont erase generated patterns as of now)
         }
-             //  All the logic for generating a user-prompted pattern
     }
 }

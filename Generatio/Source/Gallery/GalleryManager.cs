@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Linq;
-using System.Collections.Generic;
 
 using static System.Console;
-
-
-using AVcontrol;
 
 using static Generatio.UI;
 using static Generatio.PatternSource;
@@ -15,156 +10,14 @@ using static Generatio.CustomFunctions;
 using static Generatio.GalleryEncodings;
 
 
-namespace Generatio
+
+namespace Generatio.Gallery
 {
-    internal class GalleryLogic
+    internal class GalleryManager
     {
-        public class GalleryPattern
-        {
-            private readonly Pattern pattern;
-            private readonly Byte _patternType;
-            private readonly UInt16 _width, _height;
-
-            private readonly UInt16 _colAmount;
-            private readonly Byte[] _colors;
-
-            private readonly DateTime4b _datetime;  //  Date and time of the pattern creation
-            private readonly string _patternName;
-
-
-
-            public GalleryPattern(Byte patternType,
-                UInt16 width, UInt16 height,
-                UInt16 colAmount, Byte[] colors,
-                DateTime4b datetime,
-                string patternName)
-            {
-                switch (patternType)
-                {
-                    case 1: 
-                        pattern = new PatternType1(width, height, ConvertColorsToConsole(colors), patternName, true, true);
-                        break;
-                    case 2:
-                        pattern = new PatternType2(width, height, ConvertColorsToConsole(colors), patternName, true, true);
-                        break;
-                    case 3:
-                        pattern = new PatternType3(width, height, ConvertColorsToConsole(colors), patternName, true, true);
-                        break;
-                    case 4:
-                        pattern = new PatternType4(width, height, ConvertColorsToConsole(colors), patternName, true, true);
-                        break;
-                    case 5:
-                        pattern = new PatternType5(width, height, ConvertColorsToConsole(colors), patternName, true, true);
-                        break;
-                    case 6:
-                        pattern = new PatternType6(width, height, ConvertColorsToConsole(colors), patternName, true, true);
-                        break;
-                    case 7:
-                        pattern = new PatternType7(width, height, ConvertColorsToConsole(colors), patternName, true, true);
-                        break;
-                    case 8:
-                        pattern = new PatternType8(width, height, ConvertColorsToConsole(colors), patternName, true, true);
-                        break;
-                    case 9:
-                        pattern = new PatternType9(width, height, ConvertColorsToConsole(colors), patternName, true, true);
-                        break;
-                    default:
-                        pattern = new PatternType10(width, height, ConvertColorsToConsole(colors), patternName, true, true);
-                        break;
-                }
-
-
-                _patternType = patternType;
-                _width = width;
-                _height = height;
-
-                _colAmount = colAmount;
-                _colors = colors;
-
-                _datetime = datetime;
-                _patternName = patternName;
-            }
-
-
-            public void Draw() => pattern.Draw();
-
-
-
-            public Byte[] PackedColorBytes => PackColors();
-            private Byte[] PackColors()
-            {
-                Int32 packedLength = (_colors.Length + 1) >> 1;
-                Byte[] packed = new Byte[packedLength];
-
-                for (Int32 i = 0; i < _colors.Length; i++)
-                {
-                    Int32 packedIndex = i >> 1;
-                    Byte color = (Byte)(_colors[i] & 0x0F); //  Gives 0-15 as a result
-
-                    if (i % 2 == 0) packed[packedIndex] = (Byte)(color << 4);  // Upper 4 bits
-                    else packed[packedIndex] |= color;      //  Lower 4 bits
-                }
-
-                return packed;
-            }
-            private Byte[] UnpackColors(Byte[] packed, UInt16 unpackedLength)
-            {
-                Byte[] colors = new Byte[unpackedLength];
-
-                for (int i = 0; i < packed.Length * 2 && i < unpackedLength; i += 2)
-                {
-                    colors[i] = (Byte)((packed[i] >> 4) & 0x0F);  //  Upper 4 bits
-                    if (i + 1 < unpackedLength) colors[i + 1] = (Byte)(packed[i] & 0x0F);  //  Lower 4 bits
-                }
-
-                return colors;
-            }
-
-
-
-
-            public Byte PatternType => _patternType;
-            public UInt16 Width => _width;
-            public UInt16 Height => _height;
-
-
-
-            public UInt16 ColAmount => _colAmount;
-            public Byte[] ColorsBytes => _colors;
-            public ConsoleColor[] ColorsConsole => ConvertColorsToConsole(_colors);
-
-
-
-            public string StandardTimeString  => _datetime.ToStringFull();
-            public DateTime4b Datetime   => _datetime;
-            public UInt32 CompactUnixDatetime => _datetime.PassedTotalMinutes;
-
-
-
-            public string PatternName => _patternName;
-
-        }
-        public class UserInfo
-        {
-            private readonly string _deviceName;
-            private readonly string _userName;
-
-
-            public UserInfo(string deviceName = "Unknown", string userName = "Unknown")
-            {
-                _deviceName = deviceName;
-                _userName = userName;
-            }
-
-
-            public string DeviceName => _deviceName;
-            public string Username => _userName;
-        }
-
-
-        static public List<List<GalleryPattern>> GalleryBuffer = new List<List<GalleryPattern>>();
-        static public List<List<GalleryPattern>> Gallery = new List<List<GalleryPattern>>();
-        static public List<UserInfo> Users = new List<UserInfo>();
+        static public List<List<GalleryPattern>> GalleryBuffer = [];
+        static public List<List<GalleryPattern>> Gallery = [];
+        static public List<UserInfo> Users = [];
 
 
         static public Byte[] PackColors(Byte[] colors)
@@ -185,7 +38,7 @@ namespace Generatio
         }
         static public List<Byte> PackColors(List<Byte> colors)
         {
-            List<Byte> packed = new List<Byte>();
+            List<Byte> packed = [];
             for (Int32 i = 0; i < colors.Count; i++)
             {
                 Byte color = (Byte)(colors[i] & 0x0F); //  Gives 0-15 as a result
@@ -210,7 +63,7 @@ namespace Generatio
         }
         static public List<Byte> UnpackColors(List<Byte> packed, UInt16 unpackedLength)
         {
-            List<Byte> colors = new List<Byte>();
+            List<Byte> colors = [];
 
             for (int i = 0; i < packed.Count && i < unpackedLength; i++)
             {
@@ -232,20 +85,15 @@ namespace Generatio
         {
             string userInput;
 
-            //  Final list of all parsed patterns
-            List<Int32> parsedId = new List<Int32>();
+            List<Int32> parsedId = [];
             
             //  Temporary buffer for the help of parsing the user input
             Int32[] validId = new Int32[2];
             Int32 ignoreThisId = 0;
 
-
-            //  Get the user input
             Write("\n\t\t[->] - Ваш выбор: ");
             userInput = ReadLine()!.Trim();
 
-
-            //  Gallery exit logic
             if (userInput == "0")
             {
                 choiceIsExit = true;
@@ -269,41 +117,28 @@ namespace Generatio
                                 Int32.TryParse(rawId[i + 1], out validId[1]))
                             {
                                 //----------  Limit the parsed intervals  ----------//
-                                validId[0] = Math.Min(validId[0], gallerySize);  //
-                                validId[0] = Math.Max(validId[0], 1);             //
+                                validId[0] = Math.Min(validId[0], gallerySize);
+                                validId[0] = Math.Max(validId[0], 1);
 
-                                validId[1] = Math.Min(validId[1], gallerySize);  //
-                                validId[1] = Math.Max(validId[1], 1);             //
+                                validId[1] = Math.Min(validId[1], gallerySize);
+                                validId[1] = Math.Max(validId[1], 1);
 
 
-                                //  Print success message
                                 if (gAdvInfo) Write("\n\t\tРаспознан интервал с " + validId[0] + " по " + validId[1]);
 
+                                for (Int32 j = 0; j <= validId[1] - validId[0]; j++)  //  normal
+                                    if (validId[0] + j != ignoreThisId)
+                                        parsedId.Add(validId[0] + j - 1);
 
-                                //  Check for a normal interval (from lower to bigger)
-                                for (Int32 j = 0; j <= validId[1] - validId[0]; j++)
-                                {
-                                    //  Add normal interval
-                                    if (validId[0] + j != ignoreThisId) parsedId.Add(validId[0] + j - 1);
-                                }
+                                for (Int32 j = 0; j <= validId[0] - validId[1]; j++)  //  inverted
+                                    if (validId[0] - j != ignoreThisId)
+                                        parsedId.Add(validId[0] - j - 1);
 
-
-                                //  Check for an inverted interval (from bigger to lower)
-                                for (Int32 j = 0; j <= validId[0] - validId[1]; j++)
-                                {
-                                    //  Add inverted interval
-                                    if (validId[0] - j != ignoreThisId) parsedId.Add(validId[0] - j - 1);
-                                }
-
-                                //  Ignore the printing of the last id
+                                //?  prevent duplicate printing of the last id in the interval
                                 ignoreThisId = validId[1];
                             }
-
-
-                            //  If this id isnt included in any intervals
                             else
                             {
-                                //  Check for inbounds of the gallery data
                                 if (validId[0] > 0 && validId[0] < gallerySize + 1)
                                 {
                                     if (validId[0] != ignoreThisId)
@@ -334,6 +169,7 @@ namespace Generatio
             choiceIsExit = false;
             return parsedId;
         }
+
         static public void NavigateGallery()
         {
             bool exitFlag = false;
@@ -372,7 +208,6 @@ namespace Generatio
                 }
             }
         }
-        // For navigating the stored patterns (gallery)
 
 
         static public void WriteGalleryInfo(Int32 patternsCount, Int32 userCount)

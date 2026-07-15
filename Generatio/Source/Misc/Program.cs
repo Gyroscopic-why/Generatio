@@ -2,7 +2,6 @@
 
 
 using static Generatio.UI;
-using static Generatio.GalleryLogic;
 using static Generatio.GlobalSettings;
 using static Generatio.CustomFunctions;
 using static Generatio.CustomProcedures;
@@ -39,11 +38,11 @@ namespace Generatio
 
 
                     case "3":
-                        NavigateGallery();
+                        Gallery.GalleryManager.NavigateGallery();
                         autoContinue = true;  //  Dont wait for additional input
                         break;
                     case "4":
-                        UpdateGallery();
+                        Gallery.GalleryManager.UpdateGallery();
                         break;
 
 

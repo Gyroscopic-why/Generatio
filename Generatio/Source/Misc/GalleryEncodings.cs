@@ -1,13 +1,8 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Collections.Generic;
+﻿using System.Text;
 
 using static System.Console;
 
 
-using static Generatio.GalleryLogic;
 using static Generatio.GlobalSettings;
 using static Generatio.GlobalVariables;
 
@@ -24,7 +19,7 @@ namespace Generatio
         static public void DecodeV3(string path)
         {
             Int32 nameSplitterId, extensionId;
-            UserInfo userInfo;
+            Gallery.UserInfo userInfo;
             bool foundAtLeastSomethingLol = false;
 
             List<string> allFiles = BetterDataIO.GetFilesWithExtension(path, ".patterns", true, gShowInfo, false, "\t\t");
@@ -39,7 +34,7 @@ namespace Generatio
                     extensionId = allFiles[fileId].LastIndexOf(".");
                     if (nameSplitterId != -1)
                     {
-                        userInfo = new UserInfo
+                        userInfo = new Gallery.UserInfo
                         (
                             allFiles[fileId].Substring(0, nameSplitterId).Replace("~", ""), //  wtf?
                             allFiles[fileId].Substring
@@ -56,7 +51,7 @@ namespace Generatio
                     }
                     else
                     {
-                        userInfo = new UserInfo
+                        userInfo = new Gallery.UserInfo
                         (
                             "Unknown",
                             allFiles[fileId].Replace("~", "")
@@ -65,14 +60,14 @@ namespace Generatio
 
                     if (!foundAtLeastSomethingLol)
                     {
-                        Gallery.Clear();
-                        Users.Clear();
+                        Gallery.GalleryManager.Gallery.Clear();
+                        Gallery.GalleryManager.Users.Clear();
                         foundAtLeastSomethingLol = true;
                     }
 
                     var tryConvert = TryConversionV3(readData, gAdvInfo);
-                    if (tryConvert != null) Gallery.Add(tryConvert);
-                    Users.Add(userInfo);
+                    if (tryConvert != null) Gallery.GalleryManager.Gallery.Add(tryConvert);
+                    Gallery.GalleryManager.Users.Add(userInfo);
                 }
             }
 
@@ -82,11 +77,11 @@ namespace Generatio
                 ReadKey();
             }
         }
-        static public List<GalleryPattern>? TryConversionV3(List<List<Byte>> data, bool showInfo = false)
+        static public List<Gallery.GalleryPattern>? TryConversionV3(List<List<Byte>> data, bool showInfo = false)
         {
             if (data != null && data.Count > 0)
             {
-                List<GalleryPattern> converted = new List<GalleryPattern>();
+                List<Gallery.GalleryPattern> converted = new List<Gallery.GalleryPattern>();
 
                 string name;
                 Byte patternType;
@@ -174,10 +169,10 @@ namespace Generatio
                                         expectedNameLength
                                     );
 
-                                    colors = UnpackColors(colors, unpackedColAmount);
+                                    colors = Gallery.GalleryManager.UnpackColors(colors, unpackedColAmount);
                                     converted.Add
                                     (
-                                        new GalleryPattern
+                                        new Gallery.GalleryPattern
                                         (
                                             patternType,
                                             width,
@@ -387,16 +382,16 @@ namespace Generatio
 
         static public void EncodeV3()
         {
-            for (Int32 sizeY = 0; sizeY < Gallery.Count; sizeY++)
+            for (Int32 sizeY = 0; sizeY < Gallery.GalleryManager.Gallery.Count; sizeY++)
             {
-                for (Int32 sizeX = 0; sizeX < Gallery[sizeY].Count; sizeX++)
+                for (Int32 sizeX = 0; sizeX < Gallery.GalleryManager.Gallery[sizeY].Count; sizeX++)
                 {
-                    string fileName = Users[sizeY].DeviceName + "~" + Users[sizeY].Username + ".patterns";
+                    string fileName = Gallery.GalleryManager.Users[sizeY].DeviceName + "~" + Gallery.GalleryManager.Users[sizeY].Username + ".patterns";
 
-                    EncodeV3(fileName, Gallery[sizeY][sizeX].PatternType,
-                        Gallery[sizeY][sizeX].Width, Gallery[sizeY][sizeX].Height,
-                        Gallery[sizeY][sizeX].ColAmount, Gallery[sizeY][sizeX].PackedColorBytes,
-                        Gallery[sizeY][sizeX].CompactUnixDatetime, Gallery[sizeY][sizeX].PatternName);
+                    EncodeV3(fileName, Gallery.GalleryManager.Gallery[sizeY][sizeX].PatternType,
+                        Gallery.GalleryManager.Gallery[sizeY][sizeX].Width, Gallery.GalleryManager.Gallery[sizeY][sizeX].Height,
+                        Gallery.GalleryManager.Gallery[sizeY][sizeX].ColAmount, Gallery.GalleryManager.Gallery[sizeY][sizeX].PackedColorBytes,
+                        Gallery.GalleryManager.Gallery[sizeY][sizeX].CompactUnixDatetime, Gallery.GalleryManager.Gallery[sizeY][sizeX].PatternName);
                 }
             }
         }
@@ -474,7 +469,7 @@ namespace Generatio
             ForegroundColor = ConsoleColor.White;
 
             Write("\n\tCOLORS:    ");
-            Byte[] unpacked = UnpackColors(colors, colAmount);
+            Byte[] unpacked = Gallery.GalleryManager.UnpackColors(colors, colAmount);
             for (int i = 0; i < colors.Length; i++)
             {
                 Write(colors[i].ToString());

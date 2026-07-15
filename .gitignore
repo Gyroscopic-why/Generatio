@@ -304,3 +304,4 @@ Generatio/Properties/AssemblyInfo.cs
 -tree -r HEAD
 Generatio/obj/Release/build.force
 Generatio/obj/Release/Generatio.csproj.Up2Date
+Generatio/obj/Release/net10.0/Generatio.AssemblyInfo.cs
