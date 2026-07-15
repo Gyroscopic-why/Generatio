@@ -1,13 +1,15 @@
-﻿using CompactDateTimeLibrary;
-using GyroscopicDataLibrary;
-using System;
+﻿using System;
 using System.Collections.Generic;
+
+using AVcontrol;
+using GyroscopicDataLibrary;
+
+
 using static Generatio.CustomFunctions;
 using static Generatio.GalleryLogic;
 using static Generatio.GlobalSettings;
 using static Generatio.GlobalVariables;
 using static Generatio.PatternSource;
-using static Generatio.UI;
 using static System.Console;
 
 
@@ -140,7 +142,7 @@ namespace Generatio
             RankPatterns(colAmount, out List<Byte> best, out List<Byte> remaining);
             DrawPatterns(patterns, best, remaining);
 
-            UInt32 compactUnixDateTime = CompactType.CompactDateTime.Now.PassedTotalMinutes;
+            UInt32 compactUnixDateTime = DateTime4b.Now.PassedTotalMinutes;
             if (!gAutoSave)
             {
                 List<byte> selected = new List<byte>();

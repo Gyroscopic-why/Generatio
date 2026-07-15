@@ -260,7 +260,7 @@ namespace Generatio
 
                 //  Get the user input
                 Write("\n\n\t\t[->] - Ваш выбор: ");
-                userInput = ReadLine().Trim();
+                userInput = ReadLine()!.Trim();
 
                 //  Parse choice
                 for (Int32 i = 0; i < userInput.Length; i++)
@@ -341,7 +341,7 @@ namespace Generatio
 
 
                 //  Transform the rest of the bytes to our gallery path
-                byte[] gPathBytes = ToByteArray(binData, 1);
+                byte[] gPathBytes = binData.ToArray()[1..];
                 gGalleryPath = Encoding.UTF8.GetString(gPathBytes).Substring(1);
 
                 if (gShowInfo) Write("\t\tСохранение настроек успешно загружено!\n\n");

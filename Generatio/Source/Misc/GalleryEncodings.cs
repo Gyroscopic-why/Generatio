@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Collections.Generic;
@@ -12,9 +13,8 @@ using static Generatio.GlobalVariables;
 
 
 using AVcontrol;
-using CompactDateTimeLibrary;
 using GyroscopicDataLibrary;
-using System.IO;
+
 
 
 namespace Generatio
@@ -31,7 +31,7 @@ namespace Generatio
 
             for (int fileId = 0; fileId < allFiles.Count; fileId++)
             {
-                List<List<Byte>> readData = ReadBinaryDataForFormatV3(path, allFiles[fileId], gShowInfo, false);
+                List<List<Byte>>? readData = ReadBinaryDataForFormatV3(path, allFiles[fileId], gShowInfo, false);
 
                 if (readData != null)
                 {
@@ -41,14 +41,16 @@ namespace Generatio
                     {
                         userInfo = new UserInfo
                         (
-                            Intervals.SubString(allFiles[fileId], 0, nameSplitterId).Replace("~", ""),
-                            Intervals.SubString
+                            allFiles[fileId].Substring(0, nameSplitterId).Replace("~", ""), //  wtf?
+                            allFiles[fileId].Substring
                             (
-                                allFiles[fileId],
                                 nameSplitterId + 1,
-                                extensionId == -1 ?
-                                    allFiles[fileId].Length :
-                                    Math.Min(extensionId, allFiles[fileId].Length)
+                                nameSplitterId + 1
+                                + (
+                                    extensionId == -1 ?
+                                        allFiles[fileId].Length
+                                        : Math.Min(extensionId, allFiles[fileId].Length)
+                                )
                             ).Replace("~", "")
                         );
                     }
@@ -68,7 +70,8 @@ namespace Generatio
                         foundAtLeastSomethingLol = true;
                     }
 
-                    Gallery.Add(TryConversionV3(readData, gAdvInfo));
+                    var tryConvert = TryConversionV3(readData, gAdvInfo);
+                    if (tryConvert != null) Gallery.Add(tryConvert);
                     Users.Add(userInfo);
                 }
             }
@@ -79,7 +82,7 @@ namespace Generatio
                 ReadKey();
             }
         }
-        static public List<GalleryPattern> TryConversionV3(List<List<Byte>> data, bool showInfo = false)
+        static public List<GalleryPattern>? TryConversionV3(List<List<Byte>> data, bool showInfo = false)
         {
             if (data != null && data.Count > 0)
             {
@@ -154,9 +157,9 @@ namespace Generatio
 
                                 if (showInfo)
                                 {
-                                    CompactType.CompactDateTime dateTime = new CompactType.CompactDateTime(compactUnixPassedMinutes);
+                                    DateTime4b dateTime = new DateTime4b(compactUnixPassedMinutes);
 
-                                    Write("\n\t\tДата и время: " + dateTime.CurrentDatetimeToStandardString());
+                                    Write("\n\t\tДата и время: " + dateTime.ToStringFull());
                                     Write("\n\t\tОжидаемая длина названия: " + expectedNameLength);
                                     Write("\n\t\tТребуется байт: " + (expectedNameLength + packedColAmount + 12)
                                         + ", реальное количество: " + data[curY].Count);
@@ -183,7 +186,7 @@ namespace Generatio
                                             unpackedColAmount,
                                             colors.ToArray(),
 
-                                            new CompactType.CompactDateTime(compactUnixPassedMinutes),
+                                            new DateTime4b(compactUnixPassedMinutes),
                                             name
                                         )
                                     );
@@ -230,7 +233,7 @@ namespace Generatio
             }
             return null;
         }
-        static public List<List<Byte>> ReadBinaryDataForFormatV3(string path, string fileName,
+        static public List<List<Byte>>? ReadBinaryDataForFormatV3(string path, string fileName,
             bool showInfo = false, bool engLang = true)
         {
             try
@@ -258,11 +261,11 @@ namespace Generatio
                         {
                             //  Magic for extending for the packed color amount
                             Int32 foundExtend =
-                            (FromBinary.BigEndian32
+                            (
+                                FromBinary.BigEndian<Int32>
                                 (
-                                    foundData[curY].ToArray(),
-                                    foundData[curY].Count - 2,  //  magic numbers for extender[0] length (= 2)
-                                    foundData[curY].Count
+                                    foundData[curY].ToArray()[(foundData[curY].Count - 2)..foundData[curY].Count]
+                                    //  magic numbers for extender[0] length (= 2)
                                 ) + 1
                             ) / 2;
 
@@ -271,11 +274,10 @@ namespace Generatio
                         }
                         else if (curX == extendersFinalBytes[1])
                         {
-                            Int32 foundExtend = FromBinary.BigEndian32
+                            Int32 foundExtend = FromBinary.BigEndian<Int32>
                             (
-                                foundData[curY].ToArray(),
-                                foundData[curY].Count - 1,  //  magic number for extender[1] length (= 1)
-                                foundData[curY].Count
+                                foundData[curY].ToArray()[(foundData[curY].Count - 1)..foundData[curY].Count]
+                                //  magic numbers for extender[1] length (= 1)
                             );
 
                             extendedX += foundExtend;
@@ -409,7 +411,7 @@ namespace Generatio
 
             List<Byte[]> patternData = new List<Byte[]>
             {
-                ToBinary.Byte(type),
+                new byte[] { type },
                 ToBinary.BigEndian(X),
                 ToBinary.BigEndian(Y),
 
@@ -418,7 +420,7 @@ namespace Generatio
 
                 ToBinary.BigEndian(compactUnixDateTime),
 
-                ToBinary.Byte((Byte)patternName.Length),
+                new byte[] { (Byte)patternName.Length },
                 ToBinary.Utf8(patternName)
             };
 
@@ -438,9 +440,8 @@ namespace Generatio
             ForegroundColor = ConsoleColor.DarkGray;
             Write("<");
             ForegroundColor = ConsoleColor.White;
-            Write("\n\tPATTYPE:   ");
-            for (int i = 0; i < ToBinary.Byte(type).Length; i++)
-                Write(ToBinary.Byte(type)[i] + " ");
+
+            Write($"\n\tPATTYPE:   {type}");
 
 
 

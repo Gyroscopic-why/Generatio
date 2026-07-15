@@ -24,7 +24,7 @@ namespace Generatio
             if (!gIgnoreFullScreen) ForceFullScreen();
 
             Write("\n\n\t\tВы хотите сгенерировать оставшиеся узоры? (ДА/НЕТ | YES/NO): ");
-            UserInput = ReadLine().Trim().ToLower();
+            UserInput = ReadLine()!.Trim().ToLower();
             if (UserInput == "да" || UserInput == "yes") Generating = true;
             Write("\n");
 
@@ -72,7 +72,7 @@ namespace Generatio
 
 
 				//  Parse the user input
-				userInput = ReadLine().Trim().ToLower();
+				userInput = ReadLine()!.Trim().ToLower();
 
 
 
@@ -152,7 +152,7 @@ namespace Generatio
 			while (choice > StoredColors.Length || choice < 1)
 			{
 				Write("\n\n\n\n\t\tПожалуйста, введите цифру от 1 до " + StoredColors.Length + " - ваш выбор цветовой палитры: ");
-				userInput = ReadLine();
+				userInput = ReadLine()!;
 				userInput = userInput.Trim();
 				if (byte.TryParse(userInput, out choice))
 				{
@@ -179,7 +179,7 @@ namespace Generatio
 
 			while (amount < minAmount || amount > maxAmount)  // While we dont have a valid amount of colors
 			{
-				userInput = ReadLine().Trim().ToLower();    // Parsing the user input
+				userInput = ReadLine()!.Trim().ToLower();    // Parsing the user input
 
 				if (UInt16.TryParse(userInput, out amount))   // Try converting it to a number
 				{
@@ -247,7 +247,7 @@ namespace Generatio
 			while (pictureSize != 0 && pictureSize < minSize || pictureSize > maxSize)
             {
 				//  Parsing the user input
-				userInput = ReadLine().Trim().ToLower();
+				userInput = ReadLine()!.Trim().ToLower();
 
 
 				//  Try converting it to a number
@@ -350,7 +350,7 @@ namespace Generatio
 			while (!validTask)
 			{
 				Write("\n\t\tВаш выбор: ");
-				userInput = ReadLine().Trim();
+				userInput = ReadLine()!.Trim();
 				if (userInput == "0" || userInput == "1" || userInput == "2" || userInput == "3"
 									  || userInput == "4" || userInput == "5" || userInput == "6")
 					validTask = true;
@@ -441,7 +441,7 @@ namespace Generatio
                         Write("\n\t\t" + (i + 1) + "-ый цвет) ");
 
                         //  Get user input
-                        userInput = ReadLine();
+                        userInput = ReadLine()!;
 
                         //  Parse user input
                         userInput = userInput.ToLower();
@@ -623,7 +623,7 @@ namespace Generatio
             patternNames = new List<string>();
 
             //  User input split by the special char ","
-            string[] choices = ReadLine().Split(',');
+            string[] choices = ReadLine()!.Split(',');
 
             for (Int32 i = 0; i < choices.Length; i++)
             {
@@ -821,80 +821,5 @@ namespace Generatio
             return byteColors;
         }
              // Convert colors from console colors to bytes
-
-
-
-        //-------------------  Array and List conversion  ------------------------------------------------------//
-
-        static public List<byte> ToByteList(byte[] array, Int32 startIndex = 0, Int32 endIndex = -1)
-        {
-            if (array == null) return null;
-
-            //  Set the parameters for a substring of the data
-            if (endIndex == -1 || endIndex > array.Length) endIndex = array.Length;
-
-            //  Store list
-            List<byte> list = new List<byte>();
-
-            //  Convert array to list
-            for (Int32 i = startIndex; i < endIndex; i++) list.Add(array[i]);
-
-            //  Return the list
-            return list;
-        }
-             //  Converts a List(byte) to a Array(byte)
-        static public byte[] ToByteArray(List<byte> list, Int32 startIndex = 0, Int32 endIndex = -1)
-        {
-            if (list == null) return null;
-
-            //  Set the parameters for a substring of the data
-            if (endIndex == -1 || endIndex > list.Count) endIndex = list.Count;
-
-            //  Store list
-            byte[] array = new byte[list.Count];
-
-            //  Convert list to array
-            for (Int32 i = startIndex; i < endIndex; i++) array[i] = list[i];
-
-            //  Return the array
-            return array;
-        }
-             //  Converts a Array(byte) to a List(byte)
-
-
-        static public List<string> ToStringList(string[] array, Int32 startIndex = 0, Int32 endIndex = -1)
-        {
-            if (array == null) return null;
-
-            //  Set the parameters for a substring of the data
-            if (endIndex == -1 || endIndex > array.Length) endIndex = array.Length;
-
-            //  Store list
-            List<string> list = new List<string>();
-
-            //  Convert array to list
-            for (Int32 i = startIndex; i < endIndex; i++) list.Add(array[i]);
-
-            //  Return the list
-            return list;
-        }
-             //  Converts a List(string) to a Array(string)
-        static public string[] ToStringArray(List<string> list, Int32 startIndex = 0, Int32 endIndex = -1)
-        {
-            if (list == null) return null;
-
-            //  Set the parameters for a substring of the data
-            if (endIndex == -1 || endIndex > list.Count) endIndex = list.Count;
-
-            //  Store list
-            string[] array = new string[list.Count];
-
-            //  Convert list to array
-            for (Int32 i = startIndex; i < endIndex; i++) array[i] = list[i];
-
-            //  Return the array
-            return array;
-        }
-             //  Converts a Array(string) to a List(string)
     }
 }

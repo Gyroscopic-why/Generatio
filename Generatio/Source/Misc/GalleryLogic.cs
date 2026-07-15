@@ -5,18 +5,14 @@ using System.Collections.Generic;
 using static System.Console;
 
 
+using AVcontrol;
+
 using static Generatio.UI;
 using static Generatio.PatternSource;
 using static Generatio.GlobalVariables;
 using static Generatio.GlobalSettings;
 using static Generatio.CustomFunctions;
 using static Generatio.GalleryEncodings;
-
-
-using GyroscopicDataLibrary;
-using CompactDateTimeLibrary;
-using static CompactDateTimeLibrary.CompactType;
-
 
 
 namespace Generatio
@@ -32,7 +28,7 @@ namespace Generatio
             private readonly UInt16 _colAmount;
             private readonly Byte[] _colors;
 
-            private readonly CompactDateTime _datetime;  //  Date and time of the pattern creation
+            private readonly DateTime4b _datetime;  //  Date and time of the pattern creation
             private readonly string _patternName;
 
 
@@ -40,10 +36,10 @@ namespace Generatio
             public GalleryPattern(Byte patternType,
                 UInt16 width, UInt16 height,
                 UInt16 colAmount, Byte[] colors,
-                CompactDateTime datetime,
+                DateTime4b datetime,
                 string patternName)
             {
-                switch(patternType)
+                switch (patternType)
                 {
                     case 1: 
                         pattern = new PatternType1(width, height, ConvertColorsToConsole(colors), patternName, true, true);
@@ -84,22 +80,6 @@ namespace Generatio
 
                 _colAmount = colAmount;
                 _colors = colors;
-
-                _datetime = datetime;
-                _patternName = patternName;
-            }
-            public GalleryPattern(Byte patternType,
-                UInt16 width, UInt16 height,
-                Byte[] packedcolors, UInt16 unpackedAmount,
-                CompactDateTime datetime,
-                string patternName)
-            {
-                _patternType = patternType;
-                _width = width;
-                _height = height;
-
-                _colAmount = unpackedAmount;
-                _colors = UnpackColors(packedcolors, unpackedAmount);
 
                 _datetime = datetime;
                 _patternName = patternName;
@@ -155,8 +135,8 @@ namespace Generatio
 
 
 
-            public string StandardTimeString  => _datetime.CurrentDatetimeToStandardString();
-            public CompactDateTime Datetime   => _datetime;
+            public string StandardTimeString  => _datetime.ToStringFull();
+            public DateTime4b Datetime   => _datetime;
             public UInt32 CompactUnixDatetime => _datetime.PassedTotalMinutes;
 
 
@@ -248,7 +228,7 @@ namespace Generatio
             DecodeV3(gGalleryPath);
         }
 
-        static public List<Int32> ParseGalleryChoice(Int32 gallerySize, out bool choiceIsExit)
+        static public List<Int32>? ParseGalleryChoice(Int32 gallerySize, out bool choiceIsExit)
         {
             string userInput;
 
@@ -262,7 +242,7 @@ namespace Generatio
 
             //  Get the user input
             Write("\n\t\t[->] - Ваш выбор: ");
-            userInput = ReadLine().Trim();
+            userInput = ReadLine()!.Trim();
 
 
             //  Gallery exit logic
@@ -357,7 +337,7 @@ namespace Generatio
         static public void NavigateGallery()
         {
             bool exitFlag = false;
-            List<Int32> choice;
+            List<Int32>? choice;
 
             Int32 userCount = Users.Count, patternsCount = 0;
             for (Int32 userId = 0; userId < userCount; userId++) patternsCount += Gallery[userId].Count;
