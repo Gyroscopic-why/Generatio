@@ -307,6 +307,8 @@ namespace Generatio.Gallery
             { 
                 randomId = gRandom.Next(0, bestIds.Count);
                 Write("\n\n");
+                if (patterns[bestIds[randomId] - 1].ShowInfo)
+                    patterns[bestIds[randomId] - 1].Info();
                 patterns[bestIds[randomId] - 1].Draw();
                 bestIds.RemoveAt(randomId);
             }
@@ -319,6 +321,8 @@ namespace Generatio.Gallery
                 {
                     randomId = gRandom.Next(0, remainingIds.Count);
                     Write("\n\n");
+                    if (patterns[remainingIds[randomId] - 1].ShowInfo)
+                        patterns[remainingIds[randomId] - 1].Info();
                     patterns[remainingIds[randomId] - 1].Draw();
                     remainingIds.RemoveAt(randomId);
                 }

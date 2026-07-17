@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Generatio")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ec5a288367cf6dfe2526ffc06758a0e2151c0e85")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7d78b91ca3ed0738765fd3c574548a17f1afd0f1")]
 [assembly: System.Reflection.AssemblyProductAttribute("Generatio")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Generatio")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

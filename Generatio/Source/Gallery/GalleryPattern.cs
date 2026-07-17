@@ -32,7 +32,11 @@ namespace Generatio.Gallery
         private readonly DateTime4b _datetime = datetime;  //  Date and time of the pattern creation
         private readonly string _patternName = patternName;
 
-        public void Draw() => pattern.Draw();
+        public void Draw()
+        {
+            if (pattern.ShowInfo) pattern.Info();
+            pattern.Draw();
+        }
 
 
 

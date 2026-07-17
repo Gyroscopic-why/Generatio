@@ -9,6 +9,7 @@ using static Generatio.UI;
 using static Generatio.CustomFunctions;
 
 using GyroscopicDataLibrary;
+using AVcontrol;
 
 
 
@@ -341,8 +342,7 @@ namespace Generatio
 
 
                 //  Transform the rest of the bytes to our gallery path
-                byte[] gPathBytes = binData.ToArray()[1..];
-                gGalleryPath = Encoding.UTF8.GetString(gPathBytes).Substring(1);
+                gGalleryPath = FromBinary.Utf8(binData[1..]);
 
                 if (gShowInfo) Write("\t\tСохранение настроек успешно загружено!\n\n");
             }
@@ -376,14 +376,14 @@ namespace Generatio
 
 
             //  Get the data into a more convinient format of a List of byte[] arrays
-            List<byte[]> settingsData = new List<byte[]>
-            {
+            List<byte[]> settingsData =
+            [
                 //  a byte number representing our 8 binary settings
                 encodedBoolSettings,
 
                 //  Transform the paths to byte[] arrays
                 Encoding.UTF8.GetBytes(gGalleryPath)
-            };
+            ];
 
             //  Save the encoded settings to the special binary Generatio.settings file
             BetterDataIO.SaveBinaryData(gSettingsPath, "Generatio.settings", settingsData, false, "", gShowInfo, false, "\t\t", "\n");

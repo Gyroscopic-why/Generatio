@@ -5,6 +5,7 @@ using static Generatio.UI;
 using static Generatio.GlobalSettings;
 using static Generatio.CustomFunctions;
 using static Generatio.CustomProcedures;
+using Generatio.Source.Patterns;
 
 
 namespace Generatio
@@ -19,6 +20,38 @@ namespace Generatio
 
             ResetAll();  //  Reset settings and gallery, load previous save
             ResetUI(!gIgnoreFullScreen, true);
+
+
+            Write("\n\n");
+            Pattern1 aboba = new(24, 16,
+                [ConsoleColor.Red, ConsoleColor.Blue, ConsoleColor.Green],
+                //[ConsoleColor.Red, ConsoleColor.Blue, ConsoleColor.Green,
+                //ConsoleColor.Green, ConsoleColor.Blue, ConsoleColor.Red],
+                "Aboba", true, true);
+
+            for (var i = 0; i < 30; i++)
+            {
+                Write(Formulas.IncorrectTriangleElement(5, i, 0) + " ");
+            }
+            ReadKey();
+
+            aboba.DrawFull();
+
+            Write("\n\n");
+
+            for (UInt16 i = 0; i < 8; i++)
+            {
+                aboba.DrawPreload(aboba.DrawTopLine(i, 0, 72, aboba.NormalizeSize().nX), 72, true);
+            }
+            for (UInt16 i = 8; i < 32; i++)
+            {
+                aboba.DrawPreload(aboba.DrawBottomLine(i, 0, 72, aboba.NormalizeSize().nX), 72, true);
+            }
+            Write("\n\n");
+
+            ;
+
+
             string task = GetUserTask();
 
             while (task != "0") 

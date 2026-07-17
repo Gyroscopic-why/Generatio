@@ -30,23 +30,22 @@ namespace Generatio
 
                 if (readData != null)
                 {
-                    nameSplitterId = allFiles[fileId].IndexOf("~");
-                    extensionId = allFiles[fileId].LastIndexOf(".");
+                    nameSplitterId = allFiles[fileId].IndexOf('~');
+                    extensionId = allFiles[fileId].LastIndexOf('.');
+
                     if (nameSplitterId != -1)
                     {
                         userInfo = new Gallery.UserInfo
                         (
-                            allFiles[fileId].Substring(0, nameSplitterId).Replace("~", ""), //  wtf?
-                            allFiles[fileId].Substring
-                            (
-                                nameSplitterId + 1,
-                                nameSplitterId + 1
-                                + (
-                                    extensionId == -1 ?
-                                        allFiles[fileId].Length
-                                        : Math.Min(extensionId, allFiles[fileId].Length)
-                                )
-                            ).Replace("~", "")
+                            allFiles[fileId][..nameSplitterId],
+                            allFiles[fileId]
+                            [
+                                (nameSplitterId + 1
+                                )..(
+                                extensionId == -1 ?
+                                    allFiles[fileId].Length
+                                    : Math.Min(extensionId, allFiles[fileId].Length))
+                            ]
                         );
                     }
                     else
@@ -237,14 +236,14 @@ namespace Generatio
                 {
                     //  Initialize the stream to read mode
                     Stream stream = new FileStream(Path.Combine(path, fileName), FileMode.Open);
-                    BinaryReader binaryDataReader = new BinaryReader(stream);
+                    BinaryReader binaryDataReader = new(stream);
 
                     Int32 curY = 0;        //  Current Y position in the list list of found data
-                    List<List<Byte>> foundData = new List<List<Byte>> { new List<Byte>() };
+                    List<List<Byte>> foundData = [[]];
 
                     Int64 extendedX = 0;   //  Amount of bytes to extend the splitter length by
                     const Int64 splitAfterLength = 10;
-                    Int64[] extendersFinalBytes = new long[] { 6, 11 };
+                    Int64[] extendersFinalBytes = [6, 11];
 
 
                     for (Int64 curX = 0; curX < binaryDataReader.BaseStream.Length; curX++)
@@ -257,9 +256,9 @@ namespace Generatio
                             //  Magic for extending for the packed color amount
                             Int32 foundExtend =
                             (
-                                FromBinary.BigEndian<Int32>
+                                FromBinary.BigEndian<Int16>
                                 (
-                                    foundData[curY].ToArray()[(foundData[curY].Count - 2)..foundData[curY].Count]
+                                    foundData[curY][(foundData[curY].Count - 2)..foundData[curY].Count]
                                     //  magic numbers for extender[0] length (= 2)
                                 ) + 1
                             ) / 2;
@@ -269,12 +268,7 @@ namespace Generatio
                         }
                         else if (curX == extendersFinalBytes[1])
                         {
-                            Int32 foundExtend = FromBinary.BigEndian<Int32>
-                            (
-                                foundData[curY].ToArray()[(foundData[curY].Count - 1)..foundData[curY].Count]
-                                //  magic numbers for extender[1] length (= 1)
-                            );
-
+                            Int32 foundExtend = foundData[curY][^1];
                             extendedX += foundExtend;
                         }
 

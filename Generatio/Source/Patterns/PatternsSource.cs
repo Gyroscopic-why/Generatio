@@ -53,7 +53,9 @@ namespace Generatio
             }
             public void Info()
             {
-                //  Temporary absence of bullshit
+                string info = $"Узор #{type} - {PatternName}";
+                string margin = CalculateMargin((UInt16)(info.Length >> 1), WindowWidth);
+                Write($"\n{margin}{info}\n");
             }
 
             public Byte   Type => type;
