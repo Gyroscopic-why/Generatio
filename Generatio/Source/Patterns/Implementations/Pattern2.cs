@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Generatio.Source.Patterns.Implementations
+namespace Generatio.Patterns.Implementations
 {
     internal class Pattern2
     {

@@ -1,4 +1,5 @@
-﻿using static System.Console;
+﻿using System;
+using static System.Console;
 
 
 
@@ -24,8 +25,9 @@ namespace Generatio.Source.Patterns
         
 
         public abstract void DrawFull();
-        public abstract ConsoleColor[] DrawLine(UInt16 targetY);
-        public abstract ConsoleColor[] DrawLine(UInt16 targetY, UInt16 startX, UInt16 length, UInt16 nX, UInt16 nY);
+        public abstract ConsoleColor[] DrawLine(UInt16 curY);
+
+
 
         static public void DrawPreloadStatic(ConsoleColor[] preload, Int32 count = -1, bool resetLine = true)
         {
@@ -49,17 +51,16 @@ namespace Generatio.Source.Patterns
 
 
 
-        // protected
-        public (UInt16 nX, UInt16 nY) NormalizeSize()
+        public (UInt16 nX, UInt16 nY) NormalizeSize() => (NomalizeWidth(), NomalizeHeight());
+        public UInt16 NomalizeWidth()
         {
-            UInt16 nwWidth  = (UInt16)(WindowWidth  >> 1);
+            UInt16 nwWidth = (UInt16)(WindowWidth >> 1);
+            return Settings.shrinkOversized && SizeX > nwWidth ? nwWidth : SizeX;
+        }
+        public UInt16 NomalizeHeight()
+        {
             UInt16 nwHeight = (UInt16)(WindowHeight >> 1);
-
-            return
-            (
-                Settings.CurSettings.shrinkOversized && SizeX > nwWidth  ? nwWidth  : SizeX,
-                Settings.CurSettings.shrinkOversized && SizeY > nwHeight ? nwHeight : SizeY
-            );
+            return Settings.shrinkOversized && SizeY > nwHeight ? nwHeight : SizeY;
         }
 
 

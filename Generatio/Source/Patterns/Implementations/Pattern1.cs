@@ -68,83 +68,48 @@ namespace Generatio.Source.Patterns
             }
         }
 
-        public override ConsoleColor[] DrawLine(UInt16 targetY)
-            => targetY < (SizeY + 1) / 2
-                ? DrawTopLine   (targetY, 0, SizeX, SizeX)
-                : DrawBottomLine(targetY, 0, SizeX, SizeX);
+        public override ConsoleColor[] DrawLine(UInt16 curY)
+            => curY < (SizeY + 1) / 2
+                ? DrawTopLine   (curY, SizeX, SizeX)
+                : DrawBottomLine(curY, SizeX, (UInt16)((SizeX + 1) / 2), (UInt16)((SizeY + 1) / 2));
 
-        public override ConsoleColor[] DrawLine(UInt16 targetY, UInt16 startX, UInt16 length, UInt16 nX, UInt16 nY)
-            => targetY < (nY + 1) / 2
-                ? DrawTopLine   (targetY, startX, length, nX)
-                : DrawBottomLine(targetY, startX, length, nX);
+        public ConsoleColor[] DrawLine(UInt16 curY, UInt16 nsizeX, UInt16 originX, UInt16 originY)
+            => curY < (originY + 1) / 2
+                ? DrawTopLine   (curY, nsizeX, originX)
+                : DrawBottomLine(curY, nsizeX, originX, originY);
 
 
 
-        public ConsoleColor[] DrawTopLine(UInt16 targetY, UInt16 startX, UInt16 length, UInt16 nX)
+        public ConsoleColor[] DrawTopLine(UInt16 curY, UInt16 nsizeX, UInt16 originX)
         {
-            ConsoleColor[] resBuffer = new ConsoleColor[length], cycle = new ConsoleColor[nX];
-            Int32 colorId, bufferId, colorCount = Colors.Length, shortCount = colorCount - 1;
-            startX %= nX;
+            Int32 colorCount = Colors.Length, delta = nsizeX - nsizeX / 2 * 2 - 1;
+            Int32 pivot = curY + Math.Min(originX, nsizeX), renew = pivot + originX, end = renew - nsizeX;
 
-            for (Int32 curX = targetY; curX < (nX + 1) / 2 + targetY; curX++)
-            {
-                //colorId = curX % (colorCount * 2);
-                //if (colorId > colorCount - 1)
-                //    colorId = colorCount - colorId % colorCount - 1;
+            ConsoleColor[] result = new ConsoleColor[nsizeX];
+            for (Int32 curX = curY; curX < pivot; curX++)
+                result[curX - curY] = Colors[Formulas.TriangleElement(colorCount, curX, 0)];
 
-                bufferId = (curX + 2 * shortCount) % (2 * shortCount) - shortCount;
-                colorId = shortCount - ((bufferId ^ (bufferId >> 31)) - (bufferId >> 31));
+            for (Int32 curX = pivot; curX > end; curX--)
+                result[renew - curX] = Colors[Formulas.TriangleElement(colorCount, curX, delta)];
 
-                cycle[curX - targetY] = Colors[colorId];
-            }
-            for (Int32 curX = nX / 2 + targetY; curX > targetY; curX--)
-            {
-                //colorId = (curX - 1) % (colorCount * 2);
-                //if (colorId > colorCount - 1)
-                //    colorId = colorCount - colorId % colorCount - 1;
-
-                bufferId = (curX + 2 * shortCount - 1) % (2 * shortCount) - shortCount;
-                colorId = shortCount - ((bufferId ^ (bufferId >> 31)) - (bufferId >> 31));
-
-                cycle[nX + targetY - curX] = Colors[colorId];
-            }
-
-            if (startX + length <= nX) return cycle[startX..(startX + length)];
-            else
-            {
-                for (var i = startX; i < startX + length; i++)
-                    resBuffer[i - startX] = cycle[i % nX];
-                return resBuffer;
-            }
+            return result;
         }
-        public ConsoleColor[] DrawBottomLine(UInt16 targetY, UInt16 startX, UInt16 length, UInt16 nX)
+        public ConsoleColor[] DrawBottomLine(
+            UInt16 curY, UInt16 nsizeX,
+            UInt16 originX, UInt16 originY)
         {
-            ConsoleColor[] resBuffer = new ConsoleColor[length], cycle = new ConsoleColor[nX];
-            Int32 colorId, bufferId, colorCount = Colors.Length, shortCount = colorCount - 1;
-            startX %= nX;
+            Int32 colorCount = Colors.Length, delta = nsizeX - nsizeX / 2 * 2 - 1;
+            Int32 start = 2 * originY - curY - 1, pivot = start + Math.Min(originX, nsizeX);
+            Int32 renew = pivot + originX, end = renew - nsizeX;
 
-            for (Int32 curX = -targetY; curX < (nX + 1) / 2 - targetY; curX++)
-            {
-                bufferId = (-curX + 2 * shortCount - 1) % (2 * shortCount) - shortCount;
-                colorId = shortCount - ((bufferId ^ (bufferId >> 31)) - (bufferId >> 31));
+            ConsoleColor[] result = new ConsoleColor[nsizeX];
+            for (Int32 curX = start; curX < pivot; curX++)
+                result[curX - start] = Colors[Formulas.TriangleElement(colorCount, curX, 0)];
 
-                cycle[curX + targetY] = Colors[colorId];
-            }
-            for (Int32 curX = nX / 2 - targetY; curX > -targetY; curX--)
-            {
-                bufferId = (-curX + 2 * shortCount) % (2 * shortCount) - shortCount;
-                colorId = shortCount - ((bufferId ^ (bufferId >> 31)) - (bufferId >> 31));
-
-                cycle[nX - targetY - curX] = Colors[colorId];
-            }
-
-            if (startX + length <= nX) return cycle[startX..(startX + length)];
-            else
-            {
-                for (var i = startX; i < startX + length; i++)
-                    resBuffer[i - startX] = cycle[i % nX];
-                return resBuffer;
-            }
+            for (Int32 curX = pivot; curX > end; curX--)
+                result[renew - curX] = Colors[Formulas.TriangleElement(colorCount, curX, delta)];
+            
+            return result;
         }
     }
 }

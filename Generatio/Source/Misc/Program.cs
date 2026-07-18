@@ -24,7 +24,7 @@ namespace Generatio
 
 
             Write("\n\n");
-            Pattern1 aboba = new(41, 16,
+            Pattern1 aboba = new(24, 14,
                 //[ConsoleColor.Red, ConsoleColor.Blue, ConsoleColor.Green],
                 //[ConsoleColor.Red, ConsoleColor.Blue, ConsoleColor.Green,
                 //ConsoleColor.Green, ConsoleColor.Blue, ConsoleColor.Red],
@@ -40,17 +40,17 @@ namespace Generatio
 
             aboba.DrawFull();
 
-            UInt16 originY = 14;
+            UInt16 originY = 10;
 
             Write("\n\n");
             UInt16 nX = aboba.NormalizeSize().nX;
             for (UInt16 i = 0; i < originY; i++)
             {
-                aboba.DrawPreload(aboba.DrawTopLine(i, nX, (UInt16)((nX) / 2)), -1, true);
+                aboba.DrawPreload(aboba.DrawTopLine(i, nX, (UInt16)(nX / 2)), 74, true);
             }
-            for (UInt16 i = originY; i < 2 * originY; i++)
+            for (UInt16 i = originY; i < 3 * originY; i++)
             {
-                aboba.DrawPreload(aboba.DrawBottomLine(i, nX, (UInt16)((nX) / 2), originY), -1, true);
+                aboba.DrawPreload(aboba.DrawBottomLine(i, nX, (UInt16)(nX / 2), originY), 74, true);
             }
             Write("\n\n");
 
