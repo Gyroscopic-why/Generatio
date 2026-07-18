@@ -2,15 +2,15 @@
 
 
 
-namespace Generatio.Source.Settings
+namespace Generatio
 {
-    internal static class CurSettings
+    internal static partial class Settings
     {
         //  Default: \Users\thisUser\Documents\Gyroscopic\Generatio\Gallery
-        static public string galleryAbsPath = BetterDataIO.GetPath(false, true, "\\Gyroscopic\\Generatio\\Gallery", false);
+        static public string pathToGallery  = BetterDataIO.GetPath(false, true, "\\Gyroscopic\\Generatio\\Gallery", false);
 
         //  Default: \Users\thisUser\Documents\Gyroscopic\Generatio\Settings
-        static public string settingsAbsPath = BetterDataIO.GetPath(false, true, "\\Gyroscopic\\Generatio\\Settings", false);
+        static public string pathToSettings = BetterDataIO.GetPath(false, true, "\\Gyroscopic\\Generatio\\Settings", false);
 
 
         static public bool ignoreFullScreen;

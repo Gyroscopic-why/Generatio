@@ -1,9 +1,11 @@
-﻿using System.Text;
+﻿using System;
+using System.IO;
+using System.Text;
+using System.Collections.Generic;
 
 using static System.Console;
 
 
-using static Generatio.GlobalSettings;
 using static Generatio.GlobalVariables;
 
 
@@ -22,11 +24,11 @@ namespace Generatio
             Gallery.UserInfo userInfo;
             bool foundAtLeastSomethingLol = false;
 
-            List<string> allFiles = BetterDataIO.GetFilesWithExtension(path, ".patterns", true, gShowInfo, false, "\t\t");
+            List<string> allFiles = BetterDataIO.GetFilesWithExtension(path, ".patterns", true, Settings.showBasicInfo, false, "\t\t");
 
             for (int fileId = 0; fileId < allFiles.Count; fileId++)
             {
-                List<List<Byte>>? readData = ReadBinaryDataForFormatV3(path, allFiles[fileId], gShowInfo, false);
+                List<List<Byte>>? readData = ReadBinaryDataForFormatV3(path, allFiles[fileId], Settings.showBasicInfo, false);
 
                 if (readData != null)
                 {
@@ -64,13 +66,13 @@ namespace Generatio
                         foundAtLeastSomethingLol = true;
                     }
 
-                    var tryConvert = TryConversionV3(readData, gAdvInfo);
+                    var tryConvert = TryConversionV3(readData, Settings.showDevInfo);
                     if (tryConvert != null) Gallery.GalleryManager.Gallery.Add(tryConvert);
                     Gallery.GalleryManager.Users.Add(userInfo);
                 }
             }
 
-            if (gShowInfo || gAdvInfo)
+            if (Settings.showBasicInfo || Settings.showDevInfo)
             {
                 Write("\n\t\t[i]  - Служебный вывод завершён, нажмите любую кнопку для продолжения ");
                 ReadKey();
@@ -396,11 +398,11 @@ namespace Generatio
             if (patternName == "") patternName = "Unnamed";
             if (fileName == "") fileName = Environment.MachineName + "~" + Environment.UserName + ".patterns";
 
-            if (gShowInfo) DevInfoEncV3(type, X, Y, colAmount, colors, compactUnixDateTime, patternName);
+            if (Settings.showBasicInfo) DevInfoEncV3(type, X, Y, colAmount, colors, compactUnixDateTime, patternName);
 
-            List<Byte[]> patternData = new List<Byte[]>
-            {
-                new byte[] { type },
+            List<Byte[]> patternData =
+            [
+                [type],
                 ToBinary.BigEndian(X),
                 ToBinary.BigEndian(Y),
 
@@ -409,11 +411,11 @@ namespace Generatio
 
                 ToBinary.BigEndian(compactUnixDateTime),
 
-                new byte[] { (Byte)patternName.Length },
+                [(Byte)patternName.Length],
                 ToBinary.Utf8(patternName)
-            };
+            ];
 
-            BetterDataIO.SaveBinaryData(gGalleryPath, fileName, patternData, true, "", gShowInfo, false, "\t\t");
+            BetterDataIO.SaveBinaryData(Settings.pathToGallery, fileName, patternData, true, "", Settings.showBasicInfo, false, "\t\t");
         }
 
 

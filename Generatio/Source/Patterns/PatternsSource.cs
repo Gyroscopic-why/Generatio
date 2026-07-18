@@ -2,9 +2,6 @@ using System;
 using static System.Console;
 
 
-using static Generatio.GlobalSettings;
-
-
 
 namespace Generatio
 {
@@ -34,9 +31,9 @@ namespace Generatio
             protected void NormalizeSize(out UInt16 nX, out UInt16 nY)
             {
                 //  Shrink the pattern size if it is too big
-                if (gShrinkPatterns && _sizeX > WindowWidth / 2) nX = (UInt16)(WindowWidth / 2);
+                if (Settings.shrinkOversized && _sizeX > WindowWidth / 2) nX = (UInt16)(WindowWidth / 2);
                 else nX = _sizeX;
-                if (gShrinkPatterns && _sizeY > WindowHeight) nY = (UInt16)WindowHeight;
+                if (Settings.shrinkOversized && _sizeY > WindowHeight) nY = (UInt16)WindowHeight;
                 else nY = _sizeY;
             }
             protected string CalculateMargin(UInt16 X, Int32 windowX)

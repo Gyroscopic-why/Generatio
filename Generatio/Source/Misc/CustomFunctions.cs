@@ -5,7 +5,6 @@ using static System.Console;
 
 
 using static Generatio.UI;
-using static Generatio.GlobalSettings;
 using static Generatio.GlobalVariables;
 
 
@@ -21,7 +20,7 @@ namespace Generatio
             bool Generating = false;
             string UserInput;
 
-            if (!gIgnoreFullScreen) ForceFullScreen();
+            if (!Settings.ignoreFullScreen) ForceFullScreen();
 
             Write("\n\n\t\tВы хотите сгенерировать оставшиеся узоры? (ДА/НЕТ | YES/NO): ");
             UserInput = ReadLine()!.Trim().ToLower();
@@ -44,7 +43,7 @@ namespace Generatio
             while (userInput != "☺")
             {
 				//  Reset UI, dont wait for additional input, print info
-				ResetUI(!gIgnoreFullScreen, true);
+				ResetUI(true);
 				Write("\n\t\t\t\t\t\t\tВыбрано: --- === Создание узоров === ---\n\n\n");
 				Write("\t\t[=]  - Выбранные размеры: " + width + " x " + height + "\n");
 
@@ -110,7 +109,7 @@ namespace Generatio
 
 
 			//  Reset UI, dont wait for additional input, print info
-			ResetUI(!gIgnoreFullScreen, true);
+			ResetUI(true);
 			Write("\n\t\t\t\t\t\t\tВыбрано: --- === Создание узоров === ---\n\n\n");
 			Write("\t\t[=]  - Выбранные размеры: " + width + " x " + height + "\n");
 
@@ -222,7 +221,7 @@ namespace Generatio
 
 
 			//  Forcing fullscreen to capture max window size (optional)
-			if (!gIgnoreFullScreen) ForceFullScreen();  
+			if (!Settings.ignoreFullScreen) ForceFullScreen();  
 
 
             //  Set the limit for the max pattern size
@@ -233,7 +232,7 @@ namespace Generatio
 			realMax = maxSize;
 
 			//  Set the size to the absolute max if a cheatcode is enabled
-			if (maxSize < 65535 && gNoSizeLimit) maxSize = 65535;
+			if (maxSize < 65535 && Settings.ignoreSizeLimit) maxSize = 65535;
 
 
 
@@ -643,9 +642,9 @@ namespace Generatio
                             //  Mark the pattern unnamed
                             patternNames.Add("Unnamed");
                         }
-						else if (gAdvInfo) Write("\n\t\tВыбранный номер не соответствует ни одному узору:" + validChoice);
+						else if (Settings.showDevInfo) Write("\n\t\tВыбранный номер не соответствует ни одному узору:" + validChoice);
 					}
-                    else if (gAdvInfo) Write("\n\t\tНе удалось распознать номер узора: " + choices[i].Replace(" ", ""));
+                    else if (Settings.showDevInfo) Write("\n\t\tНе удалось распознать номер узора: " + choices[i].Replace(" ", ""));
 				}
 
                 //  If a pattern name might still be present
@@ -666,18 +665,16 @@ namespace Generatio
                                     patternNames.Add(choices[i].Substring(helper + 1));
                                 else patternNames.Add("Unnamed");
                             }
-                            else if (gAdvInfo) Write("\n\t\tВыбранный номер не соответствует ни одному узору:" + validChoice);
+                            else if (Settings.showBasicInfo) Write("\n\t\tВыбранный номер не соответствует ни одному узору:" + validChoice);
                         }
-                        else if (gAdvInfo) Write("\n\t\tНе удалось распознать номер узора: " + choices[i].Substring(0, helper).Replace(" ", ""));
+                        else if (Settings.showBasicInfo) Write("\n\t\tНе удалось распознать номер узора: " + choices[i].Substring(0, helper).Replace(" ", ""));
                     }
-                    else if (gAdvInfo) Write("\n\t\tНе верный формат данных: " + choices[i]);
+                    else if (Settings.showBasicInfo) Write("\n\t\tНе верный формат данных: " + choices[i]);
                 }
             }
 
-            //  Returning the chosen patterns, and their names
             return chosen;
         }
-             //  Let the user select the patterns for saving
 
 
 
@@ -685,16 +682,13 @@ namespace Generatio
         {
             string splitters = "";
 
-            for(Int32 i = 0; i < input.Length; i++)
+            for (var i = 0; i < input.Length; i++)
             {
-                for (Int32 j = 0; j < criteria.Length; j++) // For every splitter in the criterias string
+                for (var j = 0; j < criteria.Length; j++)
                 {
                     if (input[i] == criteria[j])
                     {
-                        // Save the found splitter
                         splitters += input[i];
-
-                        // Exit the loop - find the next splitter
                         j += criteria.Length;
                     }
                 }
@@ -702,7 +696,7 @@ namespace Generatio
 
             return splitters;
         }
-             // Returns a string (array of chars): Get the splitters in the input strings that match the criteria
+
         static public string[] SplitForParsing(string input, string criterias)
         {
             //  Future length for the string array
@@ -796,7 +790,6 @@ namespace Generatio
             // return new splitted string array
             return result;  
         }
-             // Split the input string into a string array by the criteria chars
 
 
 
@@ -806,7 +799,6 @@ namespace Generatio
             for (Int32 i = 0; i < colors.Length; i++) colors[i] = gAllColors[colorIdx[i]];
             return colors;
         }
-             // Convert colors from bytes to console colors
 
         static public byte[] ConvertColorsToBytes(ConsoleColor[] colors)
         {
@@ -820,6 +812,5 @@ namespace Generatio
             }
             return byteColors;
         }
-             // Convert colors from console colors to bytes
     }
 }

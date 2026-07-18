@@ -1,11 +1,12 @@
-﻿using static System.Console;
+﻿using System;
+using static System.Console;
 
 
 using static Generatio.UI;
-using static Generatio.GlobalSettings;
 using static Generatio.CustomFunctions;
 using static Generatio.CustomProcedures;
 using Generatio.Source.Patterns;
+
 
 
 namespace Generatio
@@ -19,33 +20,37 @@ namespace Generatio
 
 
             ResetAll();  //  Reset settings and gallery, load previous save
-            ResetUI(!gIgnoreFullScreen, true);
+            ResetUI(true);
 
 
             Write("\n\n");
-            Pattern1 aboba = new(24, 16,
-                [ConsoleColor.Red, ConsoleColor.Blue, ConsoleColor.Green],
+            Pattern1 aboba = new(41, 16,
+                //[ConsoleColor.Red, ConsoleColor.Blue, ConsoleColor.Green],
                 //[ConsoleColor.Red, ConsoleColor.Blue, ConsoleColor.Green,
                 //ConsoleColor.Green, ConsoleColor.Blue, ConsoleColor.Red],
+                [ConsoleColor.DarkRed, ConsoleColor.Red, ConsoleColor.Blue,
+                ConsoleColor.DarkBlue, ConsoleColor.DarkMagenta, ConsoleColor.Magenta],
                 "Aboba", true, true);
 
-            for (var i = 0; i < 30; i++)
-            {
-                Write(Formulas.IncorrectTriangleElement(5, i, 0) + " ");
-            }
-            ReadKey();
+            //for (var i = 0; i < 30; i++)
+            //{
+            //    Write(Formulas.IncorrectTriangleElement(5, i, 0) + " ");
+            //}
+            //ReadKey();
 
             aboba.DrawFull();
 
-            Write("\n\n");
+            UInt16 originY = 14;
 
-            for (UInt16 i = 0; i < 8; i++)
+            Write("\n\n");
+            UInt16 nX = aboba.NormalizeSize().nX;
+            for (UInt16 i = 0; i < originY; i++)
             {
-                aboba.DrawPreload(aboba.DrawTopLine(i, 0, 72, aboba.NormalizeSize().nX), 72, true);
+                aboba.DrawPreload(aboba.DrawTopLine(i, nX, (UInt16)((nX) / 2)), -1, true);
             }
-            for (UInt16 i = 8; i < 32; i++)
+            for (UInt16 i = originY; i < 2 * originY; i++)
             {
-                aboba.DrawPreload(aboba.DrawBottomLine(i, 0, 72, aboba.NormalizeSize().nX), 72, true);
+                aboba.DrawPreload(aboba.DrawBottomLine(i, nX, (UInt16)((nX) / 2), originY), -1, true);
             }
             Write("\n\n");
 
@@ -66,7 +71,7 @@ namespace Generatio
                         break;
                     case "2":
                         autoContinue = CreatePatternsLogic();
-                        if (!gAutoSave) autoContinue = true;
+                        if (!Settings.autoSaveAll) autoContinue = true;
                         break;
 
 
@@ -80,16 +85,16 @@ namespace Generatio
 
 
                     case "5":
-                        ChangeSettings();
-                        if (!gShowInfo) autoContinue = true;
+                        Settings.Change();
+                        if (!Settings.showBasicInfo) autoContinue = true;
                         break;
                     case "6":
-                        LoadSettings();
+                        Settings.Load();
                         break;
                 }
 
                 //  Reset the UI if no patterns are in the danger of being cleared
-                ResetUI(!gIgnoreFullScreen, autoContinue);
+                ResetUI(autoContinue);
 
                 task = GetUserTask();
             }

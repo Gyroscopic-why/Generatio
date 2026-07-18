@@ -1,8 +1,7 @@
-﻿using System;
+﻿using Generatio.Source;
+using System;
 
 using static System.Console;
-
-using static Generatio.GlobalSettings;
 
 
 
@@ -15,7 +14,7 @@ namespace Generatio
             UInt16 Counter = 0;
             if (X == 0) X = LargestWindowWidth / 13;
             if (Y == 0) Y = LargestWindowHeight / 26;
-            if (!gNoSizeLimit)
+            if (!Settings.ignoreFullScreen)
             {
                 if (WindowWidth < X || WindowHeight < Y)
                 {
@@ -43,8 +42,8 @@ namespace Generatio
 
         static public void ResetAll()
         {
-            ResetSettings();  //  Reset settings do default (fail save)
-            LoadSettings();   //  Load previous save of the settings
+            Settings.Reset();  //  Reset settings to default (fail save)
+            Settings.Load();   //  Load previous save of the settings
 
             Gallery.GalleryManager.UpdateGallery();  //  UpdateGallerySave
         }
@@ -54,38 +53,31 @@ namespace Generatio
         //----------------  Procedures exclusively meant for printing info  -----------------------------------//
 
 
-        static public void ResetUI(bool forceFullScreen, bool autoContinue)
+        static public void ResetUI(bool autoContinue)
         {
-            //  Wait for the user (optional)
             if (!autoContinue)
             {
                 Write("\n\t\tГотово! Нажмите любую кнопку чтобы продолжить: ");
                 ReadKey();
             }
 
-            //  Force FullScreen (optional)
-            if (forceFullScreen) ForceFullScreen(70, 30);
+            if (Settings.ignoreFullScreen) ForceFullScreen(70, 30);
 
-
-            //  Clear the console without losing information
-            for (Int32 i = 0; i < WindowHeight; i++) Write("\n");
+            Write(new string ('\n', WindowHeight));
             Clear();
 
-            //  Print the logo
             Write("\n\n\n\n\n\n");
             PrintLogo();
         }
-             //  Simple UI formatting (resetting the formatting)
+
         static public void ResetSizeUI(string sizeType, UInt16 maxSize, UInt32 realMax, UInt16 last = 0)
         {
-            //  Reset UI, dont wait for additional input, print info
-            ResetUI(!gIgnoreFullScreen, true);
+            ResetUI(true);
             Write("\n\t\t\t\t\t\tВыбрано: --- === Создание узоров === ---\n\n\n");
 
             if (last != 0) Write("\t\t[=]  - Выбранная ширина: " + last + "\n\n");
 
 
-            //  Calculate margin for the gallery output
             string margin = "       ";
             UInt16 tempBuffer = maxSize;
             while (tempBuffer > 0)
@@ -95,8 +87,6 @@ namespace Generatio
             }
 
 
-
-            //  Print earlier output UI
             Write("\n\t\t[?]  - Выберете " + sizeType + "у узора:");
 
             Write("\n\t\t         > " + 5 + " - " + maxSize);
@@ -116,13 +106,12 @@ namespace Generatio
 
             Write("\n\t\t[i]  - Чем больше " + sizeType + "а узора, тем он красивее!\n");
         }
-             //  UI reset for the GetSize() function
 
 
 
         static public void WriteProgramInfo()
         {
-            ResetUI(!gIgnoreFullScreen, true);
+            ResetUI(true);
             Write("\n\t\t\t\t\t\tВыбрано: --- === Информация о программе === ---\n\n\n");
 
             //-----------------------  WRITTING INFO ABOUT THE PROGRAM  -----------------------------//

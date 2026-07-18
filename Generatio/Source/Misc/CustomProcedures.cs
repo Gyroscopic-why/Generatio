@@ -7,7 +7,6 @@ using GyroscopicDataLibrary;
 using static System.Console;
 
 using static Generatio.CustomFunctions;
-using static Generatio.GlobalSettings;
 using static Generatio.GlobalVariables;
 using static Generatio.PatternSource;
 
@@ -88,7 +87,7 @@ namespace Generatio
                     formatedCode + "\n",
                 ];
 
-                if (path == "") path = gGalleryPath;
+                if (path == "") path = Settings.pathToGallery;
                 BetterDataIO.SaveData(path, fileName, patternData, true, "\n", showInfo, false, "\t\t");
                 Write("\n\n");
             }
@@ -142,7 +141,7 @@ namespace Generatio
             Gallery.GalleryManager.DrawPatterns(patterns, best, remaining);
 
             UInt32 compactUnixDateTime = DateTime4b.Now.PassedTotalMinutes;
-            if (!gAutoSave)
+            if (!Settings.autoSaveAll)
             {
                 List<byte> selected = [];
 

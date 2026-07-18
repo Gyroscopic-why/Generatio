@@ -1,11 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using static System.Console;
 
 using static Generatio.UI;
 using static Generatio.PatternSource;
 using static Generatio.GlobalVariables;
-using static Generatio.GlobalSettings;
 using static Generatio.CustomFunctions;
 using static Generatio.GalleryEncodings;
 
@@ -78,7 +78,7 @@ namespace Generatio.Gallery
         
         static public void UpdateGallery()
         {
-            DecodeV3(gGalleryPath);
+            DecodeV3(Settings.pathToGallery);
         }
 
         static public List<Int32>? ParseGalleryChoice(Int32 gallerySize, out bool choiceIsExit)
@@ -124,7 +124,7 @@ namespace Generatio.Gallery
                                 validId[1] = Math.Max(validId[1], 1);
 
 
-                                if (gAdvInfo) Write("\n\t\tРаспознан интервал с " + validId[0] + " по " + validId[1]);
+                                if (Settings.showDevInfo) Write("\n\t\tРаспознан интервал с " + validId[0] + " по " + validId[1]);
 
                                 for (Int32 j = 0; j <= validId[1] - validId[0]; j++)  //  normal
                                     if (validId[0] + j != ignoreThisId)
@@ -144,7 +144,7 @@ namespace Generatio.Gallery
                                     if (validId[0] != ignoreThisId)
                                     {
                                         parsedId.Add(validId[0] - 1);
-                                        if (gAdvInfo) Write("\n\t\tРаспознанный узор: " + validId[0]);
+                                        if (Settings.showDevInfo) Write("\n\t\tРаспознанный узор: " + validId[0]);
                                     }
                                 }
                                 else Write("\n\t\tИндекс вне границ базы данных: " + validId[0] + ". Повторите ввод: ");
@@ -159,7 +159,7 @@ namespace Generatio.Gallery
             }
             catch (Exception e)
             {
-                if (gShowInfo)
+                if (Settings.showBasicInfo)
                 { 
                     Write("\n\t\t[!]  - Фатальная ошибка при парсинге данных!");
                     Write("\n\t\t       Код ошибки: " + e);
@@ -212,7 +212,7 @@ namespace Generatio.Gallery
 
         static public void WriteGalleryInfo(Int32 patternsCount, Int32 userCount)
         {
-            ResetUI(!gIgnoreFullScreen, true);
+            ResetUI(true);
 
             Write("\n\t\t\t\t\t\tВыбрано: --- === Просмотр галереи === ---\n\n\n");
 
@@ -300,7 +300,7 @@ namespace Generatio.Gallery
             Int32 randomId;
             UInt16 sizeX = patterns[0].Width, sizeY = patterns[0].Height;
 
-            if (!gIgnoreFullScreen) ForceFullScreen(2 * sizeX, sizeY);
+            if (!Settings.ignoreFullScreen) ForceFullScreen(2 * sizeX, sizeY);
             Write("\n\n\n\t\t\t\t\tВот лучшие сгенерированые узоры:\n\n");
 
             while (bestIds.Count > 0)
@@ -313,10 +313,10 @@ namespace Generatio.Gallery
                 bestIds.RemoveAt(randomId);
             }
 
-            if (gAlwaysDrawAll || Continue())
+            if (Settings.alwaysDrawAll || Continue())
             {   // Asking if the user wants to Draw more patters
 
-                if (!gIgnoreFullScreen) ForceFullScreen(2 * sizeX, sizeY);
+                if (!Settings.ignoreFullScreen) ForceFullScreen(2 * sizeX, sizeY);
                 while (remainingIds.Count > 0)
                 {
                     randomId = gRandom.Next(0, remainingIds.Count);
